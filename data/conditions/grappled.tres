@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_8wmgq"]
+
+[resource]
+script = ExtResource("1_8wmgq")
+id = &"grappled"
+display_name = "Grappled"
+description = "A grappled creature's speed becomes 0, and it can't benefit from any bonus to its speed. The condition ends if the grappler is incapacitated or the creature is moved out of reach."
+effects = Array[Dictionary]([{
+"type": "speed",
+"value": 0
+}])
+ends_on = &"custom"

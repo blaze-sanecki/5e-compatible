@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_d5goj"]
+
+[resource]
+script = ExtResource("1_d5goj")
+id = &"deafened"
+display_name = "Deafened"
+description = "A deafened creature can't hear and automatically fails any ability check that requires hearing."
+effects = Array[Dictionary]([{
+"on": "ability_checks_requiring_hearing",
+"type": "auto_fail"
+}])
+ends_on = &"never"

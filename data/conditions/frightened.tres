@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_ys840"]
+
+[resource]
+script = ExtResource("1_ys840")
+id = &"frightened"
+display_name = "Frightened"
+description = "A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can't willingly move closer to the source of its fear."
+effects = Array[Dictionary]([{
+"on": "ability_checks",
+"type": "disadvantage"
+}, {
+"on": "attack_rolls",
+"type": "disadvantage"
+}, {
+"on": "fear_source",
+"type": "cant_approach"
+}])
+ends_on = &"save"

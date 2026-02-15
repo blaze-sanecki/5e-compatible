@@ -13,6 +13,9 @@ var _armor: Dictionary = {}
 var _level_progressions: Dictionary = {}
 var _items: Dictionary = {}
 var _terrains: Dictionary = {}
+var _monsters: Dictionary = {}
+var _conditions: Dictionary = {}
+var _encounters: Dictionary = {}
 
 
 func _ready() -> void:
@@ -23,6 +26,9 @@ func _ready() -> void:
 	_scan_directory("res://data/equipment", _items)
 	_scan_directory("res://data/tables", _level_progressions)
 	_scan_directory("res://data/exploration/terrains", _terrains)
+	_scan_directory("res://data/monsters", _monsters)
+	_scan_directory("res://data/conditions", _conditions)
+	_scan_directory("res://data/encounters", _encounters)
 
 	# Split equipment into weapons and armor for convenience.
 	for key in _items.keys():
@@ -32,9 +38,10 @@ func _ready() -> void:
 		elif res is ArmorData:
 			_armor[key] = res
 
-	print("DataRegistry: loaded %d classes, %d species, %d backgrounds, %d feats, %d weapons, %d armor, %d progressions, %d terrains" % [
+	print("DataRegistry: loaded %d classes, %d species, %d backgrounds, %d feats, %d weapons, %d armor, %d progressions, %d terrains, %d monsters, %d conditions, %d encounters" % [
 		_classes.size(), _species.size(), _backgrounds.size(), _feats.size(),
 		_weapons.size(), _armor.size(), _level_progressions.size(), _terrains.size(),
+		_monsters.size(), _conditions.size(), _encounters.size(),
 	])
 
 
@@ -134,6 +141,36 @@ func get_all_items() -> Array:
 
 func get_item(id: StringName) -> Resource:
 	return _items.get(id)
+
+# ---------------------------------------------------------------------------
+# Monsters
+# ---------------------------------------------------------------------------
+
+func get_all_monsters() -> Array:
+	return _monsters.values()
+
+func get_monster(id: StringName) -> MonsterData:
+	return _monsters.get(id) as MonsterData
+
+# ---------------------------------------------------------------------------
+# Conditions
+# ---------------------------------------------------------------------------
+
+func get_all_conditions() -> Array:
+	return _conditions.values()
+
+func get_condition(id: StringName) -> ConditionData:
+	return _conditions.get(id) as ConditionData
+
+# ---------------------------------------------------------------------------
+# Encounters
+# ---------------------------------------------------------------------------
+
+func get_all_encounters() -> Array:
+	return _encounters.values()
+
+func get_encounter(id: StringName) -> CombatEncounterData:
+	return _encounters.get(id) as CombatEncounterData
 
 
 # ---------------------------------------------------------------------------

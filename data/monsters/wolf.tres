@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="MonsterData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/character/ability_scores.gd" id="1_xqu5j"]
+[ext_resource type="Script" path="res://resources/monsters/monster_data.gd" id="2_5qyc2"]
+
+[sub_resource type="Resource" id="Resource_syahj"]
+script = ExtResource("1_xqu5j")
+strength = 12
+dexterity = 15
+constitution = 12
+intelligence = 3
+wisdom = 12
+charisma = 6
+
+[resource]
+script = ExtResource("2_5qyc2")
+id = &"wolf"
+display_name = "Wolf"
+description = "A fierce pack predator."
+armor_class = 13
+ac_description = "natural armor"
+hit_points = 11
+hit_dice = "2d8+2"
+speed = {
+"walk": 40
+}
+ability_scores = SubResource("Resource_syahj")
+skills = {
+"perception": 3,
+"stealth": 4
+}
+senses = {
+"passive_perception": 13
+}
+challenge_rating = 0.25
+xp_reward = 50
+traits = Array[Dictionary]([{
+"description": "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell.",
+"name": "Keen Hearing and Smell"
+}, {
+"description": "The wolf has advantage on an attack roll against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated.",
+"name": "Pack Tactics"
+}])
+actions = Array[Dictionary]([{
+"attack_bonus": 4,
+"damage": "2d4+2",
+"damage_type": "piercing",
+"description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.",
+"name": "Bite",
+"reach": 5,
+"save_ability": "strength",
+"save_dc": 11,
+"save_effect": "prone",
+"type": "melee_attack"
+}])

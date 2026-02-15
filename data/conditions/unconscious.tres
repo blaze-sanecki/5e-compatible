@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_7q1fp"]
+
+[resource]
+script = ExtResource("1_7q1fp")
+id = &"unconscious"
+display_name = "Unconscious"
+description = "An unconscious creature is incapacitated, can't move or speak, and is unaware of its surroundings. The creature drops whatever it's holding and falls prone. Attack rolls against the creature have advantage. Any attack that hits is a critical hit if the attacker is within 5 feet. The creature automatically fails Strength and Dexterity saving throws."
+effects = Array[Dictionary]([{
+"on": "all",
+"type": "incapacitated"
+}, {
+"type": "speed",
+"value": 0
+}, {
+"on": "strength_saves",
+"type": "auto_fail"
+}, {
+"on": "dexterity_saves",
+"type": "auto_fail"
+}, {
+"on": "attack_rolls_against",
+"type": "advantage"
+}, {
+"on": "melee_attacks_against",
+"type": "auto_crit"
+}, {
+"on": "self",
+"type": "prone"
+}])
+ends_on = &"save"

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_5dn7d"]
+
+[resource]
+script = ExtResource("1_5dn7d")
+id = &"stunned"
+display_name = "Stunned"
+description = "A stunned creature is incapacitated, can't move, and can speak only falteringly. The creature automatically fails Strength and Dexterity saving throws. Attack rolls against the creature have advantage."
+effects = Array[Dictionary]([{
+"on": "all",
+"type": "incapacitated"
+}, {
+"type": "speed",
+"value": 0
+}, {
+"on": "strength_saves",
+"type": "auto_fail"
+}, {
+"on": "dexterity_saves",
+"type": "auto_fail"
+}, {
+"on": "attack_rolls_against",
+"type": "advantage"
+}])
+ends_on = &"save"

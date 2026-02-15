@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_8g7cq"]
+
+[resource]
+script = ExtResource("1_8g7cq")
+id = &"petrified"
+display_name = "Petrified"
+description = "A petrified creature is transformed into a solid inanimate substance. It is incapacitated, can't move or speak, and is unaware of its surroundings. Attack rolls against it have advantage. It automatically fails Strength and Dexterity saves. It has resistance to all damage and is immune to poison and disease."
+effects = Array[Dictionary]([{
+"on": "all",
+"type": "incapacitated"
+}, {
+"type": "speed",
+"value": 0
+}, {
+"on": "strength_saves",
+"type": "auto_fail"
+}, {
+"on": "dexterity_saves",
+"type": "auto_fail"
+}, {
+"on": "attack_rolls_against",
+"type": "advantage"
+}, {
+"on": "all_damage",
+"type": "resistance"
+}, {
+"on": "poison",
+"type": "immunity"
+}])
+ends_on = &"never"

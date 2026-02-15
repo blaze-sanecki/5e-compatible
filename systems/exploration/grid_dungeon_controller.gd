@@ -40,6 +40,11 @@ var selected_token_index: int = 0
 ## Generate a placeholder test dungeon if the floor layer is empty.
 @export var generate_test_map: bool = true
 
+## Combat sub-systems (created on demand).
+var combat_manager: CombatManager
+var combat_grid_controller: CombatGridController
+var monster_tokens: Array[MonsterToken] = []
+
 
 # ---------------------------------------------------------------------------
 # Lifecycle
@@ -74,10 +79,19 @@ func _ready() -> void:
 		_update_fog()
 		_update_camera()
 
+	# Set up encounter trigger positions (place them at their cell locations).
+	_setup_encounter_triggers()
+
 	GameManager.change_state(GameManager.GameState.EXPLORING)
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Delegate to combat controller during combat.
+	if GameManager.is_in_combat() and combat_grid_controller != null:
+		if combat_grid_controller.handle_input(event):
+			get_viewport().set_input_as_handled()
+		return
+
 	if not GameManager.is_exploring():
 		return
 
@@ -149,6 +163,7 @@ func _try_move(token: CharacterToken, direction: Vector2i) -> void:
 		await token.moved_to
 		_update_fog()
 		_update_camera()
+		_check_encounter_triggers(target)
 
 
 func _handle_click(event: InputEventMouseButton, token: CharacterToken) -> void:
@@ -171,9 +186,10 @@ func _handle_click(event: InputEventMouseButton, token: CharacterToken) -> void:
 		token.moved_to.connect(_on_token_moved)
 
 
-func _on_token_moved(_cell: Vector2i) -> void:
+func _on_token_moved(cell: Vector2i) -> void:
 	_update_fog()
 	_update_camera()
+	_check_encounter_triggers(cell)
 
 
 # ---------------------------------------------------------------------------
@@ -301,3 +317,230 @@ func _get_interactable_at(cell: Vector2i) -> Node:
 				return child
 
 	return null
+
+
+# ---------------------------------------------------------------------------
+# Encounter triggers
+# ---------------------------------------------------------------------------
+
+func _setup_encounter_triggers() -> void:
+	var triggers_parent: Node = get_node_or_null("EncounterTriggers")
+	if triggers_parent == null:
+		return
+	for child in triggers_parent.get_children():
+		if child is CombatEncounterTrigger:
+			var trigger: CombatEncounterTrigger = child as CombatEncounterTrigger
+			# If trigger_cell is still at (0,0) and the trigger has no custom position,
+			# place it at the first monster spawn cell of its encounter.
+			if trigger.trigger_cell == Vector2i.ZERO:
+				var encounter: CombatEncounterData = DataRegistry.get_encounter(trigger.encounter_id)
+				if encounter and not encounter.monster_spawns.is_empty():
+					trigger.trigger_cell = encounter.monster_spawns[0].get("cell", Vector2i(10, 3))
+				else:
+					# Default to room 2 entrance.
+					trigger.trigger_cell = Vector2i(10, 3)
+			# Position the trigger node at its cell for visual debugging.
+			if floor_layer:
+				trigger.position = floor_layer.map_to_local(trigger.trigger_cell)
+
+
+# ---------------------------------------------------------------------------
+# Combat support
+# ---------------------------------------------------------------------------
+
+## Get references needed by the combat system.
+func get_combat_references() -> Dictionary:
+	return {
+		"floor_layer": floor_layer,
+		"wall_layer": wall_layer,
+		"pathfinder": pathfinder,
+		"character_tokens": character_tokens,
+		"controller": self,
+	}
+
+
+## Spawn monster tokens on the grid for a combat encounter.
+func spawn_monsters(encounter: CombatEncounterData) -> Array[MonsterToken]:
+	var tokens: Array[MonsterToken] = []
+
+	for spawn in encounter.monster_spawns:
+		var monster_id: StringName = spawn.get("monster_id", &"")
+		var monster: MonsterData = DataRegistry.get_monster(monster_id)
+		if monster == null:
+			push_warning("GridDungeonController: Unknown monster '%s'" % monster_id)
+			continue
+
+		var count: int = spawn.get("count", 1)
+		var base_cell: Vector2i = spawn.get("cell", Vector2i.ZERO)
+
+		for i in count:
+			var cell: Vector2i = base_cell + Vector2i(i, 0) if count > 1 else base_cell
+			var token := MonsterToken.new()
+			token.name = "%s_%d" % [monster_id, i]
+			token.z_index = 2
+			add_child(token)
+			token.setup(monster, floor_layer, cell)
+			tokens.append(token)
+			monster_tokens.append(token)
+
+	return tokens
+
+
+## Remove all monster tokens from the grid.
+func remove_monsters() -> void:
+	for token in monster_tokens:
+		if is_instance_valid(token):
+			token.queue_free()
+	monster_tokens.clear()
+
+
+## Check all encounter triggers after movement.
+func _check_encounter_triggers(cell: Vector2i) -> void:
+	if GameManager.is_in_combat():
+		return
+	var triggers_parent: Node = get_node_or_null("EncounterTriggers")
+	if triggers_parent == null:
+		return
+	for child in triggers_parent.get_children():
+		if child is CombatEncounterTrigger:
+			if child.check_trigger(cell, self):
+				return  # One encounter at a time.
+
+
+## Start a combat encounter. Creates CombatManager and wires everything up.
+func start_encounter(encounter: CombatEncounterData) -> void:
+	# Spawn monster tokens.
+	var m_tokens: Array[MonsterToken] = spawn_monsters(encounter)
+
+	# Create player combatants from character tokens.
+	var player_combatants: Array[CombatantData] = []
+	for ct in character_tokens:
+		if ct.character_data == null:
+			# Test token without character data — create a placeholder.
+			var placeholder := CharacterData.new()
+			placeholder.character_name = "Hero"
+			placeholder.level = 1
+			placeholder.max_hp = 12
+			placeholder.current_hp = 12
+			placeholder.speed = 30
+			placeholder.ability_scores = AbilityScores.new()
+			placeholder.ability_scores.strength = 14
+			placeholder.ability_scores.dexterity = 12
+			placeholder.ability_scores.constitution = 13
+			ct.character_data = placeholder
+		var combatant: CombatantData = CombatantData.from_character(ct.character_data)
+		combatant.cell = ct.current_cell
+		combatant.token = ct
+		player_combatants.append(combatant)
+
+	# Create monster combatants.
+	var monster_combatants: Array[CombatantData] = []
+	for mt in m_tokens:
+		var combatant: CombatantData = CombatantData.from_monster(mt.monster_data)
+		combatant.cell = mt.current_cell
+		combatant.token = mt
+		monster_combatants.append(combatant)
+
+	# Create CombatManager.
+	combat_manager = CombatManager.new()
+	combat_manager.name = "CombatManager"
+	combat_manager.floor_layer = floor_layer
+	combat_manager.wall_layer = wall_layer
+	add_child(combat_manager)
+
+	# Create Monster AI.
+	var ai := MonsterAI.new()
+	combat_manager.monster_ai = ai
+
+	# Create targeting overlay.
+	var overlay := TargetingOverlay.new()
+	overlay.name = "TargetingOverlay"
+	overlay.z_index = 5
+	overlay.setup(floor_layer)
+	add_child(overlay)
+
+	# Create damage numbers display.
+	var dmg_numbers := DamageNumbers.new()
+	dmg_numbers.name = "DamageNumbers"
+	dmg_numbers.z_index = 20
+	add_child(dmg_numbers)
+
+	# Create CombatGridController.
+	combat_grid_controller = CombatGridController.new()
+	combat_grid_controller.combat_manager = combat_manager
+	combat_grid_controller.floor_layer = floor_layer
+	combat_grid_controller.wall_layer = wall_layer
+	combat_grid_controller.pathfinder = pathfinder
+	combat_grid_controller.targeting_overlay = overlay
+
+	# Create and set up CombatHUD.
+	var hud: CanvasLayer = preload("res://ui/combat/combat_hud.tscn").instantiate()
+	add_child(hud)
+	if hud.has_method("setup"):
+		hud.setup(combat_manager, combat_grid_controller)
+
+	# Connect combat end.
+	combat_manager.combat_finished.connect(_on_combat_finished)
+	combat_manager.player_turn_started.connect(_on_player_turn_started)
+
+	# Start combat.
+	combat_manager.start_combat(player_combatants, monster_combatants, encounter)
+
+
+func _on_combat_finished(players_won: bool) -> void:
+	if combat_grid_controller:
+		combat_grid_controller.clear_overlays()
+		combat_grid_controller = null
+
+	# Award XP if players won.
+	if players_won and combat_manager:
+		var rewards: Dictionary = CombatRewards.award_xp(
+			combat_manager.combatants, combat_manager.encounter_data
+		)
+		if rewards.get("total_xp", 0) > 0:
+			print("Combat won! XP awarded: %d total (%d each)" % [
+				rewards.total_xp, rewards.per_character
+			])
+			for name_str in rewards.get("level_ups", []):
+				print("  %s leveled up!" % name_str)
+		else:
+			print("Combat won!")
+	elif not players_won:
+		print("Combat lost!")
+
+	# Clean up dead monster tokens.
+	remove_monsters()
+
+	# Clean up overlay and damage numbers.
+	var overlay: Node = get_node_or_null("TargetingOverlay")
+	if overlay:
+		overlay.queue_free()
+	var dmg_numbers: Node = get_node_or_null("DamageNumbers")
+	if dmg_numbers:
+		dmg_numbers.queue_free()
+
+	# Clean up CombatHUD.
+	for child in get_children():
+		if child is CanvasLayer and child.name == "CombatHUD":
+			child.queue_free()
+
+	# Clean up CombatManager.
+	if combat_manager:
+		combat_manager.queue_free()
+		combat_manager = null
+
+
+func _on_player_turn_started(combatant: CombatantData) -> void:
+	if combat_grid_controller:
+		combat_grid_controller.set_mode_move()
+
+	# Focus camera on the active player's token.
+	if combatant.token and combatant.token is CharacterToken:
+		_focus_camera_on(combatant.token as Node2D)
+
+
+func _focus_camera_on(target: Node2D) -> void:
+	if camera == null:
+		return
+	var tween: Tween = create_tween()
+	tween.tween_property(camera, "position", target.position, 0.3).set_ease(Tween.EASE_OUT)

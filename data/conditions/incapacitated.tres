@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_8es3u"]
+
+[resource]
+script = ExtResource("1_8es3u")
+id = &"incapacitated"
+display_name = "Incapacitated"
+description = "An incapacitated creature can't take actions or reactions."
+effects = Array[Dictionary]([{
+"on": "actions",
+"type": "cant_act"
+}, {
+"on": "reactions",
+"type": "cant_act"
+}])
+ends_on = &"never"

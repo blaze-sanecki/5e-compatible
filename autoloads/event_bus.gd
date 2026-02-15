@@ -17,6 +17,8 @@ signal turn_started(character: Resource)
 signal turn_ended(character: Resource)
 signal initiative_rolled(order: Array)
 signal action_performed(character: Resource, action: Dictionary)
+signal combat_round_started(round_number: int)
+signal concentration_broken(character: Resource)
 
 # ---------------------------------------------------------------------------
 # Spellcasting

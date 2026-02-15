@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_qbdbc"]
+
+[resource]
+script = ExtResource("1_qbdbc")
+id = &"invisible"
+display_name = "Invisible"
+description = "An invisible creature is impossible to see without the aid of magic or a special sense. The creature's attack rolls have advantage, and attack rolls against the creature have disadvantage."
+effects = Array[Dictionary]([{
+"on": "attack_rolls",
+"type": "advantage"
+}, {
+"on": "attack_rolls_against",
+"type": "disadvantage"
+}, {
+"on": "sight",
+"type": "unseen"
+}])
+ends_on = &"custom"

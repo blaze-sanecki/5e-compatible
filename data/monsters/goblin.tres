@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="MonsterData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/character/ability_scores.gd" id="1_mqc2j"]
+[ext_resource type="Script" path="res://resources/monsters/monster_data.gd" id="2_03unl"]
+
+[sub_resource type="Resource" id="Resource_v4vb1"]
+script = ExtResource("1_mqc2j")
+strength = 8
+dexterity = 14
+wisdom = 8
+charisma = 8
+
+[resource]
+script = ExtResource("2_03unl")
+id = &"goblin"
+display_name = "Goblin"
+description = "Small, black-hearted humanoids that lair in despoiled dungeons."
+size = &"small"
+creature_type = &"humanoid"
+alignment = "neutral evil"
+armor_class = 15
+ac_description = "leather armor, shield"
+hit_points = 7
+hit_dice = "2d6"
+ability_scores = SubResource("Resource_v4vb1")
+skills = {
+"stealth": 6
+}
+senses = {
+"darkvision": 60,
+"passive_perception": 9
+}
+languages = Array[StringName]([&"common", &"goblin"])
+challenge_rating = 0.25
+xp_reward = 50
+traits = Array[Dictionary]([{
+"description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns.",
+"name": "Nimble Escape"
+}])
+actions = Array[Dictionary]([{
+"attack_bonus": 4,
+"damage": "1d6+2",
+"damage_type": "slashing",
+"description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.",
+"name": "Scimitar",
+"reach": 5,
+"type": "melee_attack"
+}, {
+"attack_bonus": 4,
+"damage": "1d6+2",
+"damage_type": "piercing",
+"description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
+"name": "Shortbow",
+"range_long": 320,
+"range_normal": 80,
+"type": "ranged_attack"
+}])

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_42qdd"]
+
+[resource]
+script = ExtResource("1_42qdd")
+id = &"blinded"
+display_name = "Blinded"
+description = "A blinded creature can't see and automatically fails any ability check that requires sight. Attack rolls against the creature have advantage, and the creature's attack rolls have disadvantage."
+effects = Array[Dictionary]([{
+"on": "ability_checks_requiring_sight",
+"type": "auto_fail"
+}, {
+"on": "attack_rolls_against",
+"type": "advantage"
+}, {
+"on": "attack_rolls",
+"type": "disadvantage"
+}])
+ends_on = &"never"

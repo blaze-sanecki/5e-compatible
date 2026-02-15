@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="MonsterData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/character/ability_scores.gd" id="1_rymfk"]
+[ext_resource type="Script" path="res://resources/monsters/monster_data.gd" id="2_fij3b"]
+
+[sub_resource type="Resource" id="Resource_62sm4"]
+script = ExtResource("1_rymfk")
+dexterity = 14
+constitution = 15
+intelligence = 6
+wisdom = 8
+charisma = 5
+
+[resource]
+script = ExtResource("2_fij3b")
+id = &"skeleton"
+display_name = "Skeleton"
+description = "Animated bones held together by dark magic."
+creature_type = &"undead"
+alignment = "lawful evil"
+armor_class = 13
+ac_description = "armor scraps"
+hit_points = 13
+hit_dice = "2d8+4"
+ability_scores = SubResource("Resource_62sm4")
+damage_vulnerabilities = Array[StringName]([&"bludgeoning"])
+damage_immunities = Array[StringName]([&"poison"])
+condition_immunities = Array[StringName]([&"exhaustion", &"poisoned"])
+senses = {
+"darkvision": 60,
+"passive_perception": 9
+}
+challenge_rating = 0.25
+xp_reward = 50
+actions = Array[Dictionary]([{
+"attack_bonus": 4,
+"damage": "1d6+2",
+"damage_type": "piercing",
+"description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
+"name": "Shortsword",
+"reach": 5,
+"type": "melee_attack"
+}, {
+"attack_bonus": 4,
+"damage": "1d6+2",
+"damage_type": "piercing",
+"description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
+"name": "Shortbow",
+"range_long": 320,
+"range_normal": 80,
+"type": "ranged_attack"
+}])

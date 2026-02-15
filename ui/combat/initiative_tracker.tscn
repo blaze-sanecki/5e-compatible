@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/combat/initiative_tracker.gd" id="1_tracker"]
+
+[node name="InitiativeTracker" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+alignment = 1
+script = ExtResource("1_tracker")
+
+[node name="Spacer" type="Control" parent="."]
+custom_minimum_size = Vector2(10, 0)

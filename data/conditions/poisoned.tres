@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_jgnpd"]
+
+[resource]
+script = ExtResource("1_jgnpd")
+id = &"poisoned"
+display_name = "Poisoned"
+description = "A poisoned creature has disadvantage on attack rolls and ability checks."
+effects = Array[Dictionary]([{
+"on": "attack_rolls",
+"type": "disadvantage"
+}, {
+"on": "ability_checks",
+"type": "disadvantage"
+}])
+ends_on = &"save"

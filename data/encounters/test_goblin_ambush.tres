@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CombatEncounterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/combat_encounter_data.gd" id="1_lidbj"]
+
+[resource]
+script = ExtResource("1_lidbj")
+id = &"test_goblin_ambush"
+display_name = "Goblin Ambush"
+monster_spawns = Array[Dictionary]([{
+"cell": Vector2i(12, 3),
+"count": 1,
+"monster_id": &"goblin"
+}, {
+"cell": Vector2i(13, 5),
+"count": 1,
+"monster_id": &"goblin"
+}, {
+"cell": Vector2i(11, 5),
+"count": 1,
+"monster_id": &"goblin"
+}])
+difficulty = &"easy"
