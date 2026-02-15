@@ -20,6 +20,7 @@ var floor_layer: TileMapLayer
 var wall_layer: TileMapLayer
 var fog_layer: TileMapLayer
 var camera: Camera2D
+var _camera_tween: Tween
 
 ## Sub-systems.
 var pathfinder: GridPathfinding
@@ -243,12 +244,24 @@ func _update_fog() -> void:
 # Camera
 # ---------------------------------------------------------------------------
 
+## Kill any camera tween and snap to the active token instantly.
+func snap_camera() -> void:
+	if _camera_tween and _camera_tween.is_valid():
+		_camera_tween.kill()
+	var active_token: CharacterToken = token_manager.get_active_token()
+	if active_token and camera:
+		camera.position = active_token.position
+		camera.reset_smoothing()
+
+
 func _update_camera() -> void:
 	var active_token: CharacterToken = token_manager.get_active_token()
 	if active_token == null or camera == null:
 		return
-	var tween: Tween = create_tween()
-	tween.tween_property(camera, "position", active_token.position, 0.2).set_ease(Tween.EASE_OUT)
+	if _camera_tween and _camera_tween.is_valid():
+		_camera_tween.kill()
+	_camera_tween = create_tween()
+	_camera_tween.tween_property(camera, "position", active_token.position, 0.2).set_ease(Tween.EASE_OUT)
 
 
 # ---------------------------------------------------------------------------
@@ -412,4 +425,3 @@ func restore_save_state(data: Dictionary) -> void:
 				child.triggered = trigger_states[child.name]
 
 	_update_fog()
-	_update_camera()

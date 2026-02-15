@@ -203,18 +203,25 @@ func _serialize_exploration(scene: Node) -> Dictionary:
 # ---------------------------------------------------------------------------
 
 func _load_map_and_restore(map_path: String, exploration_data: Dictionary) -> void:
-	TransitionManager.transition_to(map_path, &"default", "fade")
-	await _wait_for_transition()
+	# Manually control the transition so we can restore positions while the
+	# screen is still black (before fade-in), preventing the visible snap.
+	TransitionManager.is_transitioning = true
+	await TransitionManager._fade_out()
+	await TransitionManager._load_and_spawn(map_path)
 
-	await get_tree().process_frame
+	# Restore positions, fog, and interactable state.
 	var new_scene: Node = get_tree().current_scene
 	if new_scene and new_scene.has_method("restore_save_state"):
 		new_scene.restore_save_state(exploration_data)
 
+	# Wait a frame so token transforms fully settle, then force-snap the
+	# camera before the fade reveals the scene.
+	await get_tree().process_frame
+	if new_scene and new_scene.has_method("snap_camera"):
+		new_scene.snap_camera()
 
-func _wait_for_transition() -> void:
-	while TransitionManager.is_transitioning:
-		await get_tree().process_frame
+	await TransitionManager._fade_in()
+	TransitionManager.is_transitioning = false
 
 
 # ---------------------------------------------------------------------------

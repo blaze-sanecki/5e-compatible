@@ -26,6 +26,7 @@ var fog_layer: TileMapLayer
 var highlight_layer: TileMapLayer
 var party_token: PartyToken
 var camera: Camera2D
+var _camera_tween: Tween
 
 ## Logic state for the party on the hex overworld.
 var party_state: HexEntityState
@@ -238,11 +239,22 @@ func _update_fog() -> void:
 # Camera
 # ---------------------------------------------------------------------------
 
+## Kill any camera tween and snap to the party token instantly.
+func snap_camera() -> void:
+	if _camera_tween and _camera_tween.is_valid():
+		_camera_tween.kill()
+	if camera and party_token:
+		camera.position = party_token.position
+		camera.reset_smoothing()
+
+
 func _update_camera() -> void:
 	if camera == null:
 		return
-	var tween: Tween = create_tween()
-	tween.tween_property(camera, "position", party_token.position, 0.3).set_ease(Tween.EASE_OUT)
+	if _camera_tween and _camera_tween.is_valid():
+		_camera_tween.kill()
+	_camera_tween = create_tween()
+	_camera_tween.tween_property(camera, "position", party_token.position, 0.3).set_ease(Tween.EASE_OUT)
 
 
 # ---------------------------------------------------------------------------
@@ -306,6 +318,4 @@ func restore_save_state(data: Dictionary) -> void:
 	if not fog_data.is_empty() and fog_system:
 		fog_system.load_state(fog_data)
 
-	# Update fog and camera.
 	_update_fog()
-	_update_camera()
