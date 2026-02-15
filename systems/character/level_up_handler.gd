@@ -4,40 +4,13 @@ extends RefCounted
 ## Static utility methods for character level advancement.
 ## Handles XP tracking, HP increases, feature grants, and ASI levels.
 
-## XP thresholds for levels 1-20 (cumulative).
-const XP_THRESHOLDS: Array[int] = [
-	0,       # Level 1
-	300,     # Level 2
-	900,     # Level 3
-	2700,    # Level 4
-	6500,    # Level 5
-	14000,   # Level 6
-	23000,   # Level 7
-	34000,   # Level 8
-	48000,   # Level 9
-	64000,   # Level 10
-	85000,   # Level 11
-	100000,  # Level 12
-	120000,  # Level 13
-	140000,  # Level 14
-	165000,  # Level 15
-	195000,  # Level 16
-	225000,  # Level 17
-	265000,  # Level 18
-	305000,  # Level 19
-	355000,  # Level 20
-]
-
-## Levels at which Ability Score Improvements (or feats) are granted.
-const ASI_LEVELS: Array[int] = [4, 8, 12, 16, 19]
-
 
 ## Returns true if the character has enough XP to level up.
 static func can_level_up(character: CharacterData) -> bool:
 	if character.level >= 20:
 		return false
 	var next_level: int = character.level + 1
-	return character.experience_points >= XP_THRESHOLDS[next_level - 1]
+	return character.experience_points >= GameBalance.XP_THRESHOLDS[next_level - 1]
 
 
 ## Add experience to a character and emit signals.
@@ -50,12 +23,12 @@ static func add_experience(character: CharacterData, amount: int) -> void:
 static func xp_to_next_level(character: CharacterData) -> int:
 	if character.level >= 20:
 		return 0
-	return XP_THRESHOLDS[character.level] - character.experience_points
+	return GameBalance.XP_THRESHOLDS[character.level] - character.experience_points
 
 
 ## Returns true if the given level grants an ASI / feat choice.
 static func level_grants_asi(level: int) -> bool:
-	return level in ASI_LEVELS
+	return level in GameBalance.ASI_LEVELS
 
 
 ## Returns the HP options for leveling up: [average, hit_die_size].
@@ -129,9 +102,9 @@ static func apply_level_up(
 
 
 ## Returns the features gained at a specific level for the character's class.
-static func get_features_at_level(character: CharacterData, level: int) -> Array[Dictionary]:
+static func get_features_at_level(character: CharacterData, level: int) -> Array[ClassFeature]:
 	if character.character_class == null:
-		return [] as Array[Dictionary]
+		return [] as Array[ClassFeature]
 
 	# Try level progression first.
 	var progression: LevelProgression = DataRegistry.get_level_progression(character.character_class.id)

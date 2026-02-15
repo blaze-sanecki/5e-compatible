@@ -1,29 +1,41 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=9 format=3]
 
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_jau0s"]
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_jy1ud"]
+
+[sub_resource type="Resource" id="Resource_e1pqc"]
+script = ExtResource("1_jau0s")
+type = &"incapacitated"
+on = &"all"
+
+[sub_resource type="Resource" id="Resource_uodsk"]
+script = ExtResource("1_jau0s")
+type = &"speed"
+
+[sub_resource type="Resource" id="Resource_7ks7j"]
+script = ExtResource("1_jau0s")
+type = &"auto_fail"
+on = &"strength_saves"
+
+[sub_resource type="Resource" id="Resource_4no55"]
+script = ExtResource("1_jau0s")
+type = &"auto_fail"
+on = &"dexterity_saves"
+
+[sub_resource type="Resource" id="Resource_1v18t"]
+script = ExtResource("1_jau0s")
+type = &"advantage"
+on = &"attack_rolls_against"
+
+[sub_resource type="Resource" id="Resource_pnbre"]
+script = ExtResource("1_jau0s")
+type = &"auto_crit"
+on = &"melee_attacks_against"
 
 [resource]
 script = ExtResource("1_jy1ud")
 id = &"paralyzed"
 display_name = "Paralyzed"
 description = "A paralyzed creature is incapacitated and can't move or speak. The creature automatically fails Strength and Dexterity saving throws. Attack rolls against the creature have advantage. Any attack that hits is a critical hit if the attacker is within 5 feet."
-effects = Array[Dictionary]([{
-"on": "all",
-"type": "incapacitated"
-}, {
-"type": "speed",
-"value": 0
-}, {
-"on": "strength_saves",
-"type": "auto_fail"
-}, {
-"on": "dexterity_saves",
-"type": "auto_fail"
-}, {
-"on": "attack_rolls_against",
-"type": "advantage"
-}, {
-"on": "melee_attacks_against",
-"type": "auto_crit"
-}])
+effects = Array[ExtResource("1_jau0s")]([SubResource("Resource_e1pqc"), SubResource("Resource_uodsk"), SubResource("Resource_7ks7j"), SubResource("Resource_4no55"), SubResource("Resource_1v18t"), SubResource("Resource_pnbre")])
 ends_on = &"save"

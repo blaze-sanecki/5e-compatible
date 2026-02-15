@@ -155,6 +155,13 @@ func player_help() -> Dictionary:
 	return action_system.execute_help(current_combatant)
 
 
+## Player uses a consumable item (costs Action).
+func player_use_item(item: ItemData) -> Dictionary:
+	if current_combatant == null or not current_combatant.is_player():
+		return {"success": false, "description": "Not player's turn."}
+	return action_system.execute_use_item(current_combatant, item)
+
+
 ## Player makes a death saving throw.
 func player_death_save() -> Dictionary:
 	if current_combatant == null or not current_combatant.is_player():

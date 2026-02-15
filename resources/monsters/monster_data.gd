@@ -75,27 +75,26 @@ extends Resource
 ## Proficiency bonus derived from challenge rating.
 @export var proficiency_bonus: int = 2
 
-## Special traits (e.g., Pack Tactics, Keen Senses). Each entry has "name" and "description".
-@export var traits: Array[Dictionary]
+## Special traits (e.g., Pack Tactics, Keen Senses).
+@export var traits: Array[MonsterTrait]
 
-## Standard actions. Each entry has "name", "description", and optionally
-## "attack_bonus", "damage", "reach", "range", etc.
-@export var actions: Array[Dictionary]
+## Standard actions.
+@export var actions: Array[MonsterAction]
 
 ## Bonus actions available to this creature.
-@export var bonus_actions: Array[Dictionary]
+@export var bonus_actions: Array[MonsterAction]
 
 ## Reactions available to this creature.
-@export var reactions: Array[Dictionary]
+@export var reactions: Array[MonsterAction]
 
-## Legendary actions. Each entry has "name", "description", and optionally "cost".
-@export var legendary_actions: Array[Dictionary]
+## Legendary actions.
+@export var legendary_actions: Array[MonsterAction]
 
 ## Number of legendary actions available per round (typically 3).
 @export var legendary_action_count: int = 0
 
 ## Lair actions triggered on initiative count 20.
-@export var lair_actions: Array[Dictionary]
+@export var lair_actions: Array[MonsterAction]
 
 ## Spellcasting information: {"ability": "wisdom", "dc": 13, "attack_bonus": 5,
 ## "spells": {"0": ["light", "sacred_flame"], "1": ["bless", "cure_wounds"]}}.

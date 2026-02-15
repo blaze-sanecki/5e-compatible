@@ -9,8 +9,8 @@ extends Resource
 ## Human-readable name.
 @export var display_name: String
 
-## Array of spawn entries. Each entry: {"monster_id": StringName, "cell": Vector2i, "count": int}
-@export var monster_spawns: Array[Dictionary]
+## Monster spawn entries for this encounter.
+@export var monster_spawns: Array[MonsterSpawnEntry]
 
 ## Encounter difficulty: "easy", "medium", "hard", "deadly".
 @export var difficulty: StringName = &"medium"

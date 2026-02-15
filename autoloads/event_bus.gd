@@ -84,3 +84,9 @@ signal death_save_made(character: Resource, result: Dictionary)
 # ---------------------------------------------------------------------------
 signal rest_started(rest_type: StringName)
 signal rest_completed(rest_type: StringName)
+
+# ---------------------------------------------------------------------------
+# Save / Load
+# ---------------------------------------------------------------------------
+signal game_saved(slot: int)
+signal game_loaded(slot: int)

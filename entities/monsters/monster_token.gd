@@ -1,29 +1,16 @@
 class_name MonsterToken
-extends Node2D
+extends AnimatedToken2D
 
-## Visual representation of a monster on a square grid dungeon.
-## Simpler than CharacterToken — no exploration input, just movement and effects.
+## Pure visual representation of a monster on a square grid dungeon.
+##
+## No game logic — combat logic lives in CombatantData.
+## Controllers create this, call setup_visual(), and drive movement
+## via animate_move_to().
 
-signal moved_to(cell: Vector2i)
 signal death_animation_finished()
 
 ## The MonsterData resource this token represents.
 var monster_data: MonsterData
-
-## Current grid cell position.
-var current_cell: Vector2i = Vector2i.ZERO
-
-## Whether the token is currently animating a move.
-var is_moving: bool = false
-
-## Movement speed in pixels per second.
-var move_speed: float = 200.0
-
-## Reference to the floor layer for coordinate conversion.
-var _floor_layer: TileMapLayer
-
-## Current movement tween.
-var _move_tween: Tween
 
 ## The sprite child.
 var _sprite: Sprite2D
@@ -36,12 +23,10 @@ var _base_modulate: Color = Color.WHITE
 # Setup
 # ---------------------------------------------------------------------------
 
-## Initialize the monster token.
-func setup(data: MonsterData, floor_layer: TileMapLayer, start_cell: Vector2i) -> void:
+## Initialize the monster token visuals at a world position.
+func setup_visual(data: MonsterData, world_pos: Vector2) -> void:
 	monster_data = data
-	_floor_layer = floor_layer
-	current_cell = start_cell
-	position = floor_layer.map_to_local(start_cell)
+	position = world_pos
 
 	# Create a sprite if one doesn't exist.
 	_sprite = get_node_or_null("Sprite2D")
@@ -64,60 +49,7 @@ func setup(data: MonsterData, floor_layer: TileMapLayer, start_cell: Vector2i) -
 
 
 # ---------------------------------------------------------------------------
-# Movement
-# ---------------------------------------------------------------------------
-
-## Move to a target cell with animation. Returns true if move started.
-func move_to_cell(target_cell: Vector2i) -> bool:
-	if is_moving or _floor_layer == null:
-		return false
-
-	is_moving = true
-	var target_pos: Vector2 = _floor_layer.map_to_local(target_cell)
-	var distance: float = position.distance_to(target_pos)
-	var duration: float = distance / move_speed
-
-	if _move_tween and _move_tween.is_running():
-		_move_tween.kill()
-
-	_move_tween = create_tween()
-	_move_tween.tween_property(self, "position", target_pos, duration)
-	_move_tween.finished.connect(func() -> void:
-		current_cell = target_cell
-		is_moving = false
-		moved_to.emit(target_cell)
-	)
-	return true
-
-
-## Move along a path of cells.
-func move_along_path(path: Array[Vector2i]) -> void:
-	if path.size() < 2:
-		return
-	_move_path_step(path, 1)
-
-
-func _move_path_step(path: Array[Vector2i], index: int) -> void:
-	if index >= path.size():
-		return
-	if not move_to_cell(path[index]):
-		return
-	await moved_to
-	if index + 1 < path.size():
-		_move_path_step(path, index + 1)
-
-
-## Teleport without animation.
-func teleport_to(cell: Vector2i) -> void:
-	if _move_tween and _move_tween.is_running():
-		_move_tween.kill()
-	current_cell = cell
-	position = _floor_layer.map_to_local(cell)
-	is_moving = false
-
-
-# ---------------------------------------------------------------------------
-# Visual effects
+# Visual interface
 # ---------------------------------------------------------------------------
 
 ## Flash red when taking damage.

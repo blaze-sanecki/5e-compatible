@@ -1,15 +1,42 @@
-[gd_resource type="Resource" script_class="MonsterData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="MonsterData" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://resources/character/ability_scores.gd" id="1_ievyh"]
+[ext_resource type="Script" path="res://resources/monsters/monster_action.gd" id="2_qpsf0"]
 [ext_resource type="Script" path="res://resources/monsters/monster_data.gd" id="2_y8qij"]
+[ext_resource type="Script" path="res://resources/monsters/monster_trait.gd" id="4_y2463"]
 
-[sub_resource type="Resource" id="Resource_qpsf0"]
+[sub_resource type="Resource" id="Resource_l1ehe"]
 script = ExtResource("1_ievyh")
 strength = 16
 dexterity = 12
 constitution = 16
 intelligence = 7
 wisdom = 11
+
+[sub_resource type="Resource" id="Resource_o5pbw"]
+script = ExtResource("2_qpsf0")
+name = "Greataxe"
+type = &"melee_attack"
+attack_bonus = 5
+damage = "1d12+3"
+damage_type = &"slashing"
+description = "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage."
+
+[sub_resource type="Resource" id="Resource_m37ll"]
+script = ExtResource("2_qpsf0")
+name = "Javelin"
+type = &"ranged_attack"
+attack_bonus = 5
+range_normal = 30
+range_long = 120
+damage = "1d6+3"
+damage_type = &"piercing"
+description = "Ranged Weapon Attack: +5 to hit, range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
+
+[sub_resource type="Resource" id="Resource_88fou"]
+script = ExtResource("4_y2463")
+name = "Aggressive"
+description = "As a bonus action, the orc can move up to its speed toward a hostile creature that it can see."
 
 [resource]
 script = ExtResource("2_y8qij")
@@ -22,7 +49,7 @@ armor_class = 13
 ac_description = "hide armor"
 hit_points = 15
 hit_dice = "2d8+6"
-ability_scores = SubResource("Resource_qpsf0")
+ability_scores = SubResource("Resource_l1ehe")
 skills = {
 "intimidation": 2
 }
@@ -33,25 +60,5 @@ senses = {
 languages = Array[StringName]([&"common", &"orc"])
 challenge_rating = 0.5
 xp_reward = 100
-traits = Array[Dictionary]([{
-"description": "As a bonus action, the orc can move up to its speed toward a hostile creature that it can see.",
-"name": "Aggressive"
-}])
-actions = Array[Dictionary]([{
-"attack_bonus": 5,
-"damage": "1d12+3",
-"damage_type": "slashing",
-"description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage.",
-"name": "Greataxe",
-"reach": 5,
-"type": "melee_attack"
-}, {
-"attack_bonus": 5,
-"damage": "1d6+3",
-"damage_type": "piercing",
-"description": "Ranged Weapon Attack: +5 to hit, range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
-"name": "Javelin",
-"range_long": 120,
-"range_normal": 30,
-"type": "ranged_attack"
-}])
+traits = Array[ExtResource("4_y2463")]([SubResource("Resource_88fou")])
+actions = Array[ExtResource("2_qpsf0")]([SubResource("Resource_o5pbw"), SubResource("Resource_m37ll")])

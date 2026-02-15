@@ -1,17 +1,22 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_jgnpd"]
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_lfrix"]
+
+[sub_resource type="Resource" id="Resource_xaswe"]
+script = ExtResource("1_lfrix")
+type = &"disadvantage"
+on = &"attack_rolls"
+
+[sub_resource type="Resource" id="Resource_in516"]
+script = ExtResource("1_lfrix")
+type = &"disadvantage"
+on = &"ability_checks"
 
 [resource]
 script = ExtResource("1_jgnpd")
 id = &"poisoned"
 display_name = "Poisoned"
 description = "A poisoned creature has disadvantage on attack rolls and ability checks."
-effects = Array[Dictionary]([{
-"on": "attack_rolls",
-"type": "disadvantage"
-}, {
-"on": "ability_checks",
-"type": "disadvantage"
-}])
+effects = Array[ExtResource("1_lfrix")]([SubResource("Resource_xaswe"), SubResource("Resource_in516")])
 ends_on = &"save"

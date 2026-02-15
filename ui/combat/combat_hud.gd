@@ -92,6 +92,9 @@ func _on_action_selected(action_name: StringName) -> void:
 		&"end_turn":
 			if _combat_manager:
 				_combat_manager.end_current_turn()
+		&"use_item":
+			# Handled by the action bar's item picker popup.
+			pass
 		&"dash", &"disengage", &"dodge", &"hide":
 			# These are executed by the action bar directly.
 			# Switch back to move mode and refresh overlay (e.g., Dash adds movement).

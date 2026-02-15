@@ -1,10 +1,13 @@
 extends CanvasLayer
 
-## Pause menu overlay with Resume and Quit to Menu buttons.
+## Pause menu overlay with Resume, Save Game, and Quit to Menu buttons.
 ## Managed by PersistentUI — toggled via Escape key.
 
 var _root: Control
 var _panel: PanelContainer
+var _btn_box: VBoxContainer
+var _slot_picker: VBoxContainer
+var _status_label: Label
 
 
 func _ready() -> void:
@@ -16,6 +19,13 @@ func _ready() -> void:
 
 func open_menu() -> void:
 	_root.visible = true
+	# Hide slot picker when reopening.
+	if _slot_picker:
+		_slot_picker.visible = false
+	if _btn_box:
+		_btn_box.visible = true
+	if _status_label:
+		_status_label.text = ""
 
 
 func close_menu() -> void:
@@ -36,19 +46,14 @@ func _build_ui() -> void:
 	_panel = PanelContainer.new()
 	_panel.anchor_left = 0.3
 	_panel.anchor_right = 0.7
-	_panel.anchor_top = 0.3
-	_panel.anchor_bottom = 0.7
+	_panel.anchor_top = 0.25
+	_panel.anchor_bottom = 0.75
 	_panel.offset_left = 0
 	_panel.offset_right = 0
 	_panel.offset_top = 0
 	_panel.offset_bottom = 0
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
-	style.border_color = Color(0.6, 0.5, 0.3)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(20)
+	var style := UIStyler.create_panel_style(UITheme.COLOR_PANEL_BG, UITheme.COLOR_BORDER, 2, 8, 20)
 	_panel.add_theme_stylebox_override("panel", style)
 	_root.add_child(_panel)
 
@@ -62,7 +67,7 @@ func _build_ui() -> void:
 	title.text = "Paused"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 28)
-	title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	vbox.add_child(title)
 
 	# Time display.
@@ -70,7 +75,7 @@ func _build_ui() -> void:
 	time_label.text = GameManager.get_time_string()
 	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	time_label.add_theme_font_size_override("font_size", 14)
-	time_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
+	time_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_MUTED)
 	vbox.add_child(time_label)
 
 	# Spacer.
@@ -78,11 +83,11 @@ func _build_ui() -> void:
 	spacer.custom_minimum_size = Vector2(0, 10)
 	vbox.add_child(spacer)
 
-	# Buttons container.
-	var btn_box := VBoxContainer.new()
-	btn_box.add_theme_constant_override("separation", 10)
-	btn_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	vbox.add_child(btn_box)
+	# Main buttons container.
+	_btn_box = VBoxContainer.new()
+	_btn_box.add_theme_constant_override("separation", 10)
+	_btn_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	vbox.add_child(_btn_box)
 
 	# Resume button.
 	var resume_btn := Button.new()
@@ -90,7 +95,15 @@ func _build_ui() -> void:
 	resume_btn.custom_minimum_size = Vector2(200, 40)
 	_style_button(resume_btn)
 	resume_btn.pressed.connect(_on_resume)
-	btn_box.add_child(resume_btn)
+	_btn_box.add_child(resume_btn)
+
+	# Save Game button.
+	var save_btn := Button.new()
+	save_btn.text = "Save Game"
+	save_btn.custom_minimum_size = Vector2(200, 40)
+	_style_button(save_btn)
+	save_btn.pressed.connect(_on_save_game)
+	_btn_box.add_child(save_btn)
 
 	# Quit to Menu button.
 	var quit_btn := Button.new()
@@ -98,32 +111,111 @@ func _build_ui() -> void:
 	quit_btn.custom_minimum_size = Vector2(200, 40)
 	_style_button(quit_btn)
 	quit_btn.pressed.connect(_on_quit_to_menu)
-	btn_box.add_child(quit_btn)
+	_btn_box.add_child(quit_btn)
+
+	# Slot picker (hidden by default).
+	_slot_picker = VBoxContainer.new()
+	_slot_picker.add_theme_constant_override("separation", 8)
+	_slot_picker.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_slot_picker.visible = false
+	vbox.add_child(_slot_picker)
+
+	var picker_title := Label.new()
+	picker_title.text = "Choose Save Slot"
+	picker_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	picker_title.add_theme_font_size_override("font_size", 18)
+	picker_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
+	_slot_picker.add_child(picker_title)
+
+	for i in SaveManager.MAX_SLOTS:
+		var slot_btn := Button.new()
+		slot_btn.name = "SlotBtn_%d" % i
+		slot_btn.custom_minimum_size = Vector2(240, 36)
+		_style_button(slot_btn)
+		slot_btn.pressed.connect(_on_slot_selected.bind(i))
+		_slot_picker.add_child(slot_btn)
+
+	# Back button in slot picker.
+	var back_btn := Button.new()
+	back_btn.text = "Back"
+	back_btn.custom_minimum_size = Vector2(240, 36)
+	_style_button(back_btn)
+	back_btn.pressed.connect(_on_slot_back)
+	_slot_picker.add_child(back_btn)
+
+	# Status label for save confirmation.
+	_status_label = Label.new()
+	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_label.add_theme_font_size_override("font_size", 14)
+	_status_label.add_theme_color_override("font_color", UITheme.COLOR_SUCCESS)
+	vbox.add_child(_status_label)
 
 	add_child(_root)
 
 
 func _style_button(btn: Button) -> void:
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.15, 0.15, 0.2, 0.9)
-	normal.border_color = Color(0.6, 0.5, 0.3)
-	normal.set_border_width_all(2)
-	normal.set_corner_radius_all(6)
-	normal.set_content_margin_all(8)
-	btn.add_theme_stylebox_override("normal", normal)
+	UIStyler.style_button(btn)
 
-	var hover := normal.duplicate() as StyleBoxFlat
-	hover.bg_color = Color(0.2, 0.2, 0.28, 0.95)
-	hover.border_color = Color(0.9, 0.8, 0.4)
-	btn.add_theme_stylebox_override("hover", hover)
 
-	btn.add_theme_font_size_override("font_size", 16)
-	btn.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+func _update_slot_labels() -> void:
+	for i in SaveManager.MAX_SLOTS:
+		var slot_btn: Button = _slot_picker.get_node_or_null("SlotBtn_%d" % i)
+		if slot_btn == null:
+			continue
+		var info: Dictionary = SaveManager.get_save_info(i)
+		if info.is_empty():
+			slot_btn.text = "Slot %d — Empty" % (i + 1)
+		else:
+			var name_str: String = info.get("character_name", "Unknown")
+			var level: int = info.get("level", 1)
+			var time_dict: Dictionary = info.get("game_time", {})
+			var time_str: String = "Day %d, %02d:%02d" % [
+				time_dict.get("day", 1),
+				time_dict.get("hour", 8),
+				time_dict.get("minute", 0),
+			]
+			slot_btn.text = "Slot %d — %s (Lv%d) %s" % [i + 1, name_str, level, time_str]
 
 
 func _on_resume() -> void:
 	close_menu()
 	GameManager.unpause_game()
+
+
+func _on_save_game() -> void:
+	# Only allow saving during exploration.
+	if GameManager.previous_state != GameManager.GameState.EXPLORING:
+		_status_label.text = "Can only save while exploring!"
+		_status_label.add_theme_color_override("font_color", UITheme.COLOR_ERROR)
+		return
+
+	_btn_box.visible = false
+	_slot_picker.visible = true
+	_status_label.text = ""
+	_update_slot_labels()
+
+
+func _on_slot_selected(slot: int) -> void:
+	# Temporarily unpause so save can read scene state.
+	get_tree().paused = false
+	var success: bool = SaveManager.save_game(slot)
+	get_tree().paused = true
+
+	if success:
+		_status_label.add_theme_color_override("font_color", UITheme.COLOR_SUCCESS)
+		_status_label.text = "Saved to Slot %d!" % (slot + 1)
+	else:
+		_status_label.add_theme_color_override("font_color", UITheme.COLOR_ERROR)
+		_status_label.text = "Save failed!"
+
+	_slot_picker.visible = false
+	_btn_box.visible = true
+
+
+func _on_slot_back() -> void:
+	_slot_picker.visible = false
+	_btn_box.visible = true
+	_status_label.text = ""
 
 
 func _on_quit_to_menu() -> void:

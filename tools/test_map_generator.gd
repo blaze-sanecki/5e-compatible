@@ -425,10 +425,15 @@ static func _setup_dungeon_interactables(parent: Node, floor_layer: TileMapLayer
 		cd.id = &"test_chest_1"
 		cd.display_name = "Treasure Chest"
 		cd.type = InteractableData.InteractableType.CHEST
-		cd.loot_table = [
-			{"item_id": &"gold", "quantity": 25, "chance": 1.0},
-			{"item_id": &"dagger", "quantity": 1, "chance": 0.5},
-		]
+		var loot_gold := LootEntry.new()
+		loot_gold.item_id = &"gold"
+		loot_gold.quantity = 25
+		loot_gold.chance = 1.0
+		var loot_dagger := LootEntry.new()
+		loot_dagger.item_id = &"dagger"
+		loot_dagger.quantity = 1
+		loot_dagger.chance = 0.5
+		cd.loot_table = [loot_gold, loot_dagger]
 		chest.interactable_data = cd
 
 	# Lever in room 1 (2, 2), linked to door.
@@ -500,6 +505,7 @@ static func _create_test_token(parent: Node2D, floor_layer: TileMapLayer) -> Cha
 	placeholder.ability_scores.charisma = 14
 	placeholder.skill_proficiencies = [&"persuasion", &"intimidation"]
 
-	token.setup(placeholder, floor_layer, Vector2i(3, 3))
+	token.character_data = placeholder
+	token.teleport_visual(floor_layer.map_to_local(Vector2i(3, 3)))
 	PartyManager.add_member(placeholder)
 	return token

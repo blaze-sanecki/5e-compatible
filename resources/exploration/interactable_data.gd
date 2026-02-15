@@ -23,8 +23,8 @@ enum InteractableType { DOOR, CHEST, LEVER, TRAP, OTHER }
 ## Key item ID that can bypass the lock.
 @export var key_item_id: StringName = &""
 
-## Loot table: array of { "item_id": StringName, "quantity": int, "chance": float }.
-@export var loot_table: Array[Dictionary] = []
+## Loot table entries.
+@export var loot_table: Array[LootEntry] = []
 
 ## Whether this interactable has been used/opened.
 @export var is_used: bool = false

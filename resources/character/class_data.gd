@@ -43,14 +43,13 @@ extends Resource
 @export var subclass_level: int = 3
 
 ## Class features gained at each level.
-## Each entry is a Dictionary with keys: "level" (int), "name" (String), "description" (String).
-@export var class_features: Array[Dictionary]
+@export var class_features: Array[ClassFeature]
 
 
 ## Returns all class features gained at the specified level.
-func get_features_at_level(level: int) -> Array[Dictionary]:
-	var results: Array[Dictionary] = []
+func get_features_at_level(level: int) -> Array[ClassFeature]:
+	var results: Array[ClassFeature] = []
 	for feature in class_features:
-		if feature.get("level", 0) == level:
+		if feature.level == level:
 			results.append(feature)
 	return results

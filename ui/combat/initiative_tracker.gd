@@ -73,13 +73,8 @@ func _create_entry_panel(entry: Dictionary, _index: int) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(80, 50)
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.15, 0.15, 0.2, 0.9)
-	style.border_color = Color(0.4, 0.4, 0.5)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(4)
-	panel.add_theme_stylebox_override("panel", style)
+	panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
+		UITheme.COLOR_BUTTON_BG, Color(0.4, 0.4, 0.5), 1, 4, 4))
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 2)
@@ -118,7 +113,7 @@ func _highlight_panel(panel: PanelContainer, active: bool) -> void:
 	else:
 		style.border_color = Color(0.4, 0.4, 0.5)
 		style.set_border_width_all(1)
-		style.bg_color = Color(0.15, 0.15, 0.2, 0.9)
+		style.bg_color = UITheme.COLOR_BUTTON_BG
 	panel.add_theme_stylebox_override("panel", style)
 
 

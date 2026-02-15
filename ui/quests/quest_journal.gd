@@ -72,7 +72,7 @@ func _refresh_list() -> void:
 		var header := Label.new()
 		header.text = "Active Quests"
 		header.add_theme_font_size_override("font_size", 14)
-		header.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+		header.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 		_quest_list.add_child(header)
 
 		for quest in active_quests:
@@ -88,7 +88,7 @@ func _refresh_list() -> void:
 		var header := Label.new()
 		header.text = "Completed"
 		header.add_theme_font_size_override("font_size", 14)
-		header.add_theme_color_override("font_color", Color(0.5, 0.7, 0.5))
+		header.add_theme_color_override("font_color", UITheme.COLOR_QUEST_COMPLETE)
 		_quest_list.add_child(header)
 
 		for quest in completed_quests:
@@ -148,7 +148,7 @@ func _refresh_detail() -> void:
 				line.text = "%s %s%s" % [check, obj.description, optional_tag]
 
 			if obj.is_complete():
-				line.add_theme_color_override("font_color", Color(0.5, 0.8, 0.5))
+				line.add_theme_color_override("font_color", UITheme.COLOR_QUEST_COMPLETE)
 			line.add_theme_font_size_override("font_size", 13)
 			_objectives_list.add_child(line)
 
@@ -191,13 +191,8 @@ func _build_ui() -> void:
 	_panel.offset_top = 0
 	_panel.offset_bottom = 0
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.12, 0.12, 0.18, 0.95)
-	style.border_color = Color(0.6, 0.5, 0.3)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(16)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
+		Color(0.12, 0.12, 0.18, 0.95)))
 	_root.add_child(_panel)
 
 	var main_vbox := VBoxContainer.new()
@@ -211,7 +206,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "Quest Journal"
 	title.add_theme_font_size_override("font_size", 22)
-	title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_bar.add_child(title)
 
@@ -248,7 +243,7 @@ func _build_ui() -> void:
 	_detail_title = Label.new()
 	_detail_title.text = "Select a quest"
 	_detail_title.add_theme_font_size_override("font_size", 18)
-	_detail_title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	_detail_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_detail_panel.add_child(_detail_title)
 
 	_detail_desc = RichTextLabel.new()
@@ -261,7 +256,7 @@ func _build_ui() -> void:
 	var obj_header := Label.new()
 	obj_header.text = "Objectives"
 	obj_header.add_theme_font_size_override("font_size", 15)
-	obj_header.add_theme_color_override("font_color", Color(0.7, 0.7, 0.9))
+	obj_header.add_theme_color_override("font_color", UITheme.COLOR_QUEST_OBJECTIVE)
 	_detail_panel.add_child(obj_header)
 
 	_objectives_list = VBoxContainer.new()

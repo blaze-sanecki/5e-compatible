@@ -1,22 +1,26 @@
-[gd_resource type="Resource" script_class="CombatEncounterData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CombatEncounterData" load_steps=6 format=3]
 
+[ext_resource type="Script" path="res://resources/combat/monster_spawn_entry.gd" id="1_fkg4d"]
 [ext_resource type="Script" path="res://resources/combat/combat_encounter_data.gd" id="1_lidbj"]
+
+[sub_resource type="Resource" id="Resource_lpgl2"]
+script = ExtResource("1_fkg4d")
+monster_id = &"goblin"
+cell = Vector2i(12, 3)
+
+[sub_resource type="Resource" id="Resource_01x76"]
+script = ExtResource("1_fkg4d")
+monster_id = &"goblin"
+cell = Vector2i(13, 5)
+
+[sub_resource type="Resource" id="Resource_3re8m"]
+script = ExtResource("1_fkg4d")
+monster_id = &"goblin"
+cell = Vector2i(11, 5)
 
 [resource]
 script = ExtResource("1_lidbj")
 id = &"test_goblin_ambush"
 display_name = "Goblin Ambush"
-monster_spawns = Array[Dictionary]([{
-"cell": Vector2i(12, 3),
-"count": 1,
-"monster_id": &"goblin"
-}, {
-"cell": Vector2i(13, 5),
-"count": 1,
-"monster_id": &"goblin"
-}, {
-"cell": Vector2i(11, 5),
-"count": 1,
-"monster_id": &"goblin"
-}])
+monster_spawns = Array[ExtResource("1_fkg4d")]([SubResource("Resource_lpgl2"), SubResource("Resource_01x76"), SubResource("Resource_3re8m")])
 difficulty = &"easy"

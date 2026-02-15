@@ -46,13 +46,7 @@ func _build_ui() -> void:
 	_panel.offset_top = 0
 	_panel.offset_bottom = 0
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
-	style.border_color = Color(0.6, 0.5, 0.3)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(16)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style())
 	_root.add_child(_panel)
 
 	_content = VBoxContainer.new()
@@ -70,7 +64,7 @@ func _show_rest_options() -> void:
 	title.text = "Rest"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22)
-	title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_content.add_child(title)
 
 	# Time display.
@@ -78,17 +72,17 @@ func _show_rest_options() -> void:
 	time_label.text = GameManager.get_time_string()
 	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	time_label.add_theme_font_size_override("font_size", 13)
-	time_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
+	time_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_MUTED)
 	_content.add_child(time_label)
 
 	# Party status.
 	for member in PartyManager.party:
+		if not member is CharacterData:
+			continue
+		var character: CharacterData = member as CharacterData
 		var status := Label.new()
-		var char_name: String = str(member.get("character_name")) if member.get("character_name") else "Hero"
-		var hp: int = member.get("current_hp") if member.get("current_hp") != null else 0
-		var max_hp: int = member.get("max_hp") if member.get("max_hp") != null else 0
-		var hd: int = member.get("hit_dice_remaining") if member.get("hit_dice_remaining") != null else 0
-		status.text = "%s — HP: %d/%d — Hit Dice: %d" % [char_name, hp, max_hp, hd]
+		var char_name: String = character.character_name if character.character_name else "Hero"
+		status.text = "%s — HP: %d/%d — Hit Dice: %d" % [char_name, character.current_hp, character.max_hp, character.hit_dice_remaining]
 		status.add_theme_font_size_override("font_size", 13)
 		status.add_theme_color_override("font_color", Color(0.8, 0.8, 0.85))
 		_content.add_child(status)
@@ -125,23 +119,20 @@ func _show_rest_options() -> void:
 
 
 func _on_short_rest() -> void:
-	# Collect healing results before the rest.
 	var results: PackedStringArray = []
 	for member in PartyManager.party:
-		if member is CharacterData:
-			var healed: int = member.on_short_rest()
-			var char_name: String = member.character_name if member.character_name else "Hero"
-			if healed > 0:
-				results.append("%s healed %d HP" % [char_name, healed])
-			else:
-				var hd: int = member.hit_dice_remaining
-				if hd <= 0:
-					results.append("%s — no hit dice remaining" % char_name)
-				else:
-					results.append("%s — already at full HP" % char_name)
+		if not member is CharacterData:
+			continue
+		var character: CharacterData = member as CharacterData
+		var char_name: String = character.character_name if character.character_name else "Hero"
+		var healed: int = RestSystem.short_rest(character)
+		if healed > 0:
+			results.append("%s healed %d HP" % [char_name, healed])
+		elif character.hit_dice_remaining <= 0:
+			results.append("%s — no hit dice remaining" % char_name)
+		else:
+			results.append("%s — already at full HP" % char_name)
 
-	# Advance time (GameManager.short_rest() also calls on_short_rest,
-	# but we already called it, so just advance time and emit signals).
 	GameManager.advance_time(60)
 	EventBus.rest_started.emit(&"short")
 	EventBus.rest_completed.emit(&"short")
@@ -152,15 +143,15 @@ func _on_short_rest() -> void:
 func _on_long_rest() -> void:
 	var results: PackedStringArray = []
 	for member in PartyManager.party:
-		if member is CharacterData:
-			var old_hp: int = member.current_hp
-			member.on_long_rest()
-			var healed: int = member.current_hp - old_hp
-			var char_name: String = member.character_name if member.character_name else "Hero"
-			if healed > 0:
-				results.append("%s healed %d HP (full)" % [char_name, healed])
-			else:
-				results.append("%s — already at full HP" % char_name)
+		if not member is CharacterData:
+			continue
+		var character: CharacterData = member as CharacterData
+		var char_name: String = character.character_name if character.character_name else "Hero"
+		var healed: int = RestSystem.long_rest(character)
+		if healed > 0:
+			results.append("%s healed %d HP (full)" % [char_name, healed])
+		else:
+			results.append("%s — already at full HP" % char_name)
 
 	GameManager.advance_time(480)
 	EventBus.rest_started.emit(&"long")
@@ -176,21 +167,21 @@ func _show_results(title_text: String, results: PackedStringArray) -> void:
 	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 20)
-	title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_content.add_child(title)
 
 	var time_label := Label.new()
 	time_label.text = GameManager.get_time_string()
 	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	time_label.add_theme_font_size_override("font_size", 13)
-	time_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
+	time_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_MUTED)
 	_content.add_child(time_label)
 
 	for result in results:
 		var line := Label.new()
 		line.text = result
 		line.add_theme_font_size_override("font_size", 14)
-		line.add_theme_color_override("font_color", Color(0.5, 0.8, 0.5))
+		line.add_theme_color_override("font_color", UITheme.COLOR_QUEST_COMPLETE)
 		_content.add_child(line)
 
 	var ok_btn := Button.new()
@@ -208,18 +199,4 @@ func _clear_content() -> void:
 
 
 func _style_button(btn: Button) -> void:
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.15, 0.15, 0.2, 0.9)
-	normal.border_color = Color(0.6, 0.5, 0.3)
-	normal.set_border_width_all(2)
-	normal.set_corner_radius_all(6)
-	normal.set_content_margin_all(6)
-	btn.add_theme_stylebox_override("normal", normal)
-
-	var hover := normal.duplicate() as StyleBoxFlat
-	hover.bg_color = Color(0.2, 0.2, 0.28, 0.95)
-	hover.border_color = Color(0.9, 0.8, 0.4)
-	btn.add_theme_stylebox_override("hover", hover)
-
-	btn.add_theme_font_size_override("font_size", 14)
-	btn.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	UIStyler.style_button(btn, 14, 6)

@@ -29,15 +29,22 @@ func get_proficiency_bonus(level: int) -> int:
 
 
 ## Returns all features gained at the given level.
-func get_features(level: int) -> Array[Dictionary]:
+func get_features(level: int) -> Array[ClassFeature]:
 	for entry in levels:
 		if entry.get("level", 0) == level:
 			var raw_features = entry.get("features", [])
-			var results: Array[Dictionary] = []
+			var results: Array[ClassFeature] = []
 			for feature in raw_features:
-				results.append(feature)
+				if feature is ClassFeature:
+					results.append(feature)
+				elif feature is Dictionary:
+					var cf := ClassFeature.new()
+					cf.level = feature.get("level", level)
+					cf.name = feature.get("name", "")
+					cf.description = feature.get("description", "")
+					results.append(cf)
 			return results
-	return [] as Array[Dictionary]
+	return [] as Array[ClassFeature]
 
 
 ## Returns the spell slots available at the given level as an array of 9 ints

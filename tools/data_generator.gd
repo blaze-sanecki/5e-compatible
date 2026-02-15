@@ -25,6 +25,14 @@ func _save(resource: Resource, path: String) -> void:
 		print("  Saved: %s" % path)
 
 
+static func _cf(lvl: int, n: String, desc: String) -> ClassFeature:
+	var f := ClassFeature.new()
+	f.level = lvl
+	f.name = n
+	f.description = desc
+	return f
+
+
 # ===========================================================================
 # Feats
 # ===========================================================================
@@ -98,12 +106,12 @@ func _generate_classes() -> void:
 	fighter.is_spellcaster = false
 	fighter.subclass_level = 3
 	fighter.class_features = [
-		{"level": 1, "name": "Fighting Style", "description": "You adopt a particular style of fighting as your specialty."},
-		{"level": 1, "name": "Second Wind", "description": "You have a limited well of stamina. On your turn, you can use a Bonus Action to regain hit points equal to 1d10 + your Fighter level. Once you use this feature, you must finish a Short or Long Rest before you can use it again."},
-		{"level": 2, "name": "Action Surge", "description": "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action. Once you use this feature, you must finish a Short or Long Rest before you can use it again."},
-		{"level": 3, "name": "Subclass", "description": "Choose a martial archetype that you strive to emulate in your combat styles and techniques."},
-		{"level": 4, "name": "Ability Score Improvement", "description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."},
-		{"level": 5, "name": "Extra Attack", "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."},
+		_cf(1, "Fighting Style", "You adopt a particular style of fighting as your specialty."),
+		_cf(1, "Second Wind", "You have a limited well of stamina. On your turn, you can use a Bonus Action to regain hit points equal to 1d10 + your Fighter level. Once you use this feature, you must finish a Short or Long Rest before you can use it again."),
+		_cf(2, "Action Surge", "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action. Once you use this feature, you must finish a Short or Long Rest before you can use it again."),
+		_cf(3, "Subclass", "Choose a martial archetype that you strive to emulate in your combat styles and techniques."),
+		_cf(4, "Ability Score Improvement", "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."),
+		_cf(5, "Extra Attack", "You can attack twice, instead of once, whenever you take the Attack action on your turn."),
 	]
 	_save(fighter, "res://data/classes/fighter.tres")
 
@@ -124,12 +132,12 @@ func _generate_classes() -> void:
 	wizard.is_spellcaster = true
 	wizard.subclass_level = 2
 	wizard.class_features = [
-		{"level": 1, "name": "Spellcasting", "description": "As a student of arcane magic, you have a spellbook containing spells that show the first glimmerings of your true power. You know three cantrips and have a spellbook with six 1st-level wizard spells."},
-		{"level": 1, "name": "Arcane Recovery", "description": "Once per day when you finish a Short Rest, you can recover expended spell slots with a combined level equal to or less than half your wizard level (rounded up)."},
-		{"level": 2, "name": "Subclass", "description": "Choose an arcane tradition that shapes your practice of magic."},
-		{"level": 3, "name": "Cantrip Formulas", "description": "You have scribed a set of arcane formulas in your spellbook that you can use to formulate a cantrip in your mind."},
-		{"level": 4, "name": "Ability Score Improvement", "description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."},
-		{"level": 5, "name": "Memorize Spell", "description": "You can prepare one additional spell from your spellbook."},
+		_cf(1, "Spellcasting", "As a student of arcane magic, you have a spellbook containing spells that show the first glimmerings of your true power. You know three cantrips and have a spellbook with six 1st-level wizard spells."),
+		_cf(1, "Arcane Recovery", "Once per day when you finish a Short Rest, you can recover expended spell slots with a combined level equal to or less than half your wizard level (rounded up)."),
+		_cf(2, "Subclass", "Choose an arcane tradition that shapes your practice of magic."),
+		_cf(3, "Cantrip Formulas", "You have scribed a set of arcane formulas in your spellbook that you can use to formulate a cantrip in your mind."),
+		_cf(4, "Ability Score Improvement", "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."),
+		_cf(5, "Memorize Spell", "You can prepare one additional spell from your spellbook."),
 	]
 	_save(wizard, "res://data/classes/wizard.tres")
 
@@ -149,14 +157,14 @@ func _generate_classes() -> void:
 	rogue.is_spellcaster = false
 	rogue.subclass_level = 3
 	rogue.class_features = [
-		{"level": 1, "name": "Expertise", "description": "Choose two of your skill proficiencies or one skill proficiency and Thieves' Tools. Your proficiency bonus is doubled for any ability check you make with the chosen proficiencies."},
-		{"level": 1, "name": "Sneak Attack", "description": "Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The extra damage increases as you gain levels. The attack must use a finesse or a ranged weapon."},
-		{"level": 1, "name": "Thieves' Cant", "description": "You have learned thieves' cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation."},
-		{"level": 2, "name": "Cunning Action", "description": "You can take a Bonus Action on each of your turns in combat to Dash, Disengage, or Hide."},
-		{"level": 3, "name": "Subclass", "description": "Choose a roguish archetype that you emulate in your activities."},
-		{"level": 3, "name": "Steady Aim", "description": "As a Bonus Action, you give yourself advantage on your next attack roll on the current turn if you haven't moved during this turn."},
-		{"level": 4, "name": "Ability Score Improvement", "description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."},
-		{"level": 5, "name": "Uncanny Dodge", "description": "When an attacker that you can see hits you with an attack, you can use your Reaction to halve the attack's damage against you."},
+		_cf(1, "Expertise", "Choose two of your skill proficiencies or one skill proficiency and Thieves' Tools. Your proficiency bonus is doubled for any ability check you make with the chosen proficiencies."),
+		_cf(1, "Sneak Attack", "Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The extra damage increases as you gain levels. The attack must use a finesse or a ranged weapon."),
+		_cf(1, "Thieves' Cant", "You have learned thieves' cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation."),
+		_cf(2, "Cunning Action", "You can take a Bonus Action on each of your turns in combat to Dash, Disengage, or Hide."),
+		_cf(3, "Subclass", "Choose a roguish archetype that you emulate in your activities."),
+		_cf(3, "Steady Aim", "As a Bonus Action, you give yourself advantage on your next attack roll on the current turn if you haven't moved during this turn."),
+		_cf(4, "Ability Score Improvement", "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."),
+		_cf(5, "Uncanny Dodge", "When an attacker that you can see hits you with an attack, you can use your Reaction to halve the attack's damage against you."),
 	]
 	_save(rogue, "res://data/classes/rogue.tres")
 
@@ -177,12 +185,12 @@ func _generate_classes() -> void:
 	cleric.is_spellcaster = true
 	cleric.subclass_level = 1
 	cleric.class_features = [
-		{"level": 1, "name": "Spellcasting", "description": "As a conduit for divine power, you can cast cleric spells. You know three cantrips and can prepare a number of spells equal to your Wisdom modifier + your Cleric level."},
-		{"level": 1, "name": "Divine Domain", "description": "Choose one domain related to your deity. Your domain grants you additional spells and features."},
-		{"level": 2, "name": "Channel Divinity", "description": "You gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with Turn Undead and one effect determined by your domain. You can use Channel Divinity once between rests."},
-		{"level": 2, "name": "Turn Undead", "description": "As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead within 30 feet that can see or hear you must make a Wisdom saving throw or be turned for 1 minute."},
-		{"level": 4, "name": "Ability Score Improvement", "description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."},
-		{"level": 5, "name": "Destroy Undead", "description": "When an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below 1/2."},
+		_cf(1, "Spellcasting", "As a conduit for divine power, you can cast cleric spells. You know three cantrips and can prepare a number of spells equal to your Wisdom modifier + your Cleric level."),
+		_cf(1, "Divine Domain", "Choose one domain related to your deity. Your domain grants you additional spells and features."),
+		_cf(2, "Channel Divinity", "You gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with Turn Undead and one effect determined by your domain. You can use Channel Divinity once between rests."),
+		_cf(2, "Turn Undead", "As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead within 30 feet that can see or hear you must make a Wisdom saving throw or be turned for 1 minute."),
+		_cf(4, "Ability Score Improvement", "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."),
+		_cf(5, "Destroy Undead", "When an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below 1/2."),
 	]
 	_save(cleric, "res://data/classes/cleric.tres")
 

@@ -1,20 +1,27 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_qbdbc"]
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_xonrg"]
+
+[sub_resource type="Resource" id="Resource_lil4l"]
+script = ExtResource("1_xonrg")
+type = &"advantage"
+on = &"attack_rolls"
+
+[sub_resource type="Resource" id="Resource_c2bio"]
+script = ExtResource("1_xonrg")
+type = &"disadvantage"
+on = &"attack_rolls_against"
+
+[sub_resource type="Resource" id="Resource_80652"]
+script = ExtResource("1_xonrg")
+type = &"unseen"
+on = &"sight"
 
 [resource]
 script = ExtResource("1_qbdbc")
 id = &"invisible"
 display_name = "Invisible"
 description = "An invisible creature is impossible to see without the aid of magic or a special sense. The creature's attack rolls have advantage, and attack rolls against the creature have disadvantage."
-effects = Array[Dictionary]([{
-"on": "attack_rolls",
-"type": "advantage"
-}, {
-"on": "attack_rolls_against",
-"type": "disadvantage"
-}, {
-"on": "sight",
-"type": "unseen"
-}])
+effects = Array[ExtResource("1_xonrg")]([SubResource("Resource_lil4l"), SubResource("Resource_c2bio"), SubResource("Resource_80652")])
 ends_on = &"custom"

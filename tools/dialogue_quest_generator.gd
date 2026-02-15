@@ -3,6 +3,75 @@
 extends Node
 
 
+# ---------------------------------------------------------------------------
+# DialogueEvent helpers
+# ---------------------------------------------------------------------------
+
+static func _evt_quest(qid: StringName) -> DialogueEvent:
+	var e := DialogueEvent.new()
+	e.type = &"start_quest"
+	e.quest_id = qid
+	return e
+
+
+static func _evt_item(iid: StringName, qty: int = 1) -> DialogueEvent:
+	var e := DialogueEvent.new()
+	e.type = &"give_item"
+	e.item_id = iid
+	e.quantity = qty
+	return e
+
+
+static func _evt_flag(f: String, v: bool = true) -> DialogueEvent:
+	var e := DialogueEvent.new()
+	e.type = &"set_flag"
+	e.flag = f
+	e.value = v
+	return e
+
+
+static func _evt_combat(encounter_id: StringName) -> DialogueEvent:
+	var e := DialogueEvent.new()
+	e.type = &"start_combat"
+	e.quest_id = encounter_id
+	return e
+
+
+static func _evt_advance(qid: StringName, objective_id: StringName) -> DialogueEvent:
+	var e := DialogueEvent.new()
+	e.type = &"advance_objective"
+	e.quest_id = qid
+	e.item_id = objective_id
+	return e
+
+
+# ---------------------------------------------------------------------------
+# DialogueCondition helpers
+# ---------------------------------------------------------------------------
+
+static func _cond_skill(s: StringName, d: int, fail_id: StringName = &"") -> DialogueCondition:
+	var c := DialogueCondition.new()
+	c.type = &"skill_check"
+	c.skill = s
+	c.dc = d
+	c.fail_node_id = fail_id
+	return c
+
+
+static func _cond_quest(qid: StringName) -> DialogueCondition:
+	var c := DialogueCondition.new()
+	c.type = &"quest_complete"
+	c.quest_id = qid
+	return c
+
+
+static func _cond_not_flag(f: String) -> DialogueCondition:
+	var c := DialogueCondition.new()
+	c.type = &"not_flag"
+	c.flag = f
+	return c
+
+
 func _ready() -> void:
 	print("=== Dialogue & Quest Data Generator ===")
 	_generate_items()
@@ -88,7 +157,7 @@ func _generate_elder_maren() -> void:
 	var c1 := DialogueChoice.new()
 	c1.text = "I'll help clear the goblin den."
 	c1.next_node_id = &"accept_quest"
-	c1.events = [{"type": "start_quest", "quest_id": "clear_goblin_den"}]
+	c1.events = [_evt_quest(&"clear_goblin_den")]
 
 	var c2 := DialogueChoice.new()
 	c2.text = "What's in it for me?"
@@ -109,12 +178,12 @@ func _generate_elder_maren() -> void:
 	var c_persuade := DialogueChoice.new()
 	c_persuade.text = "I think this job is worth more."
 	c_persuade.next_node_id = &"persuade_success"
-	c_persuade.conditions = [{"type": "skill_check", "skill": "persuasion", "dc": 12, "fail_node_id": "persuade_fail"}]
+	c_persuade.conditions = [_cond_skill(&"persuasion", 12, &"persuade_fail")]
 
 	var c_accept := DialogueChoice.new()
 	c_accept.text = "100 gold is fair. I'll do it."
 	c_accept.next_node_id = &"accept_quest"
-	c_accept.events = [{"type": "start_quest", "quest_id": "clear_goblin_den"}]
+	c_accept.events = [_evt_quest(&"clear_goblin_den")]
 
 	negotiate.choices = [c_persuade, c_accept]
 
@@ -124,9 +193,7 @@ func _generate_elder_maren() -> void:
 	persuade_success.speaker = "Elder Maren"
 	persuade_success.text = "You drive a hard bargain, but you're right — this is dangerous work. 150 gold and a healing potion. Deal?"
 	persuade_success.next_node_id = &"accept_quest_bonus"
-	persuade_success.events = [
-		{"type": "set_flag", "flag": "maren_bonus_reward", "value": true},
-	]
+	persuade_success.events = [_evt_flag("maren_bonus_reward")]
 
 	# --- Node: persuade_fail ---
 	var persuade_fail := DialogueNode.new()
@@ -137,7 +204,7 @@ func _generate_elder_maren() -> void:
 	var c_ok := DialogueChoice.new()
 	c_ok.text = "Fine, I'll take the job."
 	c_ok.next_node_id = &"accept_quest"
-	c_ok.events = [{"type": "start_quest", "quest_id": "clear_goblin_den"}]
+	c_ok.events = [_evt_quest(&"clear_goblin_den")]
 
 	var c_no := DialogueChoice.new()
 	c_no.text = "I need to think about it."
@@ -159,8 +226,8 @@ func _generate_elder_maren() -> void:
 	accept_bonus.text = "Excellent! Here, take this potion for the road. The goblin den is to the north. Good luck!"
 	accept_bonus.is_end = true
 	accept_bonus.events = [
-		{"type": "start_quest", "quest_id": "clear_goblin_den"},
-		{"type": "give_item", "item_id": "health_potion", "quantity": 1},
+		_evt_quest(&"clear_goblin_den"),
+		_evt_item(&"health_potion"),
 	]
 
 	# --- Node: refuse ---
@@ -188,15 +255,16 @@ func _generate_elder_maren() -> void:
 	var c_post := DialogueChoice.new()
 	c_post.text = "(Quest complete greeting)"
 	c_post.next_node_id = &"post_quest"
-	c_post.visible_conditions = [{"type": "quest_complete", "quest_id": "clear_goblin_den"}]
+	c_post.visible_conditions = [_cond_quest(&"clear_goblin_den")]
 
 	# Add post-quest option to top of greeting choices.
 	greeting.choices = [c_post, c1, c2, c3]
 
 	# Hide the regular choices if quest is already complete.
-	c1.visible_conditions = [{"type": "not_flag", "flag": "quest_complete_clear_goblin_den"}]
-	c2.visible_conditions = [{"type": "not_flag", "flag": "quest_complete_clear_goblin_den"}]
-	c3.visible_conditions = [{"type": "not_flag", "flag": "quest_complete_clear_goblin_den"}]
+	var _hide_after_quest: Array[DialogueCondition] = [_cond_not_flag("quest_complete_clear_goblin_den")]
+	c1.visible_conditions = _hide_after_quest
+	c2.visible_conditions = _hide_after_quest
+	c3.visible_conditions = _hide_after_quest
 
 	tree.nodes = [greeting, negotiate, persuade_success, persuade_fail, accept, accept_bonus, refuse, maybe_later, post_quest]
 	_save(tree, "res://data/dialogue/elder_maren.tres")
@@ -237,7 +305,7 @@ func _generate_merchant_tomas() -> void:
 	var c_accept := DialogueChoice.new()
 	c_accept.text = "I'll find your goods."
 	c_accept.next_node_id = &"quest_accepted"
-	c_accept.events = [{"type": "start_quest", "quest_id": "merchants_lost_goods"}]
+	c_accept.events = [_evt_quest(&"merchants_lost_goods")]
 
 	var c_decline := DialogueChoice.new()
 	c_decline.text = "Sorry, too busy right now."
@@ -268,7 +336,7 @@ func _generate_merchant_tomas() -> void:
 	var c_haggle := DialogueChoice.new()
 	c_haggle.text = "Surely you can offer a discount?"
 	c_haggle.next_node_id = &"discount_success"
-	c_haggle.conditions = [{"type": "skill_check", "skill": "deception", "dc": 14, "fail_node_id": "discount_fail"}]
+	c_haggle.conditions = [_cond_skill(&"deception", 14, &"discount_fail")]
 
 	var c_buy := DialogueChoice.new()
 	c_buy.text = "I'll take a potion at full price."
@@ -282,7 +350,7 @@ func _generate_merchant_tomas() -> void:
 	discount_success.speaker = "Merchant Tomas"
 	discount_success.text = "Well... I suppose I can part with one for free. You look like someone who'll spread the word about my shop."
 	discount_success.is_end = true
-	discount_success.events = [{"type": "give_item", "item_id": "health_potion", "quantity": 1}]
+	discount_success.events = [_evt_item(&"health_potion")]
 
 	# --- Node: discount_fail ---
 	var discount_fail := DialogueNode.new()
@@ -297,7 +365,7 @@ func _generate_merchant_tomas() -> void:
 	buy_potion.speaker = "Merchant Tomas"
 	buy_potion.text = "Here you go! One Potion of Healing. Stay safe out there."
 	buy_potion.is_end = true
-	buy_potion.events = [{"type": "give_item", "item_id": "health_potion", "quantity": 1}]
+	buy_potion.events = [_evt_item(&"health_potion")]
 
 	# --- Node: rumors ---
 	var rumors := DialogueNode.new()
@@ -325,7 +393,7 @@ func _generate_goblin_chief() -> void:
 	var c1 := DialogueChoice.new()
 	c1.text = "Leave this place or face my wrath."
 	c1.next_node_id = &"intimidate_success"
-	c1.conditions = [{"type": "skill_check", "skill": "intimidation", "dc": 15, "fail_node_id": "intimidate_fail"}]
+	c1.conditions = [_cond_skill(&"intimidation", 15, &"intimidate_fail")]
 
 	var c2 := DialogueChoice.new()
 	c2.text = "We can settle this peacefully."
@@ -344,8 +412,8 @@ func _generate_goblin_chief() -> void:
 	intimidate_success.text = "G-Grak... Grak doesn't want to die. Fine! Grak will leave. Take whatever you want."
 	intimidate_success.is_end = true
 	intimidate_success.events = [
-		{"type": "set_flag", "flag": "goblin_chief_fled", "value": true},
-		{"type": "advance_objective", "quest_id": "clear_goblin_den", "objective_id": "talk_chief"},
+		_evt_flag("goblin_chief_fled"),
+		_evt_advance(&"clear_goblin_den", &"talk_chief"),
 	]
 
 	# --- Node: intimidate_fail ---
@@ -355,8 +423,8 @@ func _generate_goblin_chief() -> void:
 	intimidate_fail.text = "Ha! You don't scare Grak! GRAK SMASH!"
 	intimidate_fail.is_end = true
 	intimidate_fail.events = [
-		{"type": "set_flag", "flag": "goblin_chief_hostile", "value": true},
-		{"type": "start_combat", "encounter_id": "test_goblin_ambush"},
+		_evt_flag("goblin_chief_hostile"),
+		_evt_combat(&"test_goblin_ambush"),
 	]
 
 	# --- Node: diplomacy ---
@@ -373,8 +441,8 @@ func _generate_goblin_chief() -> void:
 	fight.text = "GRAK KNEW IT! ATTACK!"
 	fight.is_end = true
 	fight.events = [
-		{"type": "set_flag", "flag": "goblin_chief_hostile", "value": true},
-		{"type": "start_combat", "encounter_id": "test_goblin_ambush"},
+		_evt_flag("goblin_chief_hostile"),
+		_evt_combat(&"test_goblin_ambush"),
 	]
 
 	tree.nodes = [greeting, intimidate_success, intimidate_fail, diplomacy, fight]

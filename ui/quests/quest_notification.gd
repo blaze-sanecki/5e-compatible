@@ -20,7 +20,7 @@ func _ready() -> void:
 func _on_quest_started(quest_id: StringName) -> void:
 	var quest: QuestData = DataRegistry.get_quest(quest_id)
 	if quest:
-		_show_toast("New Quest: %s" % quest.display_name, Color(0.9, 0.8, 0.3))
+		_show_toast("New Quest: %s" % quest.display_name, UITheme.COLOR_TITLE)
 
 
 func _on_quest_completed(quest_id: StringName) -> void:
@@ -33,7 +33,7 @@ func _on_quest_completed(quest_id: StringName) -> void:
 	if quest == null:
 		quest = DataRegistry.get_quest(quest_id)
 	if quest:
-		_show_toast("Quest Complete: %s" % quest.display_name, Color(0.4, 0.9, 0.4))
+		_show_toast("Quest Complete: %s" % quest.display_name, UITheme.COLOR_SUCCESS)
 
 
 func _on_objective_updated(quest_id: StringName, objective_id: StringName) -> void:
@@ -42,7 +42,7 @@ func _on_objective_updated(quest_id: StringName, objective_id: StringName) -> vo
 		return
 	for obj in quest.objectives:
 		if obj is QuestObjective and obj.id == objective_id:
-			_show_toast("Objective: %s (%d/%d)" % [obj.description, obj.current_count, obj.required_count], Color(0.7, 0.7, 0.9))
+			_show_toast("Objective: %s (%d/%d)" % [obj.description, obj.current_count, obj.required_count], UITheme.COLOR_QUEST_OBJECTIVE)
 			return
 
 

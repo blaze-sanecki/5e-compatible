@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="MonsterData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="MonsterData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://resources/character/ability_scores.gd" id="1_xi5ur"]
 [ext_resource type="Script" path="res://resources/monsters/monster_data.gd" id="2_kb2kk"]
+[ext_resource type="Script" path="res://resources/monsters/monster_action.gd" id="2_olpbm"]
+[ext_resource type="Script" path="res://resources/monsters/monster_trait.gd" id="4_ig4w8"]
 
-[sub_resource type="Resource" id="Resource_olpbm"]
+[sub_resource type="Resource" id="Resource_x4twk"]
 script = ExtResource("1_xi5ur")
 strength = 19
 dexterity = 8
@@ -11,6 +13,26 @@ constitution = 16
 intelligence = 5
 wisdom = 7
 charisma = 7
+
+[sub_resource type="Resource" id="Resource_aqcup"]
+script = ExtResource("2_olpbm")
+name = "Greatclub"
+type = &"melee_attack"
+attack_bonus = 6
+damage = "2d8+4"
+damage_type = &"bludgeoning"
+description = "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."
+
+[sub_resource type="Resource" id="Resource_8gqpd"]
+script = ExtResource("2_olpbm")
+name = "Javelin"
+type = &"ranged_attack"
+attack_bonus = 6
+range_normal = 30
+range_long = 120
+damage = "2d6+4"
+damage_type = &"piercing"
+description = "Ranged Weapon Attack: +6 to hit, range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage."
 
 [resource]
 script = ExtResource("2_kb2kk")
@@ -27,7 +49,7 @@ hit_dice = "7d10+21"
 speed = {
 "walk": 40
 }
-ability_scores = SubResource("Resource_olpbm")
+ability_scores = SubResource("Resource_x4twk")
 senses = {
 "darkvision": 60,
 "passive_perception": 8
@@ -35,21 +57,4 @@ senses = {
 languages = Array[StringName]([&"common", &"giant"])
 challenge_rating = 2.0
 xp_reward = 450
-actions = Array[Dictionary]([{
-"attack_bonus": 6,
-"damage": "2d8+4",
-"damage_type": "bludgeoning",
-"description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
-"name": "Greatclub",
-"reach": 5,
-"type": "melee_attack"
-}, {
-"attack_bonus": 6,
-"damage": "2d6+4",
-"damage_type": "piercing",
-"description": "Ranged Weapon Attack: +6 to hit, range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage.",
-"name": "Javelin",
-"range_long": 120,
-"range_normal": 30,
-"type": "ranged_attack"
-}])
+actions = Array[ExtResource("2_olpbm")]([SubResource("Resource_aqcup"), SubResource("Resource_8gqpd")])

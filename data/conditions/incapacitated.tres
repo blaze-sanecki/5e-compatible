@@ -1,17 +1,22 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_8es3u"]
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_eaw4y"]
+
+[sub_resource type="Resource" id="Resource_ht82c"]
+script = ExtResource("1_eaw4y")
+type = &"cant_act"
+on = &"actions"
+
+[sub_resource type="Resource" id="Resource_lpebm"]
+script = ExtResource("1_eaw4y")
+type = &"cant_act"
+on = &"reactions"
 
 [resource]
 script = ExtResource("1_8es3u")
 id = &"incapacitated"
 display_name = "Incapacitated"
 description = "An incapacitated creature can't take actions or reactions."
-effects = Array[Dictionary]([{
-"on": "actions",
-"type": "cant_act"
-}, {
-"on": "reactions",
-"type": "cant_act"
-}])
+effects = Array[ExtResource("1_eaw4y")]([SubResource("Resource_ht82c"), SubResource("Resource_lpebm")])
 ends_on = &"never"

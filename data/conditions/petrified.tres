@@ -1,32 +1,46 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_8g7cq"]
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_t6uor"]
+
+[sub_resource type="Resource" id="Resource_iyjtb"]
+script = ExtResource("1_t6uor")
+type = &"incapacitated"
+on = &"all"
+
+[sub_resource type="Resource" id="Resource_ulbis"]
+script = ExtResource("1_t6uor")
+type = &"speed"
+
+[sub_resource type="Resource" id="Resource_51nnb"]
+script = ExtResource("1_t6uor")
+type = &"auto_fail"
+on = &"strength_saves"
+
+[sub_resource type="Resource" id="Resource_yqt8w"]
+script = ExtResource("1_t6uor")
+type = &"auto_fail"
+on = &"dexterity_saves"
+
+[sub_resource type="Resource" id="Resource_0pbcw"]
+script = ExtResource("1_t6uor")
+type = &"advantage"
+on = &"attack_rolls_against"
+
+[sub_resource type="Resource" id="Resource_gb3lk"]
+script = ExtResource("1_t6uor")
+type = &"resistance"
+on = &"all_damage"
+
+[sub_resource type="Resource" id="Resource_u2ro4"]
+script = ExtResource("1_t6uor")
+type = &"immunity"
+on = &"poison"
 
 [resource]
 script = ExtResource("1_8g7cq")
 id = &"petrified"
 display_name = "Petrified"
 description = "A petrified creature is transformed into a solid inanimate substance. It is incapacitated, can't move or speak, and is unaware of its surroundings. Attack rolls against it have advantage. It automatically fails Strength and Dexterity saves. It has resistance to all damage and is immune to poison and disease."
-effects = Array[Dictionary]([{
-"on": "all",
-"type": "incapacitated"
-}, {
-"type": "speed",
-"value": 0
-}, {
-"on": "strength_saves",
-"type": "auto_fail"
-}, {
-"on": "dexterity_saves",
-"type": "auto_fail"
-}, {
-"on": "attack_rolls_against",
-"type": "advantage"
-}, {
-"on": "all_damage",
-"type": "resistance"
-}, {
-"on": "poison",
-"type": "immunity"
-}])
+effects = Array[ExtResource("1_t6uor")]([SubResource("Resource_iyjtb"), SubResource("Resource_ulbis"), SubResource("Resource_51nnb"), SubResource("Resource_yqt8w"), SubResource("Resource_0pbcw"), SubResource("Resource_gb3lk"), SubResource("Resource_u2ro4")])
 ends_on = &"never"

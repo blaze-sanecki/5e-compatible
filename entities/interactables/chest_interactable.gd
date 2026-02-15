@@ -6,8 +6,10 @@ extends InteractableBase
 ## Uses the loot_table from InteractableData. Each entry has an item_id,
 ## quantity, and chance. Items are added via InventorySystem.
 
-## Whether the chest has already been looted.
-var is_looted: bool = false
+## Whether the chest has already been looted (delegates to state).
+var is_looted: bool:
+	get: return state.is_looted
+	set(v): state.is_looted = v
 
 
 func _perform_interaction() -> void:
@@ -15,12 +17,8 @@ func _perform_interaction() -> void:
 		print("Chest is already empty.")
 		return
 
-	is_looted = true
-
-	# Update visual — dim the chest to show it's been opened.
-	var sprite: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
-	if sprite:
-		sprite.modulate = Color(0.5, 0.5, 0.5, 0.7)
+	state.set_looted()
+	_update_visual()
 
 	if interactable_data:
 		interactable_data.is_used = true
@@ -32,6 +30,13 @@ func _perform_interaction() -> void:
 	_generate_loot()
 
 
+## Apply visual state for the current looted status.
+func _update_visual() -> void:
+	var sprite: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
+	if sprite:
+		sprite.modulate = Color(0.5, 0.5, 0.5, 0.7) if is_looted else Color.WHITE
+
+
 func _generate_loot() -> void:
 	if interactable_data == null:
 		return
@@ -39,9 +44,9 @@ func _generate_loot() -> void:
 	var character: Resource = PartyManager.get_active_character()
 
 	for entry in interactable_data.loot_table:
-		var item_id: StringName = entry.get("item_id", &"")
-		var quantity: int = entry.get("quantity", 1)
-		var chance: float = entry.get("chance", 1.0)
+		var item_id: StringName = entry.item_id
+		var quantity: int = entry.quantity
+		var chance: float = entry.chance
 
 		if item_id == &"":
 			continue

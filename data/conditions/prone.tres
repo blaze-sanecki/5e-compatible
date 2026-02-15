@@ -1,23 +1,32 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_28ppb"]
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_81js2"]
+
+[sub_resource type="Resource" id="Resource_lr7wf"]
+script = ExtResource("1_81js2")
+type = &"disadvantage"
+on = &"attack_rolls"
+
+[sub_resource type="Resource" id="Resource_18cv3"]
+script = ExtResource("1_81js2")
+type = &"advantage"
+on = &"melee_attacks_against"
+
+[sub_resource type="Resource" id="Resource_4rk3l"]
+script = ExtResource("1_81js2")
+type = &"disadvantage"
+on = &"ranged_attacks_against"
+
+[sub_resource type="Resource" id="Resource_jpwvp"]
+script = ExtResource("1_81js2")
+type = &"movement_cost"
+value = 2
 
 [resource]
 script = ExtResource("1_28ppb")
 id = &"prone"
 display_name = "Prone"
 description = "A prone creature's only movement option is to crawl (half speed) unless it stands up. The creature has disadvantage on attack rolls. An attack roll against the creature has advantage if the attacker is within 5 feet; otherwise, the attack roll has disadvantage."
-effects = Array[Dictionary]([{
-"on": "attack_rolls",
-"type": "disadvantage"
-}, {
-"on": "melee_attacks_against",
-"type": "advantage"
-}, {
-"on": "ranged_attacks_against",
-"type": "disadvantage"
-}, {
-"type": "movement_cost",
-"value": 2
-}])
+effects = Array[ExtResource("1_81js2")]([SubResource("Resource_lr7wf"), SubResource("Resource_18cv3"), SubResource("Resource_4rk3l"), SubResource("Resource_jpwvp")])
 ends_on = &"custom"

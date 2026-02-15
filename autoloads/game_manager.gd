@@ -140,14 +140,11 @@ func get_time_string() -> String:
 ## appropriate signals.
 func short_rest() -> void:
 	EventBus.rest_started.emit(&"short")
-
-	# Advance the clock by 1 hour.
 	advance_time(60)
 
-	# Allow each party member to spend hit dice (handled by listeners).
 	for member in PartyManager.party:
-		if member.has_method("on_short_rest"):
-			member.on_short_rest()
+		if member is CharacterData:
+			RestSystem.short_rest(member as CharacterData)
 
 	EventBus.rest_completed.emit(&"short")
 
@@ -158,16 +155,10 @@ func short_rest() -> void:
 ## of the character's total Hit Dice (minimum 1).
 func long_rest() -> void:
 	EventBus.rest_started.emit(&"long")
-
-	# Advance the clock by 8 hours.
 	advance_time(480)
 
 	for member in PartyManager.party:
-		if member.has_method("on_long_rest"):
-			member.on_long_rest()
-		else:
-			# Fallback: restore hit points to max if the method is missing.
-			if member.get("current_hp") != null and member.get("max_hp") != null:
-				member.current_hp = member.max_hp
+		if member is CharacterData:
+			RestSystem.long_rest(member as CharacterData)
 
 	EventBus.rest_completed.emit(&"long")

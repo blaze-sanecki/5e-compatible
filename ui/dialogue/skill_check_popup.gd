@@ -60,13 +60,8 @@ func _build_ui() -> void:
 	_panel.offset_top = 0
 	_panel.offset_bottom = 0
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.15, 0.1, 0.2, 0.95)
-	style.border_color = Color(0.7, 0.6, 0.3, 1.0)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(16)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
+		Color(0.15, 0.1, 0.2, 0.95), Color(0.7, 0.6, 0.3)))
 
 	_label = Label.new()
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

@@ -51,9 +51,8 @@ func _on_class_selected(index: int) -> void:
 
 	text += "\n[b]Features (Levels 1-5):[/b]\n"
 	for feature in cls.class_features:
-		var lvl: int = feature.get("level", 0)
-		if lvl <= 5:
-			text += "  Level %d — %s: %s\n" % [lvl, feature.get("name", ""), feature.get("description", "")]
+		if feature.level <= 5:
+			text += "  Level %d — %s: %s\n" % [feature.level, feature.name, feature.description]
 
 	details_label.text = text
 

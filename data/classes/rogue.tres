@@ -1,6 +1,52 @@
-[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ClassData" load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_7ph07"]
+[ext_resource type="Script" path="res://resources/character/class_feature.gd" id="1_qgxf2"]
+
+[sub_resource type="Resource" id="Resource_51p68"]
+script = ExtResource("1_qgxf2")
+name = "Expertise"
+description = "Choose two of your skill proficiencies or one skill proficiency and Thieves' Tools. Your proficiency bonus is doubled for any ability check you make with the chosen proficiencies."
+
+[sub_resource type="Resource" id="Resource_l0n1y"]
+script = ExtResource("1_qgxf2")
+name = "Sneak Attack"
+description = "Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The extra damage increases as you gain levels. The attack must use a finesse or a ranged weapon."
+
+[sub_resource type="Resource" id="Resource_07stm"]
+script = ExtResource("1_qgxf2")
+name = "Thieves' Cant"
+description = "You have learned thieves' cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation."
+
+[sub_resource type="Resource" id="Resource_cjm6j"]
+script = ExtResource("1_qgxf2")
+level = 2
+name = "Cunning Action"
+description = "You can take a Bonus Action on each of your turns in combat to Dash, Disengage, or Hide."
+
+[sub_resource type="Resource" id="Resource_ewcr0"]
+script = ExtResource("1_qgxf2")
+level = 3
+name = "Subclass"
+description = "Choose a roguish archetype that you emulate in your activities."
+
+[sub_resource type="Resource" id="Resource_umsnw"]
+script = ExtResource("1_qgxf2")
+level = 3
+name = "Steady Aim"
+description = "As a Bonus Action, you give yourself advantage on your next attack roll on the current turn if you haven't moved during this turn."
+
+[sub_resource type="Resource" id="Resource_npi5h"]
+script = ExtResource("1_qgxf2")
+level = 4
+name = "Ability Score Improvement"
+description = "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."
+
+[sub_resource type="Resource" id="Resource_yqwkw"]
+script = ExtResource("1_qgxf2")
+level = 5
+name = "Uncanny Dodge"
+description = "When an attacker that you can see hits you with an attack, you can use your Reaction to halve the attack's damage against you."
 
 [resource]
 script = ExtResource("1_7ph07")
@@ -14,36 +60,4 @@ weapon_proficiencies = Array[StringName]([&"simple", &"hand_crossbow", &"longswo
 skill_choices = Array[StringName]([&"acrobatics", &"athletics", &"deception", &"insight", &"intimidation", &"investigation", &"perception", &"performance", &"persuasion", &"sleight_of_hand", &"stealth"])
 num_skill_choices = 4
 starting_equipment_options = Array[String](["Rapier or Shortsword", "Shortbow and 20 arrows or Shortsword", "Burglar's Pack, Dungeoneer's Pack, or Explorer's Pack", "Leather Armor, two Daggers, and Thieves' Tools"])
-class_features = Array[Dictionary]([{
-"description": "Choose two of your skill proficiencies or one skill proficiency and Thieves' Tools. Your proficiency bonus is doubled for any ability check you make with the chosen proficiencies.",
-"level": 1,
-"name": "Expertise"
-}, {
-"description": "Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The extra damage increases as you gain levels. The attack must use a finesse or a ranged weapon.",
-"level": 1,
-"name": "Sneak Attack"
-}, {
-"description": "You have learned thieves' cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation.",
-"level": 1,
-"name": "Thieves' Cant"
-}, {
-"description": "You can take a Bonus Action on each of your turns in combat to Dash, Disengage, or Hide.",
-"level": 2,
-"name": "Cunning Action"
-}, {
-"description": "Choose a roguish archetype that you emulate in your activities.",
-"level": 3,
-"name": "Subclass"
-}, {
-"description": "As a Bonus Action, you give yourself advantage on your next attack roll on the current turn if you haven't moved during this turn.",
-"level": 3,
-"name": "Steady Aim"
-}, {
-"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
-"level": 4,
-"name": "Ability Score Improvement"
-}, {
-"description": "When an attacker that you can see hits you with an attack, you can use your Reaction to halve the attack's damage against you.",
-"level": 5,
-"name": "Uncanny Dodge"
-}])
+class_features = Array[ExtResource("1_qgxf2")]([SubResource("Resource_51p68"), SubResource("Resource_l0n1y"), SubResource("Resource_07stm"), SubResource("Resource_cjm6j"), SubResource("Resource_ewcr0"), SubResource("Resource_umsnw"), SubResource("Resource_npi5h"), SubResource("Resource_yqwkw")])

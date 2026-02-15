@@ -8,13 +8,8 @@ var _rich_label: RichTextLabel
 
 func _ready() -> void:
 	# Style the panel.
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.08, 0.12, 0.85)
-	style.border_color = Color(0.3, 0.3, 0.4)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(6)
-	add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", UIStyler.create_panel_style(
+		Color(0.08, 0.08, 0.12, 0.85), Color(0.3, 0.3, 0.4), 1, 4, 6))
 
 	# Create the RichTextLabel.
 	_rich_label = RichTextLabel.new()

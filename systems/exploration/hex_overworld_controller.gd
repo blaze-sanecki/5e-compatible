@@ -27,6 +27,9 @@ var highlight_layer: TileMapLayer
 var party_token: PartyToken
 var camera: Camera2D
 
+## Logic state for the party on the hex overworld.
+var party_state: HexEntityState
+
 ## Sub-systems.
 var tilemap_manager: HexTilemapManager
 var pathfinder: HexPathfinding
@@ -82,14 +85,12 @@ func _ready() -> void:
 	fog_system = FogOfWarSystem.new()
 	vision_calc = VisionCalculator.new()
 
-	# Setup party token at a default position.
+	# Setup party state at a default position.
 	var used_cells: Array[Vector2i] = tilemap_manager.get_used_cells()
 	var start_cell: Vector2i = used_cells[0] if not used_cells.is_empty() else Vector2i.ZERO
-	party_token.setup(tilemap_manager, start_cell)
 
-	# Connect party token signals.
-	party_token.hex_entered.connect(_on_hex_entered)
-	party_token.movement_completed.connect(_on_movement_completed)
+	party_state = HexEntityState.new(start_cell)
+	party_token.teleport_visual(tilemap_manager.cell_to_world(start_cell))
 
 	# Initialize fog of war.
 	fog_system.initialize_hex(fog_layer, used_cells)
@@ -109,7 +110,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not GameManager.is_exploring():
 		return
-	if party_token.is_moving:
+	if party_state.is_moving:
 		return
 
 	if event is InputEventMouseMotion:
@@ -132,12 +133,12 @@ func _handle_mouse_hover(event: InputEventMouseMotion) -> void:
 		return
 	_hovered_cell = cell
 
-	if not tilemap_manager.is_valid_cell(cell) or cell == party_token.current_cell:
+	if not tilemap_manager.is_valid_cell(cell) or cell == party_state.current_cell:
 		tilemap_manager.clear_highlights(highlight_layer)
 		_preview_path.clear()
 		return
 
-	_preview_path = pathfinder.find_path(party_token.current_cell, cell)
+	_preview_path = pathfinder.find_path(party_state.current_cell, cell)
 	if _preview_path.is_empty():
 		tilemap_manager.clear_highlights(highlight_layer)
 	else:
@@ -150,19 +151,45 @@ func _handle_click(event: InputEventMouseButton) -> void:
 
 	if not tilemap_manager.is_valid_cell(cell):
 		return
-	if cell == party_token.current_cell:
+	if cell == party_state.current_cell:
 		return
 
-	var path: Array[Vector2i] = pathfinder.find_path(party_token.current_cell, cell)
+	var path: Array[Vector2i] = pathfinder.find_path(party_state.current_cell, cell)
 	if path.is_empty():
 		return
 
 	tilemap_manager.clear_highlights(highlight_layer)
-	party_token.move_along_path(path)
+	party_state.start_path(path)
+	_animate_next_hex()
 
 
 func _screen_to_world(screen_pos: Vector2) -> Vector2:
 	return get_canvas_transform().affine_inverse() * screen_pos
+
+
+# ---------------------------------------------------------------------------
+# Controller-driven sequential animation
+# ---------------------------------------------------------------------------
+
+func _animate_next_hex() -> void:
+	if party_state.is_path_complete():
+		party_state.complete_movement()
+		_update_camera()
+		return
+
+	var target_cell: Vector2i = party_state.get_next_target_cell()
+	var target_pos: Vector2 = tilemap_manager.cell_to_world(target_cell)
+	party_token.animate_move_to(target_pos)
+	await party_token.animation_finished
+
+	var reached: Vector2i = party_state.commit_cell_reached()
+	_on_hex_entered(reached)
+
+	# If movement was stopped (e.g. by encounter), don't continue.
+	if not party_state.is_moving:
+		return
+
+	_animate_next_hex()
 
 
 # ---------------------------------------------------------------------------
@@ -185,14 +212,9 @@ func _on_hex_entered(cell: Vector2i) -> void:
 
 	# Check for encounters.
 	if result["encounter_triggered"]:
-		party_token.is_moving = false
-		if party_token._move_tween and party_token._move_tween.is_running():
-			party_token._move_tween.kill()
+		party_state.stop_movement()
+		party_token.stop_animation()
 		EventBus.combat_started.emit()
-
-
-func _on_movement_completed() -> void:
-	_update_camera()
 
 
 # ---------------------------------------------------------------------------
@@ -200,7 +222,7 @@ func _on_movement_completed() -> void:
 # ---------------------------------------------------------------------------
 
 func _update_fog() -> void:
-	var center_cube: Vector3i = HexCoords.axial_to_cube(party_token.current_cell)
+	var center_cube: Vector3i = HexCoords.axial_to_cube(party_state.current_cell)
 	var visible_cubes: Array[Vector3i] = HexCoords.cube_spiral(center_cube, vision_range)
 
 	var visible_cells: Array[Vector2i] = []
@@ -229,7 +251,8 @@ func _update_camera() -> void:
 
 ## Spawn the party token at a specific cell.
 func spawn_party_at(cell: Vector2i) -> void:
-	party_token.teleport_to(cell)
+	party_state.teleport(cell)
+	party_token.teleport_visual(tilemap_manager.cell_to_world(cell))
 	_update_fog()
 	_update_camera()
 
@@ -246,3 +269,43 @@ func _find_pace_selector() -> Node:
 				if ui_child.has_method("setup"):
 					return ui_child
 	return null
+
+
+# ---------------------------------------------------------------------------
+# Save / Load state
+# ---------------------------------------------------------------------------
+
+## Collect all exploration state for saving.
+func get_save_state() -> Dictionary:
+	var data: Dictionary = {}
+
+	# Party position.
+	data["party_position"] = [party_state.current_cell.x, party_state.current_cell.y]
+
+	# Fog of war.
+	if fog_system:
+		data["fog_of_war"] = fog_system.save_state()
+
+	return data
+
+
+## Restore exploration state after loading a save.
+func restore_save_state(data: Dictionary) -> void:
+	if data.is_empty():
+		return
+
+	# Restore party position.
+	var pos: Array = data.get("party_position", [])
+	if pos.size() >= 2:
+		var cell: Vector2i = Vector2i(int(pos[0]), int(pos[1]))
+		party_state.teleport(cell)
+		party_token.teleport_visual(tilemap_manager.cell_to_world(cell))
+
+	# Restore fog of war.
+	var fog_data: Dictionary = data.get("fog_of_war", {})
+	if not fog_data.is_empty() and fog_system:
+		fog_system.load_state(fog_data)
+
+	# Update fog and camera.
+	_update_fog()
+	_update_camera()

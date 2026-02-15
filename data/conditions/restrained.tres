@@ -1,23 +1,31 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=7 format=3]
 
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_h68ul"]
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_xs211"]
+
+[sub_resource type="Resource" id="Resource_4jm8w"]
+script = ExtResource("1_h68ul")
+type = &"speed"
+
+[sub_resource type="Resource" id="Resource_0l426"]
+script = ExtResource("1_h68ul")
+type = &"advantage"
+on = &"attack_rolls_against"
+
+[sub_resource type="Resource" id="Resource_6ijln"]
+script = ExtResource("1_h68ul")
+type = &"disadvantage"
+on = &"attack_rolls"
+
+[sub_resource type="Resource" id="Resource_5s2vr"]
+script = ExtResource("1_h68ul")
+type = &"disadvantage"
+on = &"dexterity_saves"
 
 [resource]
 script = ExtResource("1_xs211")
 id = &"restrained"
 display_name = "Restrained"
 description = "A restrained creature's speed becomes 0. Attack rolls against the creature have advantage, and the creature's attack rolls have disadvantage. The creature has disadvantage on Dexterity saving throws."
-effects = Array[Dictionary]([{
-"type": "speed",
-"value": 0
-}, {
-"on": "attack_rolls_against",
-"type": "advantage"
-}, {
-"on": "attack_rolls",
-"type": "disadvantage"
-}, {
-"on": "dexterity_saves",
-"type": "disadvantage"
-}])
+effects = Array[ExtResource("1_h68ul")]([SubResource("Resource_4jm8w"), SubResource("Resource_0l426"), SubResource("Resource_6ijln"), SubResource("Resource_5s2vr")])
 ends_on = &"save"

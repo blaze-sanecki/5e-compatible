@@ -41,8 +41,8 @@ func execute_turn(combatant: CombatantData, all_combatants: Array[CombatantData]
 
 	# Determine if we need to move.
 	var action_reach: int = 5
-	if action is Dictionary:
-		action_reach = action.get("reach", action.get("range_normal", 5))
+	if action is MonsterAction:
+		action_reach = action.reach if action.reach > 0 else action.range_normal
 
 	# Move toward target if not in range or no line of sight.
 	var has_los_before: bool = combat_mgr.targeting_system.combatant_has_los(combatant, target)
@@ -63,7 +63,7 @@ func execute_turn(combatant: CombatantData, all_combatants: Array[CombatantData]
 	if combatant.has_action and has_los:
 		var ranged_action: Variant = _find_ranged_action(combatant)
 		if ranged_action != null:
-			var range_normal: int = ranged_action.get("range_normal", 30)
+			var range_normal: int = ranged_action.range_normal if ranged_action.range_normal > 0 else 30
 			if distance <= range_normal:
 				_execute_attack(combatant, target, ranged_action, combat_mgr)
 
@@ -89,13 +89,11 @@ func _move_toward_target(combatant: CombatantData, target: CombatantData,
 	var cells_moved: Array[Vector2i] = combat_mgr.move_combatant(combatant, path)
 
 	# Animate the token.
-	if combatant.token and combatant.token is MonsterToken:
-		var mt: MonsterToken = combatant.token as MonsterToken
+	if combatant.token and combatant.token.has_method("animate_move_to"):
 		for cell in cells_moved:
-			mt.move_to_cell(cell)
-			# Wait for animation to finish before next step.
-			if mt.is_moving:
-				await mt.moved_to
+			var target_pos: Vector2 = combat_mgr.floor_layer.map_to_local(cell)
+			combatant.token.animate_move_to(target_pos)
+			await combatant.token.animation_finished
 
 
 ## Execute an attack action.
@@ -107,17 +105,11 @@ func _execute_attack(combatant: CombatantData, target: CombatantData,
 
 	# Visual feedback.
 	if result.get("hit", false) and target.token:
-		if target.token is MonsterToken:
-			(target.token as MonsterToken).flash_damage()
-		elif target.token is CharacterToken:
-			# Flash the character token red briefly.
-			var token_node: Node2D = target.token as Node2D
-			var tween: Tween = token_node.create_tween()
-			tween.tween_property(token_node, "modulate", Color(1.5, 0.3, 0.3), 0.1)
-			tween.tween_property(token_node, "modulate", Color.WHITE, 0.2)
+		if target.token.has_method("flash_damage"):
+			target.token.flash_damage()
 
-		if target.is_dead and target.token is MonsterToken:
-			(target.token as MonsterToken).play_death()
+		if target.is_dead and target.token.has_method("play_death"):
+			target.token.play_death()
 
 
 ## Find a ranged action from the monster's action list.
@@ -128,6 +120,6 @@ func _find_ranged_action(combatant: CombatantData) -> Variant:
 	if monster_data == null:
 		return null
 	for action in monster_data.actions:
-		if action.get("type") == "ranged_attack":
+		if action.type == &"ranged_attack":
 			return action
 	return null

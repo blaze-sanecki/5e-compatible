@@ -4,8 +4,7 @@ extends Area2D
 ## Detects when the party enters a portal zone and triggers a map transition.
 ##
 ## Place as a child of a dungeon or overworld scene. Configure portal_data
-## to set the destination. The portal checks for locked state before
-## transitioning.
+## to set the destination. Uses LockCheck for locked portals.
 
 ## The portal configuration.
 @export var portal_data: PortalData
@@ -42,24 +41,8 @@ func _try_transition() -> void:
 		return
 
 	if portal_data.is_locked:
-		# Attempt to unlock with a Thieves' Tools check.
-		var character: Resource = PartyManager.get_active_character()
-		if character == null:
+		if not LockCheck.try_unlock(portal_data):
 			return
-
-		var dex_mod: int = character.get_modifier(&"dexterity")
-		var prof_bonus: int = 0
-		# Check if character has Thieves' Tools proficiency.
-		if character.get("skill_proficiencies") != null:
-			if &"thieves_tools" in character.skill_proficiencies:
-				prof_bonus = character.get_proficiency_bonus()
-
-		var result: DiceRoller.D20Result = DiceRoller.ability_check(dex_mod + prof_bonus)
-		if result.total < portal_data.lock_dc:
-			push_warning("PortalArea: Lock check failed (%d vs DC %d)." % [result.total, portal_data.lock_dc])
-			return
-
-		portal_data.is_locked = false
 
 	_can_interact = false
 	TransitionManager.transition_to(portal_data.target_map_path, portal_data.spawn_point, portal_data.transition_type)

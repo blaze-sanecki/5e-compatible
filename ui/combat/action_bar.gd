@@ -1,12 +1,13 @@
 extends HBoxContainer
 
 ## Bottom bar showing available combat actions for the current player's turn.
-## Buttons: Attack, Dash, Disengage, Dodge, Hide, End Turn.
+## Buttons: Attack, Use Item, Dash, Disengage, Dodge, Hide, End Turn.
 
 signal action_selected(action_name: StringName)
 
 var _buttons: Dictionary = {}
 var _combat_manager: CombatManager = null
+var _item_popup: PanelContainer = null
 
 
 func _ready() -> void:
@@ -26,6 +27,7 @@ func set_combat_manager(mgr: CombatManager) -> void:
 func _create_buttons() -> void:
 	var actions: Array[Array] = [
 		["Attack", &"attack", Color(0.9, 0.3, 0.2), "A"],
+		["Use Item", &"use_item", Color(0.3, 0.8, 0.6), "I"],
 		["Dash", &"dash", Color(0.2, 0.7, 0.9), "D"],
 		["Disengage", &"disengage", Color(0.5, 0.8, 0.3), "G"],
 		["Dodge", &"dodge", Color(0.8, 0.7, 0.2), "O"],
@@ -67,6 +69,9 @@ func _on_action_pressed(action_name: StringName) -> void:
 	match action_name:
 		&"attack":
 			pass  # Handled by combat_hud -> combat_grid_controller
+		&"use_item":
+			_show_item_picker()
+			return  # Don't emit action_selected yet.
 		&"dash":
 			_combat_manager.player_dash()
 			_update_button_states()
@@ -92,14 +97,16 @@ func _on_combat_started() -> void:
 
 func _on_combat_ended() -> void:
 	visible = false
+	_close_item_picker()
 
 
 func _on_turn_started(_character: Resource) -> void:
+	_close_item_picker()
 	_update_button_states()
 
 
 func _on_turn_ended(_character: Resource) -> void:
-	pass
+	_close_item_picker()
 
 
 func _update_button_states() -> void:
@@ -111,6 +118,7 @@ func _update_button_states() -> void:
 		return
 
 	_buttons[&"attack"].disabled = not _combat_manager.action_system.can_attack(c)
+	_buttons[&"use_item"].disabled = not _combat_manager.action_system.can_use_item(c)
 	_buttons[&"dash"].disabled = not _combat_manager.action_system.can_dash(c)
 	_buttons[&"disengage"].disabled = not _combat_manager.action_system.can_disengage(c)
 	_buttons[&"dodge"].disabled = not _combat_manager.action_system.can_dodge(c)
@@ -121,3 +129,120 @@ func _update_button_states() -> void:
 func _set_all_disabled(disabled: bool) -> void:
 	for btn in _buttons.values():
 		btn.disabled = disabled
+
+
+# ---------------------------------------------------------------------------
+# Item picker popup
+# ---------------------------------------------------------------------------
+
+func _show_item_picker() -> void:
+	if _combat_manager == null or _combat_manager.current_combatant == null:
+		return
+
+	_close_item_picker()
+
+	var combatant: CombatantData = _combat_manager.current_combatant
+	var items: Array[ItemData] = _combat_manager.action_system.get_consumable_items(combatant)
+	if items.is_empty():
+		return
+
+	# Build a popup panel above the action bar.
+	_item_popup = PanelContainer.new()
+	_item_popup.name = "ItemPickerPopup"
+
+	var popup_style := StyleBoxFlat.new()
+	popup_style.bg_color = Color(0.1, 0.12, 0.18, 0.95)
+	popup_style.border_color = Color(0.3, 0.8, 0.6)
+	popup_style.set_border_width_all(2)
+	popup_style.set_corner_radius_all(6)
+	popup_style.set_content_margin_all(10)
+	_item_popup.add_theme_stylebox_override("panel", popup_style)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	_item_popup.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "Use Item (Action)"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 14)
+	title.add_theme_color_override("font_color", Color(0.3, 0.8, 0.6))
+	vbox.add_child(title)
+
+	# Count quantities for display.
+	var character: CharacterData = combatant.source as CharacterData
+	for item in items:
+		var qty: int = _get_item_quantity(character, item)
+		var item_btn := Button.new()
+		item_btn.text = "%s (x%d)" % [item.display_name, qty]
+		item_btn.custom_minimum_size = Vector2(180, 30)
+
+		var btn_style := StyleBoxFlat.new()
+		btn_style.bg_color = Color(0.15, 0.18, 0.25, 0.9)
+		btn_style.border_color = Color(0.3, 0.8, 0.6, 0.5)
+		btn_style.set_border_width_all(1)
+		btn_style.set_corner_radius_all(4)
+		btn_style.set_content_margin_all(4)
+		item_btn.add_theme_stylebox_override("normal", btn_style)
+
+		var btn_hover := btn_style.duplicate() as StyleBoxFlat
+		btn_hover.bg_color = Color(0.2, 0.25, 0.35, 0.95)
+		btn_hover.border_color = Color(0.3, 0.8, 0.6)
+		item_btn.add_theme_stylebox_override("hover", btn_hover)
+
+		item_btn.add_theme_font_size_override("font_size", 13)
+		item_btn.add_theme_color_override("font_color", Color(0.9, 0.9, 0.8))
+
+		var captured_item: ItemData = item
+		item_btn.pressed.connect(func() -> void: _on_item_selected(captured_item))
+		vbox.add_child(item_btn)
+
+	# Cancel button.
+	var cancel_btn := Button.new()
+	cancel_btn.text = "Cancel"
+	cancel_btn.custom_minimum_size = Vector2(180, 28)
+	var cancel_style := StyleBoxFlat.new()
+	cancel_style.bg_color = Color(0.2, 0.15, 0.15, 0.9)
+	cancel_style.set_corner_radius_all(4)
+	cancel_style.set_content_margin_all(4)
+	cancel_btn.add_theme_stylebox_override("normal", cancel_style)
+	cancel_btn.add_theme_font_size_override("font_size", 12)
+	cancel_btn.add_theme_color_override("font_color", Color(0.8, 0.6, 0.6))
+	cancel_btn.pressed.connect(_close_item_picker)
+	vbox.add_child(cancel_btn)
+
+	# Position above the Use Item button.
+	var use_btn: Button = _buttons[&"use_item"]
+	_item_popup.position = Vector2(use_btn.global_position.x, use_btn.global_position.y - 10)
+
+	# Add to a high-layer parent so it renders above everything.
+	var canvas: CanvasLayer = get_parent() as CanvasLayer
+	if canvas:
+		canvas.add_child(_item_popup)
+		# Adjust position after the popup knows its size.
+		await get_tree().process_frame
+		_item_popup.position.y -= _item_popup.size.y
+	else:
+		add_child(_item_popup)
+
+
+func _on_item_selected(item: ItemData) -> void:
+	_close_item_picker()
+	if _combat_manager == null:
+		return
+	_combat_manager.player_use_item(item)
+	_update_button_states()
+	action_selected.emit(&"use_item")
+
+
+func _close_item_picker() -> void:
+	if _item_popup and is_instance_valid(_item_popup):
+		_item_popup.queue_free()
+		_item_popup = null
+
+
+func _get_item_quantity(character: CharacterData, item: ItemData) -> int:
+	for entry in character.inventory:
+		if entry is InventoryEntry and entry.item == item:
+			return entry.quantity
+	return 1

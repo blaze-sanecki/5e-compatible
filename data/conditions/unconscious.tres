@@ -1,32 +1,46 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_7q1fp"]
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_xwidv"]
+
+[sub_resource type="Resource" id="Resource_wjus3"]
+script = ExtResource("1_xwidv")
+type = &"incapacitated"
+on = &"all"
+
+[sub_resource type="Resource" id="Resource_rx07d"]
+script = ExtResource("1_xwidv")
+type = &"speed"
+
+[sub_resource type="Resource" id="Resource_hoxt3"]
+script = ExtResource("1_xwidv")
+type = &"auto_fail"
+on = &"strength_saves"
+
+[sub_resource type="Resource" id="Resource_d7fe8"]
+script = ExtResource("1_xwidv")
+type = &"auto_fail"
+on = &"dexterity_saves"
+
+[sub_resource type="Resource" id="Resource_f7557"]
+script = ExtResource("1_xwidv")
+type = &"advantage"
+on = &"attack_rolls_against"
+
+[sub_resource type="Resource" id="Resource_dfh8b"]
+script = ExtResource("1_xwidv")
+type = &"auto_crit"
+on = &"melee_attacks_against"
+
+[sub_resource type="Resource" id="Resource_dnsq2"]
+script = ExtResource("1_xwidv")
+type = &"prone"
+on = &"self"
 
 [resource]
 script = ExtResource("1_7q1fp")
 id = &"unconscious"
 display_name = "Unconscious"
 description = "An unconscious creature is incapacitated, can't move or speak, and is unaware of its surroundings. The creature drops whatever it's holding and falls prone. Attack rolls against the creature have advantage. Any attack that hits is a critical hit if the attacker is within 5 feet. The creature automatically fails Strength and Dexterity saving throws."
-effects = Array[Dictionary]([{
-"on": "all",
-"type": "incapacitated"
-}, {
-"type": "speed",
-"value": 0
-}, {
-"on": "strength_saves",
-"type": "auto_fail"
-}, {
-"on": "dexterity_saves",
-"type": "auto_fail"
-}, {
-"on": "attack_rolls_against",
-"type": "advantage"
-}, {
-"on": "melee_attacks_against",
-"type": "auto_crit"
-}, {
-"on": "self",
-"type": "prone"
-}])
+effects = Array[ExtResource("1_xwidv")]([SubResource("Resource_wjus3"), SubResource("Resource_rx07d"), SubResource("Resource_hoxt3"), SubResource("Resource_d7fe8"), SubResource("Resource_f7557"), SubResource("Resource_dfh8b"), SubResource("Resource_dnsq2")])
 ends_on = &"save"

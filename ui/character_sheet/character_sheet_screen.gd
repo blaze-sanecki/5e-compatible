@@ -97,10 +97,9 @@ func _refresh() -> void:
 	_clear_container(features_container)
 	if _character.character_class != null:
 		for feature in _character.character_class.class_features:
-			var feat_level: int = feature.get("level", 0)
-			if feat_level <= _character.level:
+			if feature.level <= _character.level:
 				var lbl := Label.new()
-				lbl.text = "%s (Lv %d)" % [feature.get("name", ""), feat_level]
+				lbl.text = "%s (Lv %d)" % [feature.name, feature.level]
 				lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
 				features_container.add_child(lbl)
 	# Feats.

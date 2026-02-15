@@ -1,93 +1,106 @@
-[gd_resource type="Resource" script_class="DialogueTree" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="DialogueTree" load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://resources/dialogue/dialogue_choice.gd" id="1_0uf5s"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_condition.gd" id="1_7v5dq"]
 [ext_resource type="Script" path="res://resources/dialogue/dialogue_node.gd" id="2_lr6y1"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_event.gd" id="2_pwvg5"]
 [ext_resource type="Script" path="res://resources/dialogue/dialogue_tree.gd" id="3_7v5dq"]
 
-[sub_resource type="Resource" id="Resource_0uf5s"]
+[sub_resource type="Resource" id="Resource_tf4bt"]
+script = ExtResource("1_7v5dq")
+type = &"skill_check"
+skill = &"intimidation"
+dc = 15
+fail_node_id = &"intimidate_fail"
+
+[sub_resource type="Resource" id="Resource_etc5q"]
 script = ExtResource("1_0uf5s")
 text = "Leave this place or face my wrath."
 next_node_id = &"intimidate_success"
-conditions = Array[Dictionary]([{
-"dc": 15,
-"fail_node_id": "intimidate_fail",
-"skill": "intimidation",
-"type": "skill_check"
-}])
+conditions = Array[ExtResource("1_7v5dq")]([SubResource("Resource_tf4bt")])
 
-[sub_resource type="Resource" id="Resource_lr6y1"]
+[sub_resource type="Resource" id="Resource_qjpk6"]
 script = ExtResource("1_0uf5s")
 text = "We can settle this peacefully."
 next_node_id = &"diplomacy"
 
-[sub_resource type="Resource" id="Resource_7v5dq"]
+[sub_resource type="Resource" id="Resource_j2m3r"]
 script = ExtResource("1_0uf5s")
 text = "Prepare to die, goblin!"
 next_node_id = &"fight"
 
-[sub_resource type="Resource" id="Resource_pwvg5"]
+[sub_resource type="Resource" id="Resource_0hfnx"]
 script = ExtResource("2_lr6y1")
 node_id = &"greeting"
 speaker = "Goblin Chief Grak"
 text = "You! Human! You come to Grak's den and kill Grak's warriors? Grak will crush you!"
-choices = Array[Resource]([SubResource("Resource_0uf5s"), SubResource("Resource_lr6y1"), SubResource("Resource_7v5dq")])
+choices = Array[Resource]([SubResource("Resource_etc5q"), SubResource("Resource_qjpk6"), SubResource("Resource_j2m3r")])
 
-[sub_resource type="Resource" id="Resource_tf4bt"]
+[sub_resource type="Resource" id="Resource_60b2e"]
+script = ExtResource("2_pwvg5")
+type = &"set_flag"
+flag = "goblin_chief_fled"
+
+[sub_resource type="Resource" id="Resource_kxacg"]
+script = ExtResource("2_pwvg5")
+type = &"advance_objective"
+item_id = &"talk_chief"
+quest_id = &"clear_goblin_den"
+
+[sub_resource type="Resource" id="Resource_dofls"]
 script = ExtResource("2_lr6y1")
 node_id = &"intimidate_success"
 speaker = "Goblin Chief Grak"
 text = "G-Grak... Grak doesn't want to die. Fine! Grak will leave. Take whatever you want."
 is_end = true
-events = Array[Dictionary]([{
-"flag": "goblin_chief_fled",
-"type": "set_flag",
-"value": true
-}, {
-"objective_id": "talk_chief",
-"quest_id": "clear_goblin_den",
-"type": "advance_objective"
-}])
+events = Array[ExtResource("2_pwvg5")]([SubResource("Resource_60b2e"), SubResource("Resource_kxacg")])
 
-[sub_resource type="Resource" id="Resource_etc5q"]
+[sub_resource type="Resource" id="Resource_2x3p7"]
+script = ExtResource("2_pwvg5")
+type = &"set_flag"
+flag = "goblin_chief_hostile"
+
+[sub_resource type="Resource" id="Resource_q71up"]
+script = ExtResource("2_pwvg5")
+type = &"start_combat"
+quest_id = &"test_goblin_ambush"
+
+[sub_resource type="Resource" id="Resource_eq1xo"]
 script = ExtResource("2_lr6y1")
 node_id = &"intimidate_fail"
 speaker = "Goblin Chief Grak"
 text = "Ha! You don't scare Grak! GRAK SMASH!"
 is_end = true
-events = Array[Dictionary]([{
-"flag": "goblin_chief_hostile",
-"type": "set_flag",
-"value": true
-}, {
-"encounter_id": "test_goblin_ambush",
-"type": "start_combat"
-}])
+events = Array[ExtResource("2_pwvg5")]([SubResource("Resource_2x3p7"), SubResource("Resource_q71up")])
 
-[sub_resource type="Resource" id="Resource_qjpk6"]
+[sub_resource type="Resource" id="Resource_psj7a"]
 script = ExtResource("2_lr6y1")
 node_id = &"diplomacy"
 speaker = "Goblin Chief Grak"
 text = "Peacefully? Grak's warriors are hungry. You bring food, maybe Grak leaves. But Grak doubts you will."
 is_end = true
 
-[sub_resource type="Resource" id="Resource_j2m3r"]
+[sub_resource type="Resource" id="Resource_dckoq"]
+script = ExtResource("2_pwvg5")
+type = &"set_flag"
+flag = "goblin_chief_hostile"
+
+[sub_resource type="Resource" id="Resource_h016r"]
+script = ExtResource("2_pwvg5")
+type = &"start_combat"
+quest_id = &"test_goblin_ambush"
+
+[sub_resource type="Resource" id="Resource_mfqry"]
 script = ExtResource("2_lr6y1")
 node_id = &"fight"
 speaker = "Goblin Chief Grak"
 text = "GRAK KNEW IT! ATTACK!"
 is_end = true
-events = Array[Dictionary]([{
-"flag": "goblin_chief_hostile",
-"type": "set_flag",
-"value": true
-}, {
-"encounter_id": "test_goblin_ambush",
-"type": "start_combat"
-}])
+events = Array[ExtResource("2_pwvg5")]([SubResource("Resource_dckoq"), SubResource("Resource_h016r")])
 
 [resource]
 script = ExtResource("3_7v5dq")
 id = &"goblin_chief"
 npc_name = "Goblin Chief Grak"
-nodes = Array[Resource]([SubResource("Resource_pwvg5"), SubResource("Resource_tf4bt"), SubResource("Resource_etc5q"), SubResource("Resource_qjpk6"), SubResource("Resource_j2m3r")])
+nodes = Array[Resource]([SubResource("Resource_0hfnx"), SubResource("Resource_dofls"), SubResource("Resource_eq1xo"), SubResource("Resource_psj7a"), SubResource("Resource_mfqry")])
 start_node_id = &"greeting"

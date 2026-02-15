@@ -50,6 +50,38 @@ func can_help(combatant: CombatantData) -> bool:
 	return combatant.has_action and combatant.is_alive() and not _condition_system.is_incapacitated(combatant)
 
 
+## Check if a combatant can use a consumable item (costs Action).
+func can_use_item(combatant: CombatantData) -> bool:
+	if not combatant.has_action or not combatant.is_alive():
+		return false
+	if _condition_system.is_incapacitated(combatant):
+		return false
+	if not combatant.is_player():
+		return false
+	# Check if they have any consumable items.
+	return not get_consumable_items(combatant).is_empty()
+
+
+## Get all consumable items in a player combatant's inventory.
+func get_consumable_items(combatant: CombatantData) -> Array[ItemData]:
+	var items: Array[ItemData] = []
+	if not combatant.is_player() or combatant.source == null:
+		return items
+	var character: CharacterData = combatant.source as CharacterData
+	if character == null:
+		return items
+	for entry in character.inventory:
+		if entry is InventoryEntry and entry.item is ItemData:
+			var item: ItemData = entry.item as ItemData
+			if item.item_type == &"consumable" and not item.effects.is_empty():
+				items.append(item)
+		elif entry is ItemData:
+			var item: ItemData = entry as ItemData
+			if item.item_type == &"consumable" and not item.effects.is_empty():
+				items.append(item)
+	return items
+
+
 # ---------------------------------------------------------------------------
 # Execute: Attack
 # ---------------------------------------------------------------------------
@@ -107,15 +139,14 @@ func execute_attack(attacker: CombatantData, target: CombatantData,
 		if ability_mod != 0:
 			# We'll add it separately since DamageRoll doesn't always include it.
 			pass
-	elif weapon_or_action is Dictionary:
-		# Monster action dictionary.
-		var action: Dictionary = weapon_or_action
-		weapon_name = action.get("name", "Attack")
-		attack_bonus = action.get("attack_bonus", 0)
-		damage_notation = action.get("damage", "1d4")
-		damage_type = StringName(action.get("damage_type", "bludgeoning"))
-		range_normal = action.get("reach", action.get("range_normal", 5))
-		is_melee = action.get("type", "melee_attack") == "melee_attack"
+	elif weapon_or_action is MonsterAction:
+		var action: MonsterAction = weapon_or_action
+		weapon_name = action.name
+		attack_bonus = action.attack_bonus
+		damage_notation = action.damage
+		damage_type = action.damage_type if action.damage_type != &"" else &"bludgeoning"
+		range_normal = action.reach if action.reach > 0 else action.range_normal
+		is_melee = action.type == &"melee_attack" or action.type == &""
 
 	# Advantage/disadvantage from conditions.
 	var advantage: bool = _condition_system.has_attack_advantage(attacker, target)
@@ -194,9 +225,9 @@ func execute_attack(attacker: CombatantData, target: CombatantData,
 		]
 
 		# Check for special effects (e.g., wolf's knockdown).
-		if weapon_or_action is Dictionary:
-			var action: Dictionary = weapon_or_action
-			if action.has("save_dc") and action.has("save_effect"):
+		if weapon_or_action is MonsterAction:
+			var action: MonsterAction = weapon_or_action
+			if action.save_dc > 0 and action.save_effect != "":
 				_apply_save_effect(target, action)
 	else:
 		result.description = "%s misses %s with %s." % [
@@ -331,6 +362,48 @@ func execute_help(combatant: CombatantData) -> Dictionary:
 
 
 # ---------------------------------------------------------------------------
+# Execute: Use Item
+# ---------------------------------------------------------------------------
+
+## Use a consumable item from inventory. Costs the Action for the turn.
+func execute_use_item(combatant: CombatantData, item: ItemData) -> Dictionary:
+	if not can_use_item(combatant):
+		return {"success": false, "description": "%s cannot use an item." % combatant.display_name}
+
+	var character: CharacterData = combatant.source as CharacterData
+	if character == null:
+		return {"success": false, "description": "No character data."}
+
+	var result: Dictionary = InventorySystem.use_item(character, item)
+	if not result.get("success", false):
+		return {"success": false, "description": result.get("message", "Cannot use item.")}
+
+	# Sync combatant HP from the character data (potion may have healed).
+	combatant.current_hp = character.current_hp
+	combatant.temp_hp = character.temp_hp
+
+	# Sync conditions.
+	combatant.conditions.clear()
+	for cond in character.conditions:
+		combatant.conditions.append(cond)
+
+	combatant.has_action = false
+
+	# Build description.
+	var desc: String = "%s uses %s." % [combatant.display_name, item.display_name]
+	var effects: Array = result.get("effects", [])
+	for eff in effects:
+		match str(eff.get("type", "")):
+			"heal":
+				desc += " Healed %d HP." % eff.get("amount", 0)
+			"remove_condition":
+				desc += " Removed %s." % eff.get("condition", "")
+
+	EventBus.action_performed.emit(combatant.source, {"type": "use_item", "item": item.display_name})
+	return {"success": true, "description": desc, "effects": effects}
+
+
+# ---------------------------------------------------------------------------
 # Execute: End Turn
 # ---------------------------------------------------------------------------
 
@@ -345,10 +418,10 @@ func execute_end_turn(combatant: CombatantData) -> Dictionary:
 # Private helpers
 # ---------------------------------------------------------------------------
 
-func _apply_save_effect(target: CombatantData, action: Dictionary) -> void:
-	var dc: int = action.get("save_dc", 10)
-	var ability: StringName = StringName(action.get("save_ability", "strength"))
-	var effect: String = action.get("save_effect", "")
+func _apply_save_effect(target: CombatantData, action: MonsterAction) -> void:
+	var dc: int = action.save_dc
+	var ability: StringName = action.save_ability if action.save_ability != &"" else &"strength"
+	var effect: String = action.save_effect
 
 	var save := RulesEngine.resolve_saving_throw(target.source, dc, ability)
 	if not save.success and effect != "":

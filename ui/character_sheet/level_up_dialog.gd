@@ -32,13 +32,13 @@ func _ready() -> void:
 	title_label.text = "Level Up to %d!" % new_level
 
 	# Features.
-	var features: Array[Dictionary] = LevelUpHandler.get_features_at_level(character, new_level)
+	var features: Array[ClassFeature] = LevelUpHandler.get_features_at_level(character, new_level)
 	var feat_text := "[b]New Features:[/b]\n"
 	if features.size() == 0:
 		feat_text += "  No new features at this level.\n"
 	else:
 		for f in features:
-			feat_text += "  [b]%s:[/b] %s\n" % [f.get("name", ""), f.get("description", "")]
+			feat_text += "  [b]%s:[/b] %s\n" % [f.name, f.description]
 	features_label.text = feat_text
 
 	# HP options.

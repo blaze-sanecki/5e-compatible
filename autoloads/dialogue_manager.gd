@@ -103,12 +103,11 @@ func select_choice(index: int) -> void:
 	# Evaluate non-skill conditions (has_item, has_flag, etc.).
 	# Skill checks are rolled now; other conditions gate selection.
 	for cond in choice.conditions:
-		var cond_type: String = cond.get("type", "")
-		if cond_type == "skill_check":
+		if cond.type == &"skill_check":
 			var success: bool = _resolve_skill_check(cond)
 			if not success:
 				# Skill check failed — branch to fail node if specified.
-				var fail_node_id: StringName = cond.get("fail_node_id", &"")
+				var fail_node_id: StringName = cond.fail_node_id
 				if fail_node_id != &"":
 					var fail_node: DialogueNode = current_tree.get_node_by_id(fail_node_id) as DialogueNode
 					if fail_node:
@@ -193,31 +192,30 @@ func _set_current_node(node: DialogueNode) -> void:
 # Condition evaluation
 # ---------------------------------------------------------------------------
 
-## Evaluate a single condition dictionary. Returns true if the condition passes.
-func evaluate_condition(cond: Dictionary) -> bool:
-	var cond_type: String = cond.get("type", "")
+## Evaluate a single condition. Returns true if the condition passes.
+func evaluate_condition(cond: DialogueCondition) -> bool:
 	var character: Resource = PartyManager.get_active_character()
 
-	match cond_type:
-		"has_item":
-			return _check_has_item(cond.get("item_id", ""))
-		"has_flag":
-			return QuestManager.has_flag(cond.get("flag", ""))
-		"not_flag":
-			return not QuestManager.has_flag(cond.get("flag", ""))
-		"quest_complete":
-			return QuestManager.is_quest_complete(cond.get("quest_id", ""))
-		"quest_active":
-			return QuestManager.is_quest_active(cond.get("quest_id", ""))
-		"min_level":
+	match cond.type:
+		&"has_item":
+			return _check_has_item(str(cond.item_id))
+		&"has_flag":
+			return QuestManager.has_flag(cond.flag)
+		&"not_flag":
+			return not QuestManager.has_flag(cond.flag)
+		&"quest_complete":
+			return QuestManager.is_quest_complete(str(cond.quest_id))
+		&"quest_active":
+			return QuestManager.is_quest_active(str(cond.quest_id))
+		&"min_level":
 			if character:
-				return character.level >= cond.get("level", 1)
+				return character.level >= cond.dc
 			return false
-		"skill_check":
+		&"skill_check":
 			# For visibility purposes, skill checks always show.
 			return true
 		_:
-			push_warning("DialogueManager: Unknown condition type '%s'" % cond_type)
+			push_warning("DialogueManager: Unknown condition type '%s'" % cond.type)
 			return true
 
 
@@ -240,9 +238,9 @@ func _check_has_item(item_id: String) -> bool:
 # ---------------------------------------------------------------------------
 
 ## Roll a skill check and emit the result. Returns true on success.
-func _resolve_skill_check(cond: Dictionary) -> bool:
-	var skill: StringName = StringName(cond.get("skill", "persuasion"))
-	var dc: int = cond.get("dc", 10)
+func _resolve_skill_check(cond: DialogueCondition) -> bool:
+	var skill: StringName = cond.skill if cond.skill != &"" else &"persuasion"
+	var dc: int = cond.dc
 	var character: Resource = PartyManager.get_active_character()
 	if character == null:
 		return false
@@ -272,54 +270,49 @@ func _resolve_skill_check(cond: Dictionary) -> bool:
 # Internal — event execution
 # ---------------------------------------------------------------------------
 
-## Execute an array of event dictionaries.
-func _execute_events(events: Array) -> void:
+## Execute an array of dialogue events.
+func _execute_events(events: Array[DialogueEvent]) -> void:
 	for event in events:
-		if event is Dictionary:
-			_execute_event(event)
+		_execute_event(event)
 
 
-## Execute a single event dictionary.
-func _execute_event(event: Dictionary) -> void:
-	var event_type: String = event.get("type", "")
-
-	match event_type:
-		"start_quest":
-			QuestManager.start_quest(StringName(event.get("quest_id", "")))
-		"complete_quest":
-			QuestManager.complete_quest(StringName(event.get("quest_id", "")))
-		"advance_objective":
+## Execute a single dialogue event.
+func _execute_event(event: DialogueEvent) -> void:
+	match event.type:
+		&"start_quest":
+			QuestManager.start_quest(event.quest_id)
+		&"complete_quest":
+			QuestManager.complete_quest(event.quest_id)
+		&"advance_objective":
 			QuestManager.advance_objective(
-				StringName(event.get("quest_id", "")),
-				StringName(event.get("objective_id", "")),
-				event.get("amount", 1)
+				event.quest_id,
+				event.item_id,  # objective_id stored in item_id field
+				event.quantity
 			)
-		"give_item":
-			var item_id: String = event.get("item_id", "")
-			var item: Resource = DataRegistry.get_item(StringName(item_id))
+		&"give_item":
+			var item: Resource = DataRegistry.get_item(event.item_id)
 			if item:
 				var character: Resource = PartyManager.get_active_character()
 				if character and character is CharacterData:
-					InventorySystem.add_item(character as CharacterData, item, event.get("quantity", 1))
-		"take_item":
-			var item_id: String = event.get("item_id", "")
-			var item: Resource = DataRegistry.get_item(StringName(item_id))
+					InventorySystem.add_item(character as CharacterData, item, event.quantity)
+		&"take_item":
+			var item: Resource = DataRegistry.get_item(event.item_id)
 			if item:
 				var character: Resource = PartyManager.get_active_character()
 				if character and character is CharacterData:
-					InventorySystem.remove_item(character as CharacterData, item, event.get("quantity", 1))
-		"give_gold":
+					InventorySystem.remove_item(character as CharacterData, item, event.quantity)
+		&"give_gold":
 			var character: Resource = PartyManager.get_active_character()
 			if character and character is CharacterData:
-				InventorySystem.add_gold(character as CharacterData, event.get("amount", 0))
-		"set_flag":
-			QuestManager.set_flag(event.get("flag", ""), event.get("value", true))
-		"heal_party":
-			PartyManager.heal_party(event.get("amount", 0))
-		"start_combat":
-			_pending_encounter_id = StringName(event.get("encounter_id", ""))
+				InventorySystem.add_gold(character as CharacterData, event.quantity)
+		&"set_flag":
+			QuestManager.set_flag(event.flag, event.value)
+		&"heal_party":
+			PartyManager.heal_party(event.quantity)
+		&"start_combat":
+			_pending_encounter_id = event.quest_id  # encounter_id stored in quest_id field
 		_:
-			push_warning("DialogueManager: Unknown event type '%s'" % event_type)
+			push_warning("DialogueManager: Unknown event type '%s'" % event.type)
 
 
 ## Trigger a combat encounter after dialogue has closed. Called deferred.

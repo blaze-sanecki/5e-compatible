@@ -1,6 +1,41 @@
-[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ClassData" load_steps=9 format=3]
 
+[ext_resource type="Script" path="res://resources/character/class_feature.gd" id="1_d6m2e"]
 [ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_wndea"]
+
+[sub_resource type="Resource" id="Resource_pg6s2"]
+script = ExtResource("1_d6m2e")
+name = "Spellcasting"
+description = "As a student of arcane magic, you have a spellbook containing spells that show the first glimmerings of your true power. You know three cantrips and have a spellbook with six 1st-level wizard spells."
+
+[sub_resource type="Resource" id="Resource_f7uj0"]
+script = ExtResource("1_d6m2e")
+name = "Arcane Recovery"
+description = "Once per day when you finish a Short Rest, you can recover expended spell slots with a combined level equal to or less than half your wizard level (rounded up)."
+
+[sub_resource type="Resource" id="Resource_vsxoy"]
+script = ExtResource("1_d6m2e")
+level = 2
+name = "Subclass"
+description = "Choose an arcane tradition that shapes your practice of magic."
+
+[sub_resource type="Resource" id="Resource_dg5rh"]
+script = ExtResource("1_d6m2e")
+level = 3
+name = "Cantrip Formulas"
+description = "You have scribed a set of arcane formulas in your spellbook that you can use to formulate a cantrip in your mind."
+
+[sub_resource type="Resource" id="Resource_4r6a1"]
+script = ExtResource("1_d6m2e")
+level = 4
+name = "Ability Score Improvement"
+description = "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."
+
+[sub_resource type="Resource" id="Resource_0dwyy"]
+script = ExtResource("1_d6m2e")
+level = 5
+name = "Memorize Spell"
+description = "You can prepare one additional spell from your spellbook."
 
 [resource]
 script = ExtResource("1_wndea")
@@ -16,28 +51,4 @@ starting_equipment_options = Array[String](["Quarterstaff or Dagger", "Component
 spellcasting_ability = &"intelligence"
 is_spellcaster = true
 subclass_level = 2
-class_features = Array[Dictionary]([{
-"description": "As a student of arcane magic, you have a spellbook containing spells that show the first glimmerings of your true power. You know three cantrips and have a spellbook with six 1st-level wizard spells.",
-"level": 1,
-"name": "Spellcasting"
-}, {
-"description": "Once per day when you finish a Short Rest, you can recover expended spell slots with a combined level equal to or less than half your wizard level (rounded up).",
-"level": 1,
-"name": "Arcane Recovery"
-}, {
-"description": "Choose an arcane tradition that shapes your practice of magic.",
-"level": 2,
-"name": "Subclass"
-}, {
-"description": "You have scribed a set of arcane formulas in your spellbook that you can use to formulate a cantrip in your mind.",
-"level": 3,
-"name": "Cantrip Formulas"
-}, {
-"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
-"level": 4,
-"name": "Ability Score Improvement"
-}, {
-"description": "You can prepare one additional spell from your spellbook.",
-"level": 5,
-"name": "Memorize Spell"
-}])
+class_features = Array[ExtResource("1_d6m2e")]([SubResource("Resource_pg6s2"), SubResource("Resource_f7uj0"), SubResource("Resource_vsxoy"), SubResource("Resource_dg5rh"), SubResource("Resource_4r6a1"), SubResource("Resource_0dwyy")])

@@ -14,9 +14,7 @@ extends Resource
 @export var description: String
 
 ## Structured mechanical effects this condition imposes.
-## Each entry is a Dictionary such as {"type": "disadvantage", "on": "attack_rolls"}
-## or {"type": "speed", "value": 0} for conditions like grappled/restrained.
-@export var effects: Array[Dictionary]
+@export var effects: Array[ConditionEffect]
 
 ## When the condition can end: "end_of_turn", "start_of_turn", "save", "never", "custom".
 @export var ends_on: StringName

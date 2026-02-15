@@ -12,6 +12,41 @@ func _ready() -> void:
 	get_tree().quit()
 
 
+static func _ce(t: StringName, on_field: StringName = &"", val: int = 0) -> ConditionEffect:
+	var e := ConditionEffect.new()
+	e.type = t
+	e.on = on_field
+	e.value = val
+	return e
+
+
+static func _mt(n: String, desc: String) -> MonsterTrait:
+	var t := MonsterTrait.new()
+	t.name = n
+	t.description = desc
+	return t
+
+
+static func _ma(n: String, t: StringName, atk: int, rch: int, dmg: String, dt: StringName, desc: String = "") -> MonsterAction:
+	var a := MonsterAction.new()
+	a.name = n
+	a.type = t
+	a.attack_bonus = atk
+	a.reach = rch
+	a.damage = dmg
+	a.damage_type = dt
+	a.description = desc
+	return a
+
+
+static func _mse(mid: StringName, c: Vector2i, cnt: int = 1) -> MonsterSpawnEntry:
+	var s := MonsterSpawnEntry.new()
+	s.monster_id = mid
+	s.cell = c
+	s.count = cnt
+	return s
+
+
 func _save(resource: Resource, path: String) -> void:
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	var err := ResourceSaver.save(resource, path)
@@ -31,134 +66,131 @@ func _generate_conditions() -> void:
 	_save_condition(&"blinded", "Blinded",
 		"A blinded creature can't see and automatically fails any ability check that requires sight. Attack rolls against the creature have advantage, and the creature's attack rolls have disadvantage.",
 		[
-			{"type": "auto_fail", "on": "ability_checks_requiring_sight"},
-			{"type": "advantage", "on": "attack_rolls_against"},
-			{"type": "disadvantage", "on": "attack_rolls"},
+			_ce(&"auto_fail", &"ability_checks_requiring_sight"),
+			_ce(&"advantage", &"attack_rolls_against"),
+			_ce(&"disadvantage", &"attack_rolls"),
 		], &"never")
 
 	_save_condition(&"charmed", "Charmed",
 		"A charmed creature can't attack the charmer or target the charmer with harmful abilities or magical effects. The charmer has advantage on any ability check to interact socially with the creature.",
 		[
-			{"type": "cant_attack", "on": "charmer"},
-			{"type": "advantage", "on": "social_checks_by_charmer"},
+			_ce(&"cant_attack", &"charmer"),
+			_ce(&"advantage", &"social_checks_by_charmer"),
 		], &"save")
 
 	_save_condition(&"deafened", "Deafened",
 		"A deafened creature can't hear and automatically fails any ability check that requires hearing.",
 		[
-			{"type": "auto_fail", "on": "ability_checks_requiring_hearing"},
+			_ce(&"auto_fail", &"ability_checks_requiring_hearing"),
 		], &"never")
 
 	_save_condition(&"frightened", "Frightened",
 		"A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can't willingly move closer to the source of its fear.",
 		[
-			{"type": "disadvantage", "on": "ability_checks"},
-			{"type": "disadvantage", "on": "attack_rolls"},
-			{"type": "cant_approach", "on": "fear_source"},
+			_ce(&"disadvantage", &"ability_checks"),
+			_ce(&"disadvantage", &"attack_rolls"),
+			_ce(&"cant_approach", &"fear_source"),
 		], &"save")
 
 	_save_condition(&"grappled", "Grappled",
 		"A grappled creature's speed becomes 0, and it can't benefit from any bonus to its speed. The condition ends if the grappler is incapacitated or the creature is moved out of reach.",
 		[
-			{"type": "speed", "value": 0},
+			_ce(&"speed", &"", 0),
 		], &"custom")
 
 	_save_condition(&"incapacitated", "Incapacitated",
 		"An incapacitated creature can't take actions or reactions.",
 		[
-			{"type": "cant_act", "on": "actions"},
-			{"type": "cant_act", "on": "reactions"},
+			_ce(&"cant_act", &"actions"),
+			_ce(&"cant_act", &"reactions"),
 		], &"never")
 
 	_save_condition(&"invisible", "Invisible",
 		"An invisible creature is impossible to see without the aid of magic or a special sense. The creature's attack rolls have advantage, and attack rolls against the creature have disadvantage.",
 		[
-			{"type": "advantage", "on": "attack_rolls"},
-			{"type": "disadvantage", "on": "attack_rolls_against"},
-			{"type": "unseen", "on": "sight"},
+			_ce(&"advantage", &"attack_rolls"),
+			_ce(&"disadvantage", &"attack_rolls_against"),
+			_ce(&"unseen", &"sight"),
 		], &"custom")
 
 	_save_condition(&"paralyzed", "Paralyzed",
 		"A paralyzed creature is incapacitated and can't move or speak. The creature automatically fails Strength and Dexterity saving throws. Attack rolls against the creature have advantage. Any attack that hits is a critical hit if the attacker is within 5 feet.",
 		[
-			{"type": "incapacitated", "on": "all"},
-			{"type": "speed", "value": 0},
-			{"type": "auto_fail", "on": "strength_saves"},
-			{"type": "auto_fail", "on": "dexterity_saves"},
-			{"type": "advantage", "on": "attack_rolls_against"},
-			{"type": "auto_crit", "on": "melee_attacks_against"},
+			_ce(&"incapacitated", &"all"),
+			_ce(&"speed", &"", 0),
+			_ce(&"auto_fail", &"strength_saves"),
+			_ce(&"auto_fail", &"dexterity_saves"),
+			_ce(&"advantage", &"attack_rolls_against"),
+			_ce(&"auto_crit", &"melee_attacks_against"),
 		], &"save")
 
 	_save_condition(&"petrified", "Petrified",
 		"A petrified creature is transformed into a solid inanimate substance. It is incapacitated, can't move or speak, and is unaware of its surroundings. Attack rolls against it have advantage. It automatically fails Strength and Dexterity saves. It has resistance to all damage and is immune to poison and disease.",
 		[
-			{"type": "incapacitated", "on": "all"},
-			{"type": "speed", "value": 0},
-			{"type": "auto_fail", "on": "strength_saves"},
-			{"type": "auto_fail", "on": "dexterity_saves"},
-			{"type": "advantage", "on": "attack_rolls_against"},
-			{"type": "resistance", "on": "all_damage"},
-			{"type": "immunity", "on": "poison"},
+			_ce(&"incapacitated", &"all"),
+			_ce(&"speed", &"", 0),
+			_ce(&"auto_fail", &"strength_saves"),
+			_ce(&"auto_fail", &"dexterity_saves"),
+			_ce(&"advantage", &"attack_rolls_against"),
+			_ce(&"resistance", &"all_damage"),
+			_ce(&"immunity", &"poison"),
 		], &"never")
 
 	_save_condition(&"poisoned", "Poisoned",
 		"A poisoned creature has disadvantage on attack rolls and ability checks.",
 		[
-			{"type": "disadvantage", "on": "attack_rolls"},
-			{"type": "disadvantage", "on": "ability_checks"},
+			_ce(&"disadvantage", &"attack_rolls"),
+			_ce(&"disadvantage", &"ability_checks"),
 		], &"save")
 
 	_save_condition(&"prone", "Prone",
 		"A prone creature's only movement option is to crawl (half speed) unless it stands up. The creature has disadvantage on attack rolls. An attack roll against the creature has advantage if the attacker is within 5 feet; otherwise, the attack roll has disadvantage.",
 		[
-			{"type": "disadvantage", "on": "attack_rolls"},
-			{"type": "advantage", "on": "melee_attacks_against"},
-			{"type": "disadvantage", "on": "ranged_attacks_against"},
-			{"type": "movement_cost", "value": 2},
+			_ce(&"disadvantage", &"attack_rolls"),
+			_ce(&"advantage", &"melee_attacks_against"),
+			_ce(&"disadvantage", &"ranged_attacks_against"),
+			_ce(&"movement_cost", &"", 2),
 		], &"custom")
 
 	_save_condition(&"restrained", "Restrained",
 		"A restrained creature's speed becomes 0. Attack rolls against the creature have advantage, and the creature's attack rolls have disadvantage. The creature has disadvantage on Dexterity saving throws.",
 		[
-			{"type": "speed", "value": 0},
-			{"type": "advantage", "on": "attack_rolls_against"},
-			{"type": "disadvantage", "on": "attack_rolls"},
-			{"type": "disadvantage", "on": "dexterity_saves"},
+			_ce(&"speed", &"", 0),
+			_ce(&"advantage", &"attack_rolls_against"),
+			_ce(&"disadvantage", &"attack_rolls"),
+			_ce(&"disadvantage", &"dexterity_saves"),
 		], &"save")
 
 	_save_condition(&"stunned", "Stunned",
 		"A stunned creature is incapacitated, can't move, and can speak only falteringly. The creature automatically fails Strength and Dexterity saving throws. Attack rolls against the creature have advantage.",
 		[
-			{"type": "incapacitated", "on": "all"},
-			{"type": "speed", "value": 0},
-			{"type": "auto_fail", "on": "strength_saves"},
-			{"type": "auto_fail", "on": "dexterity_saves"},
-			{"type": "advantage", "on": "attack_rolls_against"},
+			_ce(&"incapacitated", &"all"),
+			_ce(&"speed", &"", 0),
+			_ce(&"auto_fail", &"strength_saves"),
+			_ce(&"auto_fail", &"dexterity_saves"),
+			_ce(&"advantage", &"attack_rolls_against"),
 		], &"save")
 
 	_save_condition(&"unconscious", "Unconscious",
 		"An unconscious creature is incapacitated, can't move or speak, and is unaware of its surroundings. The creature drops whatever it's holding and falls prone. Attack rolls against the creature have advantage. Any attack that hits is a critical hit if the attacker is within 5 feet. The creature automatically fails Strength and Dexterity saving throws.",
 		[
-			{"type": "incapacitated", "on": "all"},
-			{"type": "speed", "value": 0},
-			{"type": "auto_fail", "on": "strength_saves"},
-			{"type": "auto_fail", "on": "dexterity_saves"},
-			{"type": "advantage", "on": "attack_rolls_against"},
-			{"type": "auto_crit", "on": "melee_attacks_against"},
-			{"type": "prone", "on": "self"},
+			_ce(&"incapacitated", &"all"),
+			_ce(&"speed", &"", 0),
+			_ce(&"auto_fail", &"strength_saves"),
+			_ce(&"auto_fail", &"dexterity_saves"),
+			_ce(&"advantage", &"attack_rolls_against"),
+			_ce(&"auto_crit", &"melee_attacks_against"),
+			_ce(&"prone", &"self"),
 		], &"save")
 
 
 func _save_condition(id: StringName, display_name: String, description: String,
-		effects: Array, ends_on: StringName, save_ability: StringName = &"", save_dc: int = 0) -> void:
+		effects: Array[ConditionEffect], ends_on: StringName, save_ability: StringName = &"", save_dc: int = 0) -> void:
 	var c := ConditionData.new()
 	c.id = id
 	c.display_name = display_name
 	c.description = description
-	var typed_effects: Array[Dictionary] = []
-	for e in effects:
-		typed_effects.append(e)
-	c.effects = typed_effects
+	c.effects = effects
 	c.ends_on = ends_on
 	c.save_ability = save_ability
 	c.save_dc = save_dc
@@ -193,15 +225,16 @@ func _generate_monsters() -> void:
 	goblin.xp_reward = 50
 	goblin.proficiency_bonus = 2
 	goblin.traits = [
-		{"name": "Nimble Escape", "description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."},
+		_mt("Nimble Escape", "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."),
 	]
+	var goblin_shortbow := _ma("Shortbow", &"ranged_attack", 4, 5, "1d6+2", &"piercing",
+		"Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.")
+	goblin_shortbow.range_normal = 80
+	goblin_shortbow.range_long = 320
 	goblin.actions = [
-		{"name": "Scimitar", "type": "melee_attack", "attack_bonus": 4, "reach": 5,
-		 "damage": "1d6+2", "damage_type": "slashing",
-		 "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."},
-		{"name": "Shortbow", "type": "ranged_attack", "attack_bonus": 4, "range_normal": 80, "range_long": 320,
-		 "damage": "1d6+2", "damage_type": "piercing",
-		 "description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."},
+		_ma("Scimitar", &"melee_attack", 4, 5, "1d6+2", &"slashing",
+			"Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."),
+		goblin_shortbow,
 	]
 	_save(goblin, "res://data/monsters/goblin.tres")
 
@@ -227,13 +260,14 @@ func _generate_monsters() -> void:
 	skeleton.challenge_rating = 0.25
 	skeleton.xp_reward = 50
 	skeleton.proficiency_bonus = 2
+	var skeleton_shortbow := _ma("Shortbow", &"ranged_attack", 4, 5, "1d6+2", &"piercing",
+		"Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.")
+	skeleton_shortbow.range_normal = 80
+	skeleton_shortbow.range_long = 320
 	skeleton.actions = [
-		{"name": "Shortsword", "type": "melee_attack", "attack_bonus": 4, "reach": 5,
-		 "damage": "1d6+2", "damage_type": "piercing",
-		 "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."},
-		{"name": "Shortbow", "type": "ranged_attack", "attack_bonus": 4, "range_normal": 80, "range_long": 320,
-		 "damage": "1d6+2", "damage_type": "piercing",
-		 "description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."},
+		_ma("Shortsword", &"melee_attack", 4, 5, "1d6+2", &"piercing",
+			"Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."),
+		skeleton_shortbow,
 	]
 	_save(skeleton, "res://data/monsters/skeleton.tres")
 
@@ -257,15 +291,15 @@ func _generate_monsters() -> void:
 	wolf.xp_reward = 50
 	wolf.proficiency_bonus = 2
 	wolf.traits = [
-		{"name": "Keen Hearing and Smell", "description": "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."},
-		{"name": "Pack Tactics", "description": "The wolf has advantage on an attack roll against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."},
+		_mt("Keen Hearing and Smell", "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."),
+		_mt("Pack Tactics", "The wolf has advantage on an attack roll against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."),
 	]
-	wolf.actions = [
-		{"name": "Bite", "type": "melee_attack", "attack_bonus": 4, "reach": 5,
-		 "damage": "2d4+2", "damage_type": "piercing",
-		 "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.",
-		 "save_dc": 11, "save_ability": "strength", "save_effect": "prone"},
-	]
+	var wolf_bite := _ma("Bite", &"melee_attack", 4, 5, "2d4+2", &"piercing",
+		"Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.")
+	wolf_bite.save_dc = 11
+	wolf_bite.save_ability = &"strength"
+	wolf_bite.save_effect = "prone"
+	wolf.actions = [wolf_bite]
 	_save(wolf, "res://data/monsters/wolf.tres")
 
 	# --- Zombie (CR 1/4) ---
@@ -290,12 +324,11 @@ func _generate_monsters() -> void:
 	zombie.xp_reward = 50
 	zombie.proficiency_bonus = 2
 	zombie.traits = [
-		{"name": "Undead Fortitude", "description": "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."},
+		_mt("Undead Fortitude", "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."),
 	]
 	zombie.actions = [
-		{"name": "Slam", "type": "melee_attack", "attack_bonus": 3, "reach": 5,
-		 "damage": "1d6+1", "damage_type": "bludgeoning",
-		 "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."},
+		_ma("Slam", &"melee_attack", 3, 5, "1d6+1", &"bludgeoning",
+			"Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."),
 	]
 	_save(zombie, "res://data/monsters/zombie.tres")
 
@@ -320,15 +353,16 @@ func _generate_monsters() -> void:
 	orc.xp_reward = 100
 	orc.proficiency_bonus = 2
 	orc.traits = [
-		{"name": "Aggressive", "description": "As a bonus action, the orc can move up to its speed toward a hostile creature that it can see."},
+		_mt("Aggressive", "As a bonus action, the orc can move up to its speed toward a hostile creature that it can see."),
 	]
+	var orc_javelin := _ma("Javelin", &"ranged_attack", 5, 5, "1d6+3", &"piercing",
+		"Ranged Weapon Attack: +5 to hit, range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage.")
+	orc_javelin.range_normal = 30
+	orc_javelin.range_long = 120
 	orc.actions = [
-		{"name": "Greataxe", "type": "melee_attack", "attack_bonus": 5, "reach": 5,
-		 "damage": "1d12+3", "damage_type": "slashing",
-		 "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage."},
-		{"name": "Javelin", "type": "ranged_attack", "attack_bonus": 5, "range_normal": 30, "range_long": 120,
-		 "damage": "1d6+3", "damage_type": "piercing",
-		 "description": "Ranged Weapon Attack: +5 to hit, range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage."},
+		_ma("Greataxe", &"melee_attack", 5, 5, "1d12+3", &"slashing",
+			"Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage."),
+		orc_javelin,
 	]
 	_save(orc, "res://data/monsters/orc.tres")
 
@@ -351,13 +385,14 @@ func _generate_monsters() -> void:
 	ogre.challenge_rating = 2.0
 	ogre.xp_reward = 450
 	ogre.proficiency_bonus = 2
+	var ogre_javelin := _ma("Javelin", &"ranged_attack", 6, 5, "2d6+4", &"piercing",
+		"Ranged Weapon Attack: +6 to hit, range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage.")
+	ogre_javelin.range_normal = 30
+	ogre_javelin.range_long = 120
 	ogre.actions = [
-		{"name": "Greatclub", "type": "melee_attack", "attack_bonus": 6, "reach": 5,
-		 "damage": "2d8+4", "damage_type": "bludgeoning",
-		 "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."},
-		{"name": "Javelin", "type": "ranged_attack", "attack_bonus": 6, "range_normal": 30, "range_long": 120,
-		 "damage": "2d6+4", "damage_type": "piercing",
-		 "description": "Ranged Weapon Attack: +6 to hit, range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage."},
+		_ma("Greatclub", &"melee_attack", 6, 5, "2d8+4", &"bludgeoning",
+			"Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."),
+		ogre_javelin,
 	]
 	_save(ogre, "res://data/monsters/ogre.tres")
 
@@ -383,12 +418,11 @@ func _generate_encounters() -> void:
 	var enc := CombatEncounterData.new()
 	enc.id = &"test_goblin_ambush"
 	enc.display_name = "Goblin Ambush"
-	var spawns: Array[Dictionary] = [
-		{"monster_id": &"goblin", "cell": Vector2i(12, 3), "count": 1},
-		{"monster_id": &"goblin", "cell": Vector2i(13, 5), "count": 1},
-		{"monster_id": &"goblin", "cell": Vector2i(11, 5), "count": 1},
+	enc.monster_spawns = [
+		_mse(&"goblin", Vector2i(12, 3)),
+		_mse(&"goblin", Vector2i(13, 5)),
+		_mse(&"goblin", Vector2i(11, 5)),
 	]
-	enc.monster_spawns = spawns
 	enc.difficulty = &"easy"
 	enc.grants_xp = true
 	_save(enc, "res://data/encounters/test_goblin_ambush.tres")

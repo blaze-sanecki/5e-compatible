@@ -100,26 +100,26 @@ static func pick_best_action(monster: CombatantData,
 	var best_score: float = -1.0
 
 	for action in monster_data.actions:
-		var action_type: String = action.get("type", "melee_attack")
-		var reach: int = action.get("reach", 5)
-		var range_normal: int = action.get("range_normal", 5)
+		var action_type: StringName = action.type if action.type != &"" else &"melee_attack"
+		var reach: int = action.reach if action.reach > 0 else 5
+		var range_norm: int = action.range_normal if action.range_normal > 0 else 5
 		var score: float = 0.0
 
-		if action_type == "melee_attack":
+		if action_type == &"melee_attack":
 			if distance_ft <= reach:
 				score = 10.0  # Melee is preferred when in range.
 			else:
 				score = -1.0  # Can't use melee from here.
-		elif action_type == "ranged_attack":
-			if distance_ft <= range_normal:
+		elif action_type == &"ranged_attack":
+			if distance_ft <= range_norm:
 				score = 5.0  # In normal range.
-			elif distance_ft <= action.get("range_long", range_normal):
+			elif distance_ft <= (action.range_long if action.range_long > 0 else range_norm):
 				score = 2.0  # Long range (disadvantage).
 			else:
 				score = -1.0
 
 		# Parse damage for scoring.
-		var damage_str: String = action.get("damage", "1d4")
+		var damage_str: String = action.damage if action.damage != "" else "1d4"
 		score += _estimate_average_damage(damage_str) * 0.5
 
 		if score > best_score:

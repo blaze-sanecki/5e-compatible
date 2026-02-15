@@ -11,16 +11,11 @@ extends Resource
 @export var next_node_id: StringName
 
 ## Conditions that must be met to select this choice.
-## Each Dictionary describes one condition, e.g.,
-## {"type": "skill_check", "skill": "persuasion", "dc": 15} or
-## {"type": "has_item", "item_id": "golden_key"}.
-@export var conditions: Array[Dictionary]
+@export var conditions: Array[DialogueCondition]
 
 ## Conditions that must be met for this choice to appear at all.
-## Uses the same format as conditions. If any fail, the choice is hidden.
-@export var visible_conditions: Array[Dictionary]
+## If any fail, the choice is hidden.
+@export var visible_conditions: Array[DialogueCondition]
 
 ## Events triggered when this choice is selected.
-## Each Dictionary describes one event, e.g.,
-## {"type": "set_flag", "flag": "agreed_to_help", "value": true}.
-@export var events: Array[Dictionary]
+@export var events: Array[DialogueEvent]

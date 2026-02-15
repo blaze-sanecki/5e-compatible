@@ -1,17 +1,22 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=5 format=3]
 
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_1i2m8"]
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_sdxwh"]
+
+[sub_resource type="Resource" id="Resource_dopfa"]
+script = ExtResource("1_1i2m8")
+type = &"cant_attack"
+on = &"charmer"
+
+[sub_resource type="Resource" id="Resource_e2why"]
+script = ExtResource("1_1i2m8")
+type = &"advantage"
+on = &"social_checks_by_charmer"
 
 [resource]
 script = ExtResource("1_sdxwh")
 id = &"charmed"
 display_name = "Charmed"
 description = "A charmed creature can't attack the charmer or target the charmer with harmful abilities or magical effects. The charmer has advantage on any ability check to interact socially with the creature."
-effects = Array[Dictionary]([{
-"on": "charmer",
-"type": "cant_attack"
-}, {
-"on": "social_checks_by_charmer",
-"type": "advantage"
-}])
+effects = Array[ExtResource("1_1i2m8")]([SubResource("Resource_dopfa"), SubResource("Resource_e2why")])
 ends_on = &"save"

@@ -60,7 +60,7 @@ func _build_ui() -> void:
 
 	_quest_title = Label.new()
 	_quest_title.add_theme_font_size_override("font_size", 13)
-	_quest_title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+	_quest_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_quest_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_quest_container.add_child(_quest_title)
 
@@ -102,14 +102,14 @@ func _add_hp_bar(character: Resource) -> void:
 	# HP bar background.
 	var bar_bg := ColorRect.new()
 	bar_bg.custom_minimum_size = Vector2(100, 14)
-	bar_bg.color = Color(0.2, 0.1, 0.1, 0.8)
+	bar_bg.color = UITheme.COLOR_HP_BG
 	bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(bar_bg)
 
 	# HP bar fill.
 	var bar_fill := ColorRect.new()
 	bar_fill.custom_minimum_size = Vector2(0, 14)
-	bar_fill.color = Color(0.2, 0.7, 0.2, 0.9)
+	bar_fill.color = UITheme.COLOR_HP_HIGH
 	bar_bg.add_child(bar_fill)
 
 	# HP text.
@@ -146,11 +146,11 @@ func _update_hp_bar(character: Resource) -> void:
 
 	# Color based on health percentage.
 	if ratio > 0.5:
-		bar_fill.color = Color(0.2, 0.7, 0.2, 0.9)
+		bar_fill.color = UITheme.COLOR_HP_HIGH
 	elif ratio > 0.25:
-		bar_fill.color = Color(0.8, 0.6, 0.1, 0.9)
+		bar_fill.color = UITheme.COLOR_HP_MID
 	else:
-		bar_fill.color = Color(0.8, 0.2, 0.1, 0.9)
+		bar_fill.color = UITheme.COLOR_HP_LOW
 
 	hp_label.text = "%d/%d" % [current, maximum]
 

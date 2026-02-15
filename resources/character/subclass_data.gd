@@ -16,17 +16,16 @@ extends Resource
 @export var parent_class_id: StringName
 
 ## Subclass features gained at each level.
-## Each entry is a Dictionary with keys: "level" (int), "name" (String), "description" (String).
-@export var features: Array[Dictionary]
+@export var features: Array[ClassFeature]
 
 ## Bonus spells granted by this subclass, if any (references to SpellData resources).
 @export var bonus_spells: Array[Resource]
 
 
 ## Returns all subclass features gained at the specified level.
-func get_features_at_level(level: int) -> Array[Dictionary]:
-	var results: Array[Dictionary] = []
+func get_features_at_level(level: int) -> Array[ClassFeature]:
+	var results: Array[ClassFeature] = []
 	for feature in features:
-		if feature.get("level", 0) == level:
+		if feature.level == level:
 			results.append(feature)
 	return results

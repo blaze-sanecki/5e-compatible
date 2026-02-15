@@ -99,7 +99,7 @@ func has_attack_advantage(attacker: CombatantData, target: CombatantData) -> boo
 		if cond_data == null:
 			continue
 		for effect in cond_data.effects:
-			if effect.get("type") == "advantage" and effect.get("on") == "attack_rolls_against":
+			if effect.type == &"advantage" and effect.on == &"attack_rolls_against":
 				return true
 
 	return false
@@ -113,7 +113,7 @@ func has_attack_disadvantage(attacker: CombatantData, target: CombatantData) -> 
 		if cond_data == null:
 			continue
 		for effect in cond_data.effects:
-			if effect.get("type") == "disadvantage" and effect.get("on") == "attack_rolls":
+			if effect.type == &"disadvantage" and effect.on == &"attack_rolls":
 				return true
 
 	# Target dodging
@@ -136,7 +136,7 @@ func is_auto_crit(target: CombatantData, distance_ft: int) -> bool:
 		if cond_data == null:
 			continue
 		for effect in cond_data.effects:
-			if effect.get("type") == "auto_crit" and effect.get("on") == "melee_attacks_against":
+			if effect.type == &"auto_crit" and effect.on == &"melee_attacks_against":
 				return true
 	return false
 
@@ -148,9 +148,9 @@ func is_incapacitated(combatant: CombatantData) -> bool:
 		if cond_data == null:
 			continue
 		for effect in cond_data.effects:
-			if effect.get("type") == "incapacitated":
+			if effect.type == &"incapacitated":
 				return true
-			if effect.get("type") == "cant_act" and effect.get("on") == "actions":
+			if effect.type == &"cant_act" and effect.on == &"actions":
 				return true
 	return false
 
@@ -162,6 +162,6 @@ func is_speed_zero(combatant: CombatantData) -> bool:
 		if cond_data == null:
 			continue
 		for effect in cond_data.effects:
-			if effect.get("type") == "speed" and effect.get("value") == 0:
+			if effect.type == &"speed" and effect.value == 0:
 				return true
 	return false

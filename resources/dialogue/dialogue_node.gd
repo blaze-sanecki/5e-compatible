@@ -25,6 +25,4 @@ extends Resource
 @export var next_node_id: StringName
 
 ## Events triggered when this node is displayed.
-## Each entry is a Dictionary such as {"type": "give_item", "item_id": "health_potion"}
-## or {"type": "start_quest", "quest_id": "rescue_villagers"}.
-@export var events: Array[Dictionary]
+@export var events: Array[DialogueEvent]

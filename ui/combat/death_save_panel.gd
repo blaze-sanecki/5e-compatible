@@ -42,13 +42,8 @@ func hide_panel() -> void:
 func _build_ui() -> void:
 	custom_minimum_size = Vector2(280, 160)
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.05, 0.05, 0.95)
-	style.border_color = Color(0.7, 0.2, 0.2)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(12)
-	add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", UIStyler.create_panel_style(
+		Color(0.1, 0.05, 0.05, 0.95), Color(0.7, 0.2, 0.2), 2, 8, 12))
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 8)
@@ -152,7 +147,7 @@ func _on_roll_pressed() -> void:
 		_result_label.add_theme_color_override("font_color", Color(0.5, 0.9, 0.5))
 	else:
 		_result_label.text = "Failure (rolled %d)" % result.get("natural_roll", 0)
-		_result_label.add_theme_color_override("font_color", Color(0.9, 0.4, 0.4))
+		_result_label.add_theme_color_override("font_color", UITheme.COLOR_ERROR)
 
 
 func _update_circles(combatant: CombatantData) -> void:

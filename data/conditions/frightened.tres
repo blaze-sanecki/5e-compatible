@@ -1,20 +1,27 @@
-[gd_resource type="Resource" script_class="ConditionData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ConditionData" load_steps=6 format=3]
 
+[ext_resource type="Script" path="res://resources/combat/condition_effect.gd" id="1_q0a58"]
 [ext_resource type="Script" path="res://resources/combat/condition_data.gd" id="1_ys840"]
+
+[sub_resource type="Resource" id="Resource_rnyug"]
+script = ExtResource("1_q0a58")
+type = &"disadvantage"
+on = &"ability_checks"
+
+[sub_resource type="Resource" id="Resource_aknrd"]
+script = ExtResource("1_q0a58")
+type = &"disadvantage"
+on = &"attack_rolls"
+
+[sub_resource type="Resource" id="Resource_u80ux"]
+script = ExtResource("1_q0a58")
+type = &"cant_approach"
+on = &"fear_source"
 
 [resource]
 script = ExtResource("1_ys840")
 id = &"frightened"
 display_name = "Frightened"
 description = "A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can't willingly move closer to the source of its fear."
-effects = Array[Dictionary]([{
-"on": "ability_checks",
-"type": "disadvantage"
-}, {
-"on": "attack_rolls",
-"type": "disadvantage"
-}, {
-"on": "fear_source",
-"type": "cant_approach"
-}])
+effects = Array[ExtResource("1_q0a58")]([SubResource("Resource_rnyug"), SubResource("Resource_aknrd"), SubResource("Resource_u80ux")])
 ends_on = &"save"

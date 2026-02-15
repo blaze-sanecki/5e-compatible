@@ -1,6 +1,41 @@
-[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ClassData" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_4sk37"]
+[ext_resource type="Script" path="res://resources/character/class_feature.gd" id="1_q4mbg"]
+
+[sub_resource type="Resource" id="Resource_pjtn8"]
+script = ExtResource("1_q4mbg")
+name = "Fighting Style"
+description = "You adopt a particular style of fighting as your specialty."
+
+[sub_resource type="Resource" id="Resource_27sjw"]
+script = ExtResource("1_q4mbg")
+name = "Second Wind"
+description = "You have a limited well of stamina. On your turn, you can use a Bonus Action to regain hit points equal to 1d10 + your Fighter level. Once you use this feature, you must finish a Short or Long Rest before you can use it again."
+
+[sub_resource type="Resource" id="Resource_5i77r"]
+script = ExtResource("1_q4mbg")
+level = 2
+name = "Action Surge"
+description = "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action. Once you use this feature, you must finish a Short or Long Rest before you can use it again."
+
+[sub_resource type="Resource" id="Resource_3cbce"]
+script = ExtResource("1_q4mbg")
+level = 3
+name = "Subclass"
+description = "Choose a martial archetype that you strive to emulate in your combat styles and techniques."
+
+[sub_resource type="Resource" id="Resource_riule"]
+script = ExtResource("1_q4mbg")
+level = 4
+name = "Ability Score Improvement"
+description = "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat."
+
+[sub_resource type="Resource" id="Resource_27g4u"]
+script = ExtResource("1_q4mbg")
+level = 5
+name = "Extra Attack"
+description = "You can attack twice, instead of once, whenever you take the Attack action on your turn."
 
 [resource]
 script = ExtResource("1_4sk37")
@@ -14,28 +49,4 @@ armor_proficiencies = Array[StringName]([&"light", &"medium", &"heavy", &"shield
 weapon_proficiencies = Array[StringName]([&"simple", &"martial"])
 skill_choices = Array[StringName]([&"acrobatics", &"animal_handling", &"athletics", &"history", &"insight", &"intimidation", &"perception", &"survival"])
 starting_equipment_options = Array[String](["Chain Mail or Leather Armor", "Longsword and Shield or two Martial Weapons", "Light Crossbow and 20 bolts or two Handaxes", "Dungeoneer's Pack or Explorer's Pack"])
-class_features = Array[Dictionary]([{
-"description": "You adopt a particular style of fighting as your specialty.",
-"level": 1,
-"name": "Fighting Style"
-}, {
-"description": "You have a limited well of stamina. On your turn, you can use a Bonus Action to regain hit points equal to 1d10 + your Fighter level. Once you use this feature, you must finish a Short or Long Rest before you can use it again.",
-"level": 1,
-"name": "Second Wind"
-}, {
-"description": "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action. Once you use this feature, you must finish a Short or Long Rest before you can use it again.",
-"level": 2,
-"name": "Action Surge"
-}, {
-"description": "Choose a martial archetype that you strive to emulate in your combat styles and techniques.",
-"level": 3,
-"name": "Subclass"
-}, {
-"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
-"level": 4,
-"name": "Ability Score Improvement"
-}, {
-"description": "You can attack twice, instead of once, whenever you take the Attack action on your turn.",
-"level": 5,
-"name": "Extra Attack"
-}])
+class_features = Array[ExtResource("1_q4mbg")]([SubResource("Resource_pjtn8"), SubResource("Resource_27sjw"), SubResource("Resource_5i77r"), SubResource("Resource_3cbce"), SubResource("Resource_riule"), SubResource("Resource_27g4u")])

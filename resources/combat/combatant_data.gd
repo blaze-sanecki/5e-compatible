@@ -182,9 +182,9 @@ func start_turn() -> void:
 		var cond_data: ConditionData = DataRegistry.get_condition(cond_id)
 		if cond_data:
 			for effect in cond_data.effects:
-				if effect.get("type") == "speed" and effect.get("value") == 0:
+				if effect.type == "speed" and effect.value == 0:
 					movement_remaining = 0
-				elif effect.get("type") == "incapacitated":
+				elif effect.type == "incapacitated":
 					has_action = false
 					has_bonus_action = false
 
@@ -231,7 +231,7 @@ func get_primary_weapon() -> Variant:
 	# Monster: return first melee action
 	if source.get("actions"):
 		for action in source.actions:
-			if action.get("type") == "melee_attack":
+			if action.type == &"melee_attack":
 				return action
 	return null
 
@@ -249,6 +249,6 @@ static func _get_attack_count(character: Resource) -> int:
 	# Check class features for Extra Attack
 	if class_data.get("class_features"):
 		for feature in class_data.class_features:
-			if feature.get("name") == "Extra Attack" and character.level >= feature.get("level", 99):
+			if feature.name == "Extra Attack" and character.level >= feature.level:
 				return 2
 	return 1

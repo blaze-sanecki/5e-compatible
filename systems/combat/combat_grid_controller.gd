@@ -74,6 +74,9 @@ func handle_input(event: InputEvent) -> bool:
 			KEY_H:
 				action_requested.emit(&"hide")
 				return true
+			KEY_I:
+				action_requested.emit(&"use_item")
+				return true
 			KEY_ENTER, KEY_KP_ENTER:
 				action_requested.emit(&"end_turn")
 				return true
@@ -185,15 +188,8 @@ func _handle_move_click(target_cell: Vector2i, combatant: CombatantData) -> bool
 func _animate_token_movement(token: Node2D, cells: Array[Vector2i], floor_layer_ref: TileMapLayer) -> void:
 	for cell in cells:
 		var target_pos: Vector2 = floor_layer_ref.map_to_local(cell)
-		var distance: float = token.position.distance_to(target_pos)
-		var duration: float = distance / 300.0  # Pixels per second.
-		var tween: Tween = token.create_tween()
-		tween.tween_property(token, "position", target_pos, duration)
-		await tween.finished
-		if token is CharacterToken:
-			(token as CharacterToken).current_cell = cell
-		elif token is MonsterToken:
-			(token as MonsterToken).current_cell = cell
+		token.animate_move_to(target_pos)
+		await token.animation_finished
 
 
 func _handle_attack_click(target_cell: Vector2i, _combatant: CombatantData) -> bool:
@@ -211,11 +207,11 @@ func _handle_attack_click(target_cell: Vector2i, _combatant: CombatantData) -> b
 	var result: Dictionary = combat_manager.player_attack(target, _selected_weapon)
 
 	# Visual feedback.
-	if target.token and target.token is MonsterToken:
-		if result.get("hit", false):
-			(target.token as MonsterToken).flash_damage()
-			if target.is_dead:
-				(target.token as MonsterToken).play_death()
+	if target.token and result.get("hit", false):
+		if target.token.has_method("flash_damage"):
+			target.token.flash_damage()
+		if target.is_dead and target.token.has_method("play_death"):
+			target.token.play_death()
 
 	target_selected.emit(target)
 

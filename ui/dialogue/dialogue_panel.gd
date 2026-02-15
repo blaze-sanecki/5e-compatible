@@ -131,15 +131,14 @@ func _show_choice_buttons() -> void:
 
 		# Append skill check info if present.
 		for cond in choice.conditions:
-			if cond.get("type") == "skill_check":
-				var skill_name: String = str(cond.get("skill", "")).capitalize()
-				var dc_val: int = cond.get("dc", 10)
-				label_text += " [%s DC %d]" % [skill_name, dc_val]
+			if cond.type == &"skill_check":
+				var skill_name: String = str(cond.skill).capitalize()
+				label_text += " [%s DC %d]" % [skill_name, cond.dc]
 
 		# Gray out if non-skill conditions fail.
 		var selectable: bool = true
 		for cond in choice.conditions:
-			if cond.get("type") != "skill_check":
+			if cond.type != &"skill_check":
 				if not DialogueManager.evaluate_condition(cond):
 					selectable = false
 					break
@@ -187,13 +186,8 @@ func _build_ui() -> void:
 	_panel.offset_top = 0
 	_panel.offset_bottom = 0
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.15, 0.92)
-	style.border_color = Color(0.6, 0.5, 0.3, 1.0)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(12)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
+		Color(0.1, 0.1, 0.15, 0.92), UITheme.COLOR_BORDER, 2, 6, 12))
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 6)
@@ -202,7 +196,7 @@ func _build_ui() -> void:
 	# Speaker name.
 	_speaker_label = Label.new()
 	_speaker_label.add_theme_font_size_override("font_size", 18)
-	_speaker_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4, 1.0))
+	_speaker_label.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	vbox.add_child(_speaker_label)
 
 	# Dialogue text.

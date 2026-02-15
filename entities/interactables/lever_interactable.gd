@@ -9,17 +9,15 @@ extends InteractableBase
 ## Paths to nodes that this lever controls.
 @export var linked_objects: Array[NodePath] = []
 
-## Whether the lever is currently in the "on" position.
-var is_activated: bool = false
+## Whether the lever is currently in the "on" position (delegates to state).
+var is_activated: bool:
+	get: return state.is_activated
+	set(v): state.is_activated = v
 
 
 func _perform_interaction() -> void:
-	is_activated = not is_activated
-
-	# Update visual — tint when activated.
-	var sprite: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
-	if sprite:
-		sprite.modulate = Color(0.3, 1.0, 0.3) if is_activated else Color.WHITE
+	state.toggle_activated()
+	_update_visual()
 
 	if interactable_data:
 		interactable_data.is_used = is_activated
@@ -43,3 +41,10 @@ func _perform_interaction() -> void:
 				target.force_close()
 		elif target.has_method("interact"):
 			target.interact()
+
+
+## Apply visual state for the current activated status.
+func _update_visual() -> void:
+	var sprite: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
+	if sprite:
+		sprite.modulate = Color(0.3, 1.0, 0.3) if is_activated else Color.WHITE
