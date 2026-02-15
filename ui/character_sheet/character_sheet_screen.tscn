@@ -1,0 +1,191 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/character_sheet/character_sheet_screen.gd" id="1_cs"]
+
+[node name="CharacterSheetScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cs")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 0.95)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Character Name"
+
+[node name="ClassLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Human Fighter"
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level 1"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(10, 0)
+
+[node name="XPLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "XP: 0"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(10, 0)
+
+[node name="LevelUpBtn" type="Button" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+text = "Level Up!"
+
+[node name="CloseBtn" type="Button" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Close"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftColumn" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 0)
+theme_override_constants/separation = 6
+
+[node name="AbilitiesHeader" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+layout_mode = 2
+text = "Ability Scores"
+
+[node name="AbilitiesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Sep1" type="HSeparator" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="SavesHeader" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+layout_mode = 2
+text = "Saving Throws"
+
+[node name="SavesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Sep2" type="HSeparator" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="SkillsHeader" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+layout_mode = 2
+text = "Skills"
+
+[node name="SkillScroll" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkillsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftColumn/SkillScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CenterColumn" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(200, 0)
+theme_override_constants/separation = 6
+
+[node name="ACLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "AC: 10"
+
+[node name="HPLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "HP: 10 / 10"
+
+[node name="SpeedLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Speed: 30 ft."
+
+[node name="InitiativeLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Initiative: +0"
+
+[node name="HitDiceLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Hit Dice: 1d8"
+
+[node name="Sep3" type="HSeparator" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+layout_mode = 2
+
+[node name="FeaturesHeader" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+layout_mode = 2
+text = "Features"
+
+[node name="FeaturesScroll" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FeaturesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/CenterColumn/FeaturesScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightColumn" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(220, 0)
+theme_override_constants/separation = 6
+
+[node name="ProficienciesLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/RightColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Proficiencies"
+
+[node name="SpellcastingLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/RightColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 150)
+bbcode_enabled = true
+visible = false
+text = "Spellcasting"

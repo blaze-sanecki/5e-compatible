@@ -14,7 +14,11 @@ config/name="5eCompatible"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
-[editor]
+[autoload]
 
-version_control/plugin_name="GitPlugin"
-version_control/autoload_on_startup=true
+EventBus="*res://autoloads/event_bus.gd"
+DiceRoller="*res://autoloads/dice_roller.gd"
+RulesEngine="*res://autoloads/rules_engine.gd"
+GameManager="*res://autoloads/game_manager.gd"
+PartyManager="*res://autoloads/party_manager.gd"
+DataRegistry="*res://autoloads/data_registry.gd"

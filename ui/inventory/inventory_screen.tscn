@@ -1,0 +1,163 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/inventory/inventory_screen.gd" id="1_inv"]
+
+[node name="InventoryScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_inv")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 0.95)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="GoldLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 gp"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 0)
+
+[node name="WeightLabel" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0.0 lb"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 0)
+
+[node name="CloseBtn" type="Button" parent="MarginContainer/VBoxContainer/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Close"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(250, 0)
+theme_override_constants/separation = 8
+
+[node name="EquipLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel"]
+layout_mode = 2
+text = "Equipment"
+
+[node name="ArmorRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="ArmorTitle" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/ArmorRow"]
+layout_mode = 2
+text = "Armor: "
+
+[node name="ArmorLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/ArmorRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "None"
+
+[node name="UnequipArmorBtn" type="Button" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/ArmorRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "X"
+
+[node name="ShieldRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="ShieldTitle" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/ShieldRow"]
+layout_mode = 2
+text = "Shield: "
+
+[node name="ShieldLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/ShieldRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "None"
+
+[node name="UnequipShieldBtn" type="Button" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/ShieldRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "X"
+
+[node name="WeaponsRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="WeaponsTitle" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/WeaponsRow"]
+layout_mode = 2
+text = "Weapons: "
+
+[node name="WeaponsLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/LeftPanel/WeaponsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "None"
+
+[node name="RightPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InventoryList" type="ItemList" parent="MarginContainer/VBoxContainer/HSplitContainer/RightPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemDetails" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/RightPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 150)
+bbcode_enabled = true
+text = "Select an item to view details."
+
+[node name="ActionButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/RightPanel"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="EquipBtn" type="Button" parent="MarginContainer/VBoxContainer/HSplitContainer/RightPanel/ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+text = "Equip"
+
+[node name="DropBtn" type="Button" parent="MarginContainer/VBoxContainer/HSplitContainer/RightPanel/ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+text = "Drop"
