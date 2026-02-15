@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_3lo8d"]
+
+[resource]
+script = ExtResource("1_3lo8d")
+id = &"cleric"
+display_name = "Cleric"
+description = "A priestly champion who wields divine magic in service of a higher power."
+primary_ability = &"wisdom"
+saving_throw_proficiencies = Array[StringName]([&"wisdom", &"charisma"])
+armor_proficiencies = Array[StringName]([&"light", &"medium", &"shield"])
+weapon_proficiencies = Array[StringName]([&"simple"])
+skill_choices = Array[StringName]([&"history", &"insight", &"medicine", &"persuasion", &"religion"])
+starting_equipment_options = Array[String](["Mace or Warhammer (if proficient)", "Scale Mail, Leather Armor, or Chain Mail (if proficient)", "Light Crossbow and 20 bolts or any Simple Weapon", "Priest's Pack or Explorer's Pack", "Shield and Holy Symbol"])
+spellcasting_ability = &"wisdom"
+is_spellcaster = true
+subclass_level = 1
+class_features = Array[Dictionary]([{
+"description": "As a conduit for divine power, you can cast cleric spells. You know three cantrips and can prepare a number of spells equal to your Wisdom modifier + your Cleric level.",
+"level": 1,
+"name": "Spellcasting"
+}, {
+"description": "Choose one domain related to your deity. Your domain grants you additional spells and features.",
+"level": 1,
+"name": "Divine Domain"
+}, {
+"description": "You gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with Turn Undead and one effect determined by your domain. You can use Channel Divinity once between rests.",
+"level": 2,
+"name": "Channel Divinity"
+}, {
+"description": "As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead within 30 feet that can see or hear you must make a Wisdom saving throw or be turned for 1 minute.",
+"level": 2,
+"name": "Turn Undead"
+}, {
+"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
+"level": 4,
+"name": "Ability Score Improvement"
+}, {
+"description": "When an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below 1/2.",
+"level": 5,
+"name": "Destroy Undead"
+}])

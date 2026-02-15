@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BackgroundData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/background_data.gd" id="1_5tssl"]
+
+[resource]
+script = ExtResource("1_5tssl")
+id = &"criminal"
+display_name = "Criminal"
+description = "You eked out a living by breaking the law. You have contacts within the criminal underworld and a knack for getting away with crimes."
+skill_proficiencies = Array[StringName]([&"sleight_of_hand", &"stealth"])
+tool_proficiencies = Array[StringName]([&"thieves_tools"])
+starting_gold = 16
+ability_score_increases = {
+"constitution": 1,
+"dexterity": 2,
+"intelligence": 1
+}
+origin_feat = &"alert"

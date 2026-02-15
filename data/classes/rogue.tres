@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_7ph07"]
+
+[resource]
+script = ExtResource("1_7ph07")
+id = &"rogue"
+display_name = "Rogue"
+description = "A scoundrel who uses stealth and trickery to overcome obstacles and enemies."
+primary_ability = &"dexterity"
+saving_throw_proficiencies = Array[StringName]([&"dexterity", &"intelligence"])
+armor_proficiencies = Array[StringName]([&"light"])
+weapon_proficiencies = Array[StringName]([&"simple", &"hand_crossbow", &"longsword", &"rapier", &"shortsword"])
+skill_choices = Array[StringName]([&"acrobatics", &"athletics", &"deception", &"insight", &"intimidation", &"investigation", &"perception", &"performance", &"persuasion", &"sleight_of_hand", &"stealth"])
+num_skill_choices = 4
+starting_equipment_options = Array[String](["Rapier or Shortsword", "Shortbow and 20 arrows or Shortsword", "Burglar's Pack, Dungeoneer's Pack, or Explorer's Pack", "Leather Armor, two Daggers, and Thieves' Tools"])
+class_features = Array[Dictionary]([{
+"description": "Choose two of your skill proficiencies or one skill proficiency and Thieves' Tools. Your proficiency bonus is doubled for any ability check you make with the chosen proficiencies.",
+"level": 1,
+"name": "Expertise"
+}, {
+"description": "Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The extra damage increases as you gain levels. The attack must use a finesse or a ranged weapon.",
+"level": 1,
+"name": "Sneak Attack"
+}, {
+"description": "You have learned thieves' cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation.",
+"level": 1,
+"name": "Thieves' Cant"
+}, {
+"description": "You can take a Bonus Action on each of your turns in combat to Dash, Disengage, or Hide.",
+"level": 2,
+"name": "Cunning Action"
+}, {
+"description": "Choose a roguish archetype that you emulate in your activities.",
+"level": 3,
+"name": "Subclass"
+}, {
+"description": "As a Bonus Action, you give yourself advantage on your next attack roll on the current turn if you haven't moved during this turn.",
+"level": 3,
+"name": "Steady Aim"
+}, {
+"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
+"level": 4,
+"name": "Ability Score Improvement"
+}, {
+"description": "When an attacker that you can see hits you with an attack, you can use your Reaction to halve the attack's damage against you.",
+"level": 5,
+"name": "Uncanny Dodge"
+}])

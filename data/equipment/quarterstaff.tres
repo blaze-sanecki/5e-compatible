@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_om0u7"]
+[ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_u2byu"]
+
+[sub_resource type="Resource" id="Resource_kw1li"]
+script = ExtResource("1_om0u7")
+
+[sub_resource type="Resource" id="Resource_x2bwu"]
+script = ExtResource("1_om0u7")
+dice_size = 8
+
+[resource]
+script = ExtResource("2_u2byu")
+damage = SubResource("Resource_kw1li")
+versatile_damage = SubResource("Resource_x2bwu")
+properties = Array[StringName]([&"versatile"])
+id = &"quarterstaff"
+display_name = "Quarterstaff"
+weight = 4.0
+cost_gp = 0.2
+item_type = &"weapon"

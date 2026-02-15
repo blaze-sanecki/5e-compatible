@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/armor_data.gd" id="1_0o7k4"]
+
+[resource]
+script = ExtResource("1_0o7k4")
+base_ac = 12
+id = &"studded_leather"
+display_name = "Studded Leather"
+weight = 13.0
+cost_gp = 45.0
+item_type = &"armor"

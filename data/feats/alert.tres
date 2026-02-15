@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FeatData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/feat_data.gd" id="1_shpm6"]
+
+[resource]
+script = ExtResource("1_shpm6")
+id = &"alert"
+display_name = "Alert"
+description = "You gain a +5 bonus to initiative. You can't be surprised while you are conscious. Other creatures don't gain advantage on attack rolls against you as a result of being unseen by you."
+category = &"origin"
+effects = Array[Dictionary]([{
+"type": "initiative_bonus",
+"value": 5
+}])

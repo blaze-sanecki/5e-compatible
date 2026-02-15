@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/armor_data.gd" id="1_mgmdc"]
+
+[resource]
+script = ExtResource("1_mgmdc")
+armor_category = &"medium"
+base_ac = 13
+max_dex_bonus = 2
+id = &"chain_shirt"
+display_name = "Chain Shirt"
+weight = 20.0
+cost_gp = 50.0
+item_type = &"armor"

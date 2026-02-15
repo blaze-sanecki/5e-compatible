@@ -43,7 +43,7 @@ func _ready() -> void:
 func get_all_classes() -> Array:
 	return _classes.values()
 
-func get_class(id: StringName) -> ClassData:
+func get_class_data(id: StringName) -> ClassData:
 	return _classes.get(id) as ClassData
 
 # ---------------------------------------------------------------------------

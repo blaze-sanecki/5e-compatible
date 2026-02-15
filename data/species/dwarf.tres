@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="SpeciesData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/species_data.gd" id="1_7s0cy"]
+
+[resource]
+script = ExtResource("1_7s0cy")
+id = &"dwarf"
+display_name = "Dwarf"
+description = "Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human standing nearly two feet taller."
+base_speed = 25
+darkvision_range = 60
+resistances = Array[StringName]([&"poison"])
+languages = Array[StringName]([&"common", &"dwarvish"])
+traits = Array[Dictionary]([{
+"description": "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light.",
+"name": "Darkvision"
+}, {
+"description": "You have resistance to poison damage. You also have advantage on saving throws against the poisoned condition.",
+"name": "Dwarven Resilience"
+}, {
+"description": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.",
+"name": "Dwarven Toughness"
+}, {
+"description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient and add double your proficiency bonus to the check.",
+"name": "Stonecunning"
+}])

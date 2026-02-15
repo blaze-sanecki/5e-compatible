@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="SpeciesData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/species_data.gd" id="1_e4bju"]
+
+[resource]
+script = ExtResource("1_e4bju")
+id = &"human"
+display_name = "Human"
+description = "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds."
+languages = Array[StringName]([&"common"])
+traits = Array[Dictionary]([{
+"description": "You gain Heroic Inspiration whenever you finish a Long Rest.",
+"name": "Resourceful"
+}, {
+"description": "You gain proficiency in one skill of your choice.",
+"name": "Skillful"
+}, {
+"description": "You gain an Origin feat of your choice.",
+"name": "Versatile"
+}])

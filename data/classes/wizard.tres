@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_wndea"]
+
+[resource]
+script = ExtResource("1_wndea")
+id = &"wizard"
+display_name = "Wizard"
+description = "A scholarly magic-user capable of manipulating the structures of reality."
+hit_die = 6
+primary_ability = &"intelligence"
+saving_throw_proficiencies = Array[StringName]([&"intelligence", &"wisdom"])
+weapon_proficiencies = Array[StringName]([&"dagger", &"dart", &"sling", &"quarterstaff", &"light_crossbow"])
+skill_choices = Array[StringName]([&"arcana", &"history", &"insight", &"investigation", &"medicine", &"religion"])
+starting_equipment_options = Array[String](["Quarterstaff or Dagger", "Component Pouch or Arcane Focus", "Scholar's Pack or Explorer's Pack", "Spellbook"])
+spellcasting_ability = &"intelligence"
+is_spellcaster = true
+subclass_level = 2
+class_features = Array[Dictionary]([{
+"description": "As a student of arcane magic, you have a spellbook containing spells that show the first glimmerings of your true power. You know three cantrips and have a spellbook with six 1st-level wizard spells.",
+"level": 1,
+"name": "Spellcasting"
+}, {
+"description": "Once per day when you finish a Short Rest, you can recover expended spell slots with a combined level equal to or less than half your wizard level (rounded up).",
+"level": 1,
+"name": "Arcane Recovery"
+}, {
+"description": "Choose an arcane tradition that shapes your practice of magic.",
+"level": 2,
+"name": "Subclass"
+}, {
+"description": "You have scribed a set of arcane formulas in your spellbook that you can use to formulate a cantrip in your mind.",
+"level": 3,
+"name": "Cantrip Formulas"
+}, {
+"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
+"level": 4,
+"name": "Ability Score Improvement"
+}, {
+"description": "You can prepare one additional spell from your spellbook.",
+"level": 5,
+"name": "Memorize Spell"
+}])

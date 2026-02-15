@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/armor_data.gd" id="1_ik56m"]
+
+[resource]
+script = ExtResource("1_ik56m")
+armor_category = &"shield"
+base_ac = 2
+add_dex = false
+max_dex_bonus = 0
+id = &"shield"
+display_name = "Shield"
+weight = 6.0
+cost_gp = 10.0
+item_type = &"armor"

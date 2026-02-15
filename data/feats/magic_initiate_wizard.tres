@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FeatData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/feat_data.gd" id="1_eg5wa"]
+
+[resource]
+script = ExtResource("1_eg5wa")
+id = &"magic_initiate_wizard"
+display_name = "Magic Initiate (Wizard)"
+description = "You learn two cantrips and one 1st-level spell from the Wizard spell list. You can cast the 1st-level spell once per Long Rest without expending a spell slot. Intelligence is your spellcasting ability for these spells."
+category = &"origin"
+effects = Array[Dictionary]([{
+"class": "wizard",
+"type": "cantrips",
+"value": 2
+}, {
+"class": "wizard",
+"level": 1,
+"type": "spell",
+"value": 1
+}])

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="SpeciesData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/species_data.gd" id="1_kdpq1"]
+
+[resource]
+script = ExtResource("1_kdpq1")
+id = &"halfling"
+display_name = "Halfling"
+description = "The comforts of home are the goals of most halflings' lives: a place to settle in peace and quiet, far from marauding monsters and clashing armies."
+size = &"small"
+languages = Array[StringName]([&"common", &"halfling"])
+traits = Array[Dictionary]([{
+"description": "You have advantage on saving throws against being frightened.",
+"name": "Brave"
+}, {
+"description": "You can move through the space of any creature that is of a size larger than yours.",
+"name": "Halfling Nimbleness"
+}, {
+"description": "When you roll a 1 on the d20 for an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll.",
+"name": "Lucky"
+}, {
+"description": "You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you.",
+"name": "Naturally Stealthy"
+}])

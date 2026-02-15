@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BackgroundData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/background_data.gd" id="1_i7vwg"]
+
+[resource]
+script = ExtResource("1_i7vwg")
+id = &"acolyte"
+display_name = "Acolyte"
+description = "You devoted yourself to service in a temple, either nestled in a town or secluded in a sacred grove. You performed sacred rites and learned the lore of your faith."
+skill_proficiencies = Array[StringName]([&"insight", &"religion"])
+tool_proficiencies = Array[StringName]([&"calligrapher_supplies"])
+languages_count = 1
+starting_gold = 8
+ability_score_increases = {
+"constitution": 1,
+"intelligence": 1,
+"wisdom": 2
+}
+origin_feat = &"magic_initiate_cleric"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/armor_data.gd" id="1_me47v"]
+
+[resource]
+script = ExtResource("1_me47v")
+armor_category = &"heavy"
+base_ac = 16
+add_dex = false
+max_dex_bonus = 0
+strength_requirement = 13
+stealth_disadvantage = true
+id = &"chain_mail"
+display_name = "Chain Mail"
+weight = 55.0
+cost_gp = 75.0
+item_type = &"armor"

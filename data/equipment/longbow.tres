@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_6emwo"]
+[ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_a6tli"]
+
+[sub_resource type="Resource" id="Resource_dgjkb"]
+script = ExtResource("1_6emwo")
+dice_size = 8
+damage_type = &"piercing"
+
+[resource]
+script = ExtResource("2_a6tli")
+weapon_category = &"martial"
+damage = SubResource("Resource_dgjkb")
+properties = Array[StringName]([&"ammunition", &"heavy", &"two_handed"])
+range_normal = 150
+range_long = 600
+id = &"longbow"
+display_name = "Longbow"
+weight = 2.0
+cost_gp = 50.0
+item_type = &"weapon"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/armor_data.gd" id="1_mpgna"]
+
+[resource]
+script = ExtResource("1_mpgna")
+armor_category = &"medium"
+base_ac = 15
+max_dex_bonus = 2
+stealth_disadvantage = true
+id = &"half_plate"
+display_name = "Half Plate"
+weight = 40.0
+cost_gp = 750.0
+item_type = &"armor"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BackgroundData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/background_data.gd" id="1_14k3t"]
+
+[resource]
+script = ExtResource("1_14k3t")
+id = &"noble"
+display_name = "Noble"
+description = "You were raised in a family among the social elite. Your family may be old money or newly wealthy, but either way you grew up surrounded by power and privilege."
+skill_proficiencies = Array[StringName]([&"history", &"persuasion"])
+tool_proficiencies = Array[StringName]([&"gaming_set"])
+languages_count = 1
+starting_gold = 28
+ability_score_increases = {
+"charisma": 2,
+"intelligence": 1,
+"strength": 1
+}
+origin_feat = &"skilled"

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_6hr24"]
+[ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_rf2he"]
+
+[sub_resource type="Resource" id="Resource_6saco"]
+script = ExtResource("1_6hr24")
+dice_count = 2
+damage_type = &"slashing"
+
+[resource]
+script = ExtResource("2_rf2he")
+weapon_category = &"martial"
+damage = SubResource("Resource_6saco")
+properties = Array[StringName]([&"heavy", &"two_handed"])
+id = &"greatsword"
+display_name = "Greatsword"
+weight = 6.0
+cost_gp = 50.0
+item_type = &"weapon"

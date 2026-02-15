@@ -1,0 +1,153 @@
+[gd_resource type="Resource" script_class="LevelProgression" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/level_progression.gd" id="1_7abgc"]
+
+[resource]
+script = ExtResource("1_7abgc")
+class_id = &"wizard"
+levels = Array[Dictionary]([{
+"features": [{
+"description": "Cast wizard spells using Intelligence.",
+"name": "Spellcasting"
+}, {
+"description": "Recover spell slots on a short rest (combined level <= half wizard level).",
+"name": "Arcane Recovery"
+}],
+"level": 1,
+"proficiency_bonus": 2,
+"spell_slots": [2, 0, 0, 0, 0, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Arcane tradition feature.",
+"name": "Subclass Feature"
+}],
+"level": 2,
+"proficiency_bonus": 2,
+"spell_slots": [3, 0, 0, 0, 0, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Replace a cantrip when you finish a long rest.",
+"name": "Cantrip Formulas"
+}],
+"level": 3,
+"proficiency_bonus": 2,
+"spell_slots": [4, 2, 0, 0, 0, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 4,
+"proficiency_bonus": 2,
+"spell_slots": [4, 3, 0, 0, 0, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Prepare one additional spell.",
+"name": "Memorize Spell"
+}],
+"level": 5,
+"proficiency_bonus": 3,
+"spell_slots": [4, 3, 2, 0, 0, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Arcane tradition feature.",
+"name": "Subclass Feature"
+}],
+"level": 6,
+"proficiency_bonus": 3,
+"spell_slots": [4, 3, 3, 0, 0, 0, 0, 0, 0]
+}, {
+"features": [],
+"level": 7,
+"proficiency_bonus": 3,
+"spell_slots": [4, 3, 3, 1, 0, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 8,
+"proficiency_bonus": 3,
+"spell_slots": [4, 3, 3, 2, 0, 0, 0, 0, 0]
+}, {
+"features": [],
+"level": 9,
+"proficiency_bonus": 4,
+"spell_slots": [4, 3, 3, 3, 1, 0, 0, 0, 0]
+}, {
+"features": [{
+"description": "Arcane tradition feature.",
+"name": "Subclass Feature"
+}],
+"level": 10,
+"proficiency_bonus": 4,
+"spell_slots": [4, 3, 3, 3, 2, 0, 0, 0, 0]
+}, {
+"features": [],
+"level": 11,
+"proficiency_bonus": 4,
+"spell_slots": [4, 3, 3, 3, 2, 1, 0, 0, 0]
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 12,
+"proficiency_bonus": 4,
+"spell_slots": [4, 3, 3, 3, 2, 1, 0, 0, 0]
+}, {
+"features": [],
+"level": 13,
+"proficiency_bonus": 5,
+"spell_slots": [4, 3, 3, 3, 2, 1, 1, 0, 0]
+}, {
+"features": [{
+"description": "Arcane tradition feature.",
+"name": "Subclass Feature"
+}],
+"level": 14,
+"proficiency_bonus": 5,
+"spell_slots": [4, 3, 3, 3, 2, 1, 1, 0, 0]
+}, {
+"features": [],
+"level": 15,
+"proficiency_bonus": 5,
+"spell_slots": [4, 3, 3, 3, 2, 1, 1, 1, 0]
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 16,
+"proficiency_bonus": 5,
+"spell_slots": [4, 3, 3, 3, 2, 1, 1, 1, 0]
+}, {
+"features": [],
+"level": 17,
+"proficiency_bonus": 6,
+"spell_slots": [4, 3, 3, 3, 2, 1, 1, 1, 1]
+}, {
+"features": [{
+"description": "Cast a 1st and 2nd level spell at will.",
+"name": "Spell Mastery"
+}],
+"level": 18,
+"proficiency_bonus": 6,
+"spell_slots": [4, 3, 3, 3, 3, 1, 1, 1, 1]
+}, {
+"features": [{
+"description": "Gain an Epic Boon feat.",
+"name": "Epic Boon"
+}],
+"level": 19,
+"proficiency_bonus": 6,
+"spell_slots": [4, 3, 3, 3, 3, 2, 1, 1, 1]
+}, {
+"features": [{
+"description": "Two 3rd-level spells are always prepared and can be cast once at 3rd level without a slot.",
+"name": "Signature Spells"
+}],
+"level": 20,
+"proficiency_bonus": 6,
+"spell_slots": [4, 3, 3, 3, 3, 2, 2, 1, 1]
+}])

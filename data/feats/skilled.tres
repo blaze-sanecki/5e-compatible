@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FeatData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/feat_data.gd" id="1_kn1xp"]
+
+[resource]
+script = ExtResource("1_kn1xp")
+id = &"skilled"
+display_name = "Skilled"
+description = "You gain proficiency in any combination of three skills or tools of your choice."
+category = &"origin"
+effects = Array[Dictionary]([{
+"type": "skill_proficiency",
+"value": 3
+}])

@@ -1,0 +1,154 @@
+[gd_resource type="Resource" script_class="LevelProgression" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/level_progression.gd" id="1_3eib1"]
+
+[resource]
+script = ExtResource("1_3eib1")
+class_id = &"fighter"
+levels = Array[Dictionary]([{
+"features": [{
+"description": "You adopt a style of fighting as your specialty.",
+"name": "Fighting Style"
+}, {
+"description": "Regain 1d10 + Fighter level HP as a Bonus Action (1/rest).",
+"name": "Second Wind"
+}],
+"level": 1,
+"proficiency_bonus": 2
+}, {
+"features": [{
+"description": "Take one additional action on your turn (1/rest).",
+"name": "Action Surge"
+}],
+"level": 2,
+"proficiency_bonus": 2
+}, {
+"features": [{
+"description": "Martial archetype feature.",
+"name": "Subclass Feature"
+}],
+"level": 3,
+"proficiency_bonus": 2
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 4,
+"proficiency_bonus": 2
+}, {
+"features": [{
+"description": "Attack twice when you take the Attack action.",
+"name": "Extra Attack"
+}],
+"level": 5,
+"proficiency_bonus": 3
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 6,
+"proficiency_bonus": 3
+}, {
+"features": [{
+"description": "Martial archetype feature.",
+"name": "Subclass Feature"
+}],
+"level": 7,
+"proficiency_bonus": 3
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 8,
+"proficiency_bonus": 3
+}, {
+"features": [{
+"description": "Reroll a failed saving throw (1/long rest).",
+"name": "Indomitable"
+}],
+"level": 9,
+"proficiency_bonus": 4
+}, {
+"features": [{
+"description": "Martial archetype feature.",
+"name": "Subclass Feature"
+}],
+"level": 10,
+"proficiency_bonus": 4
+}, {
+"features": [{
+"description": "Attack three times when you take the Attack action.",
+"name": "Extra Attack (2)"
+}],
+"level": 11,
+"proficiency_bonus": 4
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 12,
+"proficiency_bonus": 4
+}, {
+"features": [{
+"description": "Use Indomitable twice between long rests.",
+"name": "Indomitable (2)"
+}],
+"level": 13,
+"proficiency_bonus": 5
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 14,
+"proficiency_bonus": 5
+}, {
+"features": [{
+"description": "Martial archetype feature.",
+"name": "Subclass Feature"
+}],
+"level": 15,
+"proficiency_bonus": 5
+}, {
+"features": [{
+"description": "Increase ability scores or take a feat.",
+"name": "Ability Score Improvement"
+}],
+"level": 16,
+"proficiency_bonus": 5
+}, {
+"features": [{
+"description": "Use Action Surge twice between rests.",
+"name": "Action Surge (2)"
+}, {
+"description": "Use Indomitable three times between long rests.",
+"name": "Indomitable (3)"
+}],
+"level": 17,
+"proficiency_bonus": 6
+}, {
+"features": [{
+"description": "Martial archetype feature.",
+"name": "Subclass Feature"
+}],
+"level": 18,
+"proficiency_bonus": 6
+}, {
+"features": [{
+"description": "Gain an Epic Boon feat.",
+"name": "Epic Boon"
+}],
+"level": 19,
+"proficiency_bonus": 6
+}, {
+"features": [{
+"description": "Attack four times when you take the Attack action.",
+"name": "Extra Attack (3)"
+}],
+"level": 20,
+"proficiency_bonus": 6
+}])

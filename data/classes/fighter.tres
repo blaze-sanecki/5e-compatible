@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ClassData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/character/class_data.gd" id="1_4sk37"]
+
+[resource]
+script = ExtResource("1_4sk37")
+id = &"fighter"
+display_name = "Fighter"
+description = "A master of martial combat, skilled with a variety of weapons and armor."
+hit_die = 10
+primary_ability = &"strength"
+saving_throw_proficiencies = Array[StringName]([&"strength", &"constitution"])
+armor_proficiencies = Array[StringName]([&"light", &"medium", &"heavy", &"shield"])
+weapon_proficiencies = Array[StringName]([&"simple", &"martial"])
+skill_choices = Array[StringName]([&"acrobatics", &"animal_handling", &"athletics", &"history", &"insight", &"intimidation", &"perception", &"survival"])
+starting_equipment_options = Array[String](["Chain Mail or Leather Armor", "Longsword and Shield or two Martial Weapons", "Light Crossbow and 20 bolts or two Handaxes", "Dungeoneer's Pack or Explorer's Pack"])
+class_features = Array[Dictionary]([{
+"description": "You adopt a particular style of fighting as your specialty.",
+"level": 1,
+"name": "Fighting Style"
+}, {
+"description": "You have a limited well of stamina. On your turn, you can use a Bonus Action to regain hit points equal to 1d10 + your Fighter level. Once you use this feature, you must finish a Short or Long Rest before you can use it again.",
+"level": 1,
+"name": "Second Wind"
+}, {
+"description": "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action. Once you use this feature, you must finish a Short or Long Rest before you can use it again.",
+"level": 2,
+"name": "Action Surge"
+}, {
+"description": "Choose a martial archetype that you strive to emulate in your combat styles and techniques.",
+"level": 3,
+"name": "Subclass"
+}, {
+"description": "You can increase one ability score by 2, or two ability scores by 1. You can't increase an ability score above 20. Alternatively, you can take a feat.",
+"level": 4,
+"name": "Ability Score Improvement"
+}, {
+"description": "You can attack twice, instead of once, whenever you take the Attack action on your turn.",
+"level": 5,
+"name": "Extra Attack"
+}])
