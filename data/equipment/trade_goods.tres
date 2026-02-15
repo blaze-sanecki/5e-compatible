@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/item_data.gd" id="1_fh8an"]
+
+[resource]
+script = ExtResource("1_fh8an")
+id = &"trade_goods"
+display_name = "Trade Goods"
+description = "A bundle of assorted trade goods: cloth, spices, and small tools."
+weight = 2.0
+cost_gp = 5.0
+stackable = true
+max_stack = 20
+item_type = &"treasure"

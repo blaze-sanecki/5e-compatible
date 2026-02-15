@@ -388,6 +388,21 @@ static func _setup_dungeon_interactables(parent: Node, floor_layer: TileMapLayer
 			exit_portal.portal_data = pd
 
 
+## Set up NPC tokens at their designated cells for test dialogue maps.
+static func setup_dialogue_npcs(npcs_node: Node, floor_layer: TileMapLayer) -> void:
+	# Place NPCs at specific cells in the dungeon layout.
+	var npc_positions: Dictionary = {
+		"ElderMaren": Vector2i(2, 4),
+		"MerchantTomas": Vector2i(5, 2),
+		"GoblinChief": Vector2i(12, 4),
+	}
+
+	for child in npcs_node.get_children():
+		if child.has_method("setup"):
+			var cell: Vector2i = npc_positions.get(child.name, Vector2i(3, 5))
+			child.setup(floor_layer, cell)
+
+
 static func _create_test_token(parent: Node2D, floor_layer: TileMapLayer) -> CharacterToken:
 	var token: CharacterToken = CharacterToken.new()
 	token.name = "TestCharToken"
@@ -397,5 +412,23 @@ static func _create_test_token(parent: Node2D, floor_layer: TileMapLayer) -> Cha
 	sprite.texture = create_circle_texture(20, Color(0.2, 0.6, 1.0, 1.0))
 	token.add_child(sprite)
 
-	token.setup(null, floor_layer, Vector2i(3, 3))
+	# Create a placeholder character so dialogue skill checks and
+	# other systems that depend on PartyManager work correctly.
+	var placeholder := CharacterData.new()
+	placeholder.character_name = "Hero"
+	placeholder.level = 1
+	placeholder.max_hp = 12
+	placeholder.current_hp = 12
+	placeholder.speed = 30
+	placeholder.ability_scores = AbilityScores.new()
+	placeholder.ability_scores.strength = 14
+	placeholder.ability_scores.dexterity = 12
+	placeholder.ability_scores.constitution = 13
+	placeholder.ability_scores.wisdom = 10
+	placeholder.ability_scores.intelligence = 10
+	placeholder.ability_scores.charisma = 14
+	placeholder.skill_proficiencies = [&"persuasion", &"intimidation"]
+
+	token.setup(placeholder, floor_layer, Vector2i(3, 3))
+	PartyManager.add_member(placeholder)
 	return token

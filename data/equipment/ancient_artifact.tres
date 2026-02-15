@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/item_data.gd" id="1_wxoca"]
+
+[resource]
+script = ExtResource("1_wxoca")
+id = &"ancient_artifact"
+display_name = "Ancient Artifact"
+description = "A mysterious stone tablet covered in arcane runes. It pulses faintly with residual magic."
+weight = 3.0
+cost_gp = 500.0
+item_type = &"treasure"

@@ -1,0 +1,130 @@
+[gd_resource type="Resource" script_class="DialogueTree" load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_choice.gd" id="1_uw6mx"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_node.gd" id="2_51dnw"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_tree.gd" id="3_k0mwm"]
+
+[sub_resource type="Resource" id="Resource_uw6mx"]
+script = ExtResource("1_uw6mx")
+text = "That's terrible. Can I help?"
+next_node_id = &"offer_help"
+
+[sub_resource type="Resource" id="Resource_51dnw"]
+script = ExtResource("1_uw6mx")
+text = "Do you have anything for sale?"
+next_node_id = &"shop_talk"
+
+[sub_resource type="Resource" id="Resource_k0mwm"]
+script = ExtResource("1_uw6mx")
+text = "Heard any rumors?"
+next_node_id = &"rumors"
+
+[sub_resource type="Resource" id="Resource_1i3vf"]
+script = ExtResource("2_51dnw")
+node_id = &"greeting"
+speaker = "Merchant Tomas"
+text = "Welcome, welcome! Tomas the merchant, at your service. Though times have been hard — bandits stole half my stock on the road here."
+choices = Array[Resource]([SubResource("Resource_uw6mx"), SubResource("Resource_51dnw"), SubResource("Resource_k0mwm")])
+
+[sub_resource type="Resource" id="Resource_xuuqf"]
+script = ExtResource("1_uw6mx")
+text = "I'll find your goods."
+next_node_id = &"quest_accepted"
+events = Array[Dictionary]([{
+"quest_id": "merchants_lost_goods",
+"type": "start_quest"
+}])
+
+[sub_resource type="Resource" id="Resource_mis84"]
+script = ExtResource("1_uw6mx")
+text = "Sorry, too busy right now."
+next_node_id = &"decline"
+
+[sub_resource type="Resource" id="Resource_xyy1c"]
+script = ExtResource("2_51dnw")
+node_id = &"offer_help"
+speaker = "Merchant Tomas"
+text = "Really? The bandits scattered my trade goods along the road. If you could recover 3 bundles, I'd pay you well — 75 gold and a free potion!"
+choices = Array[Resource]([SubResource("Resource_xuuqf"), SubResource("Resource_mis84")])
+
+[sub_resource type="Resource" id="Resource_p6w7f"]
+script = ExtResource("2_51dnw")
+node_id = &"quest_accepted"
+speaker = "Merchant Tomas"
+text = "Thank you! The bundles should be scattered along the northern trail. They're wrapped in brown cloth — hard to miss."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_d2jow"]
+script = ExtResource("2_51dnw")
+node_id = &"decline"
+speaker = "Merchant Tomas"
+text = "No worries, friend. If you change your mind, I'll be here."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_vfa70"]
+script = ExtResource("1_uw6mx")
+text = "Surely you can offer a discount?"
+next_node_id = &"discount_success"
+conditions = Array[Dictionary]([{
+"dc": 14,
+"fail_node_id": "discount_fail",
+"skill": "deception",
+"type": "skill_check"
+}])
+
+[sub_resource type="Resource" id="Resource_xxlia"]
+script = ExtResource("1_uw6mx")
+text = "I'll take a potion at full price."
+next_node_id = &"buy_potion"
+
+[sub_resource type="Resource" id="Resource_iqjje"]
+script = ExtResource("2_51dnw")
+node_id = &"shop_talk"
+speaker = "Merchant Tomas"
+text = "I've got a few potions left, but my prices are steep after the losses."
+choices = Array[Resource]([SubResource("Resource_vfa70"), SubResource("Resource_xxlia")])
+
+[sub_resource type="Resource" id="Resource_n012a"]
+script = ExtResource("2_51dnw")
+node_id = &"discount_success"
+speaker = "Merchant Tomas"
+text = "Well... I suppose I can part with one for free. You look like someone who'll spread the word about my shop."
+is_end = true
+events = Array[Dictionary]([{
+"item_id": "health_potion",
+"quantity": 1,
+"type": "give_item"
+}])
+
+[sub_resource type="Resource" id="Resource_j2dtc"]
+script = ExtResource("2_51dnw")
+node_id = &"discount_fail"
+speaker = "Merchant Tomas"
+text = "Nice try, but I wasn't born yesterday. Full price or nothing."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_atant"]
+script = ExtResource("2_51dnw")
+node_id = &"buy_potion"
+speaker = "Merchant Tomas"
+text = "Here you go! One Potion of Healing. Stay safe out there."
+is_end = true
+events = Array[Dictionary]([{
+"item_id": "health_potion",
+"quantity": 1,
+"type": "give_item"
+}])
+
+[sub_resource type="Resource" id="Resource_01qbc"]
+script = ExtResource("2_51dnw")
+node_id = &"rumors"
+speaker = "Merchant Tomas"
+text = "Word is there are old ruins east of here. Dangerous place, but I've heard there's a powerful artifact hidden inside. Might be worth checking out — if you survive the goblins first."
+is_end = true
+
+[resource]
+script = ExtResource("3_k0mwm")
+id = &"merchant_tomas"
+npc_name = "Merchant Tomas"
+nodes = Array[Resource]([SubResource("Resource_1i3vf"), SubResource("Resource_xyy1c"), SubResource("Resource_p6w7f"), SubResource("Resource_d2jow"), SubResource("Resource_iqjje"), SubResource("Resource_n012a"), SubResource("Resource_j2dtc"), SubResource("Resource_atant"), SubResource("Resource_01qbc")])
+start_node_id = &"greeting"

@@ -1,0 +1,93 @@
+[gd_resource type="Resource" script_class="DialogueTree" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_choice.gd" id="1_0uf5s"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_node.gd" id="2_lr6y1"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_tree.gd" id="3_7v5dq"]
+
+[sub_resource type="Resource" id="Resource_0uf5s"]
+script = ExtResource("1_0uf5s")
+text = "Leave this place or face my wrath."
+next_node_id = &"intimidate_success"
+conditions = Array[Dictionary]([{
+"dc": 15,
+"fail_node_id": "intimidate_fail",
+"skill": "intimidation",
+"type": "skill_check"
+}])
+
+[sub_resource type="Resource" id="Resource_lr6y1"]
+script = ExtResource("1_0uf5s")
+text = "We can settle this peacefully."
+next_node_id = &"diplomacy"
+
+[sub_resource type="Resource" id="Resource_7v5dq"]
+script = ExtResource("1_0uf5s")
+text = "Prepare to die, goblin!"
+next_node_id = &"fight"
+
+[sub_resource type="Resource" id="Resource_pwvg5"]
+script = ExtResource("2_lr6y1")
+node_id = &"greeting"
+speaker = "Goblin Chief Grak"
+text = "You! Human! You come to Grak's den and kill Grak's warriors? Grak will crush you!"
+choices = Array[Resource]([SubResource("Resource_0uf5s"), SubResource("Resource_lr6y1"), SubResource("Resource_7v5dq")])
+
+[sub_resource type="Resource" id="Resource_tf4bt"]
+script = ExtResource("2_lr6y1")
+node_id = &"intimidate_success"
+speaker = "Goblin Chief Grak"
+text = "G-Grak... Grak doesn't want to die. Fine! Grak will leave. Take whatever you want."
+is_end = true
+events = Array[Dictionary]([{
+"flag": "goblin_chief_fled",
+"type": "set_flag",
+"value": true
+}, {
+"objective_id": "talk_chief",
+"quest_id": "clear_goblin_den",
+"type": "advance_objective"
+}])
+
+[sub_resource type="Resource" id="Resource_etc5q"]
+script = ExtResource("2_lr6y1")
+node_id = &"intimidate_fail"
+speaker = "Goblin Chief Grak"
+text = "Ha! You don't scare Grak! GRAK SMASH!"
+is_end = true
+events = Array[Dictionary]([{
+"flag": "goblin_chief_hostile",
+"type": "set_flag",
+"value": true
+}, {
+"encounter_id": "test_goblin_ambush",
+"type": "start_combat"
+}])
+
+[sub_resource type="Resource" id="Resource_qjpk6"]
+script = ExtResource("2_lr6y1")
+node_id = &"diplomacy"
+speaker = "Goblin Chief Grak"
+text = "Peacefully? Grak's warriors are hungry. You bring food, maybe Grak leaves. But Grak doubts you will."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_j2m3r"]
+script = ExtResource("2_lr6y1")
+node_id = &"fight"
+speaker = "Goblin Chief Grak"
+text = "GRAK KNEW IT! ATTACK!"
+is_end = true
+events = Array[Dictionary]([{
+"flag": "goblin_chief_hostile",
+"type": "set_flag",
+"value": true
+}, {
+"encounter_id": "test_goblin_ambush",
+"type": "start_combat"
+}])
+
+[resource]
+script = ExtResource("3_7v5dq")
+id = &"goblin_chief"
+npc_name = "Goblin Chief Grak"
+nodes = Array[Resource]([SubResource("Resource_pwvg5"), SubResource("Resource_tf4bt"), SubResource("Resource_etc5q"), SubResource("Resource_qjpk6"), SubResource("Resource_j2m3r")])
+start_node_id = &"greeting"

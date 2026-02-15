@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/items/item_data.gd" id="1_ue4nu"]
+
+[resource]
+script = ExtResource("1_ue4nu")
+id = &"health_potion"
+display_name = "Potion of Healing"
+description = "A vial of red liquid that restores 2d4+2 hit points when consumed."
+weight = 0.5
+cost_gp = 50.0
+stackable = true
+max_stack = 10
+item_type = &"consumable"

@@ -67,6 +67,11 @@ func _ready() -> void:
 			token.select()
 			selected_token_index = 0
 
+		# Set up NPC positions if the NPCs node exists.
+		var npcs_node: Node = get_node_or_null("NPCs")
+		if npcs_node:
+			TestMapGenerator.setup_dialogue_npcs(npcs_node, floor_layer)
+
 	pathfinder = GridPathfinding.new(floor_layer, wall_layer)
 	fog_system = FogOfWarSystem.new()
 	vision_calc = VisionCalculator.new()
@@ -90,6 +95,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if GameManager.is_in_combat() and combat_grid_controller != null:
 		if combat_grid_controller.handle_input(event):
 			get_viewport().set_input_as_handled()
+		return
+
+	if GameManager.current_state == GameManager.GameState.DIALOGUE:
 		return
 
 	if not GameManager.is_exploring():
@@ -300,21 +308,23 @@ func _try_interact(token: CharacterToken) -> void:
 
 
 ## Find an interactable at the given cell by comparing positions directly.
+## Scans both the Interactables and NPCs nodes.
 func _get_interactable_at(cell: Vector2i) -> Node:
-	var interactables_parent: Node = get_node_or_null("Interactables")
-	if interactables_parent == null:
-		return null
-
 	var cell_world: Vector2 = floor_layer.map_to_local(cell)
 	var threshold: float = float(floor_layer.tile_set.tile_size.x) * 0.6 if floor_layer.tile_set else 20.0
 
-	for child in interactables_parent.get_children():
-		if not child.has_method("interact"):
+	# Scan both Interactables and NPCs parents.
+	for parent_name in ["Interactables", "NPCs"]:
+		var parent: Node = get_node_or_null(parent_name)
+		if parent == null:
 			continue
-		if child is Node2D:
-			var dist: float = (child as Node2D).position.distance_to(cell_world)
-			if dist < threshold:
-				return child
+		for child in parent.get_children():
+			if not child.has_method("interact"):
+				continue
+			if child is Node2D:
+				var dist: float = (child as Node2D).position.distance_to(cell_world)
+				if dist < threshold:
+					return child
 
 	return null
 

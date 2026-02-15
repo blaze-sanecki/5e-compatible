@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://systems/exploration/grid_dungeon_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" path="res://entities/npcs/npc_token.gd" id="2_npc"]
+[ext_resource type="Script" path="res://ui/dialogue/dialogue_panel.gd" id="3_dlg"]
+[ext_resource type="Script" path="res://ui/quests/quest_notification.gd" id="4_qn"]
+
+[node name="TestDialogue" type="Node2D"]
+script = ExtResource("1_ctrl")
+floor_layer_path = NodePath("FloorLayer")
+wall_layer_path = NodePath("WallLayer")
+fog_layer_path = NodePath("FogLayer")
+camera_path = NodePath("Camera2D")
+vision_range = 8
+
+[node name="FloorLayer" type="TileMapLayer" parent="."]
+
+[node name="WallLayer" type="TileMapLayer" parent="."]
+
+[node name="FogLayer" type="TileMapLayer" parent="."]
+z_index = 10
+
+[node name="Interactables" type="Node2D" parent="."]
+z_index = 3
+
+[node name="NPCs" type="Node2D" parent="."]
+z_index = 4
+
+[node name="ElderMaren" type="Area2D" parent="NPCs"]
+script = ExtResource("2_npc")
+npc_id = &"elder_maren"
+npc_name = "Elder Maren"
+dialogue_tree_id = &"elder_maren"
+
+[node name="MerchantTomas" type="Area2D" parent="NPCs"]
+script = ExtResource("2_npc")
+npc_id = &"merchant_tomas"
+npc_name = "Merchant Tomas"
+dialogue_tree_id = &"merchant_tomas"
+
+[node name="GoblinChief" type="Area2D" parent="NPCs"]
+script = ExtResource("2_npc")
+npc_id = &"goblin_chief"
+npc_name = "Goblin Chief Grak"
+dialogue_tree_id = &"goblin_chief"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+
+[node name="DialoguePanel" type="CanvasLayer" parent="."]
+layer = 20
+script = ExtResource("3_dlg")
+
+[node name="QuestNotification" type="CanvasLayer" parent="."]
+layer = 22
+script = ExtResource("4_qn")

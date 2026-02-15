@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="1_5p7sf"]
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="2_htycm"]
+
+[sub_resource type="Resource" id="Resource_5p7sf"]
+script = ExtResource("1_5p7sf")
+id = &"collect_goods"
+description = "Recover trade goods"
+objective_type = &"collect"
+target_id = &"trade_goods"
+required_count = 3
+
+[resource]
+script = ExtResource("2_htycm")
+id = &"merchants_lost_goods"
+display_name = "Merchant's Lost Goods"
+description = "Merchant Tomas lost his trade goods when bandits attacked his caravan. Recover 3 bundles of trade goods scattered along the northern trail."
+objectives = Array[Resource]([SubResource("Resource_5p7sf")])
+rewards_xp = 75
+rewards_gold = 75

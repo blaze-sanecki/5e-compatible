@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="1_mmwbq"]
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="2_if3wf"]
+
+[sub_resource type="Resource" id="Resource_mmwbq"]
+script = ExtResource("1_mmwbq")
+id = &"kill_goblins"
+description = "Defeat goblins"
+objective_type = &"kill"
+target_id = &"goblin"
+required_count = 3
+
+[sub_resource type="Resource" id="Resource_if3wf"]
+script = ExtResource("1_mmwbq")
+id = &"talk_chief"
+description = "Deal with the Goblin Chief"
+objective_type = &"talk"
+target_id = &"goblin_chief"
+is_optional = true
+
+[resource]
+script = ExtResource("2_if3wf")
+id = &"clear_goblin_den"
+display_name = "Clear the Goblin Den"
+description = "Elder Maren has asked you to eliminate the goblin threat from the caves to the north. Defeat the goblins and deal with their chief."
+objectives = Array[Resource]([SubResource("Resource_mmwbq"), SubResource("Resource_if3wf")])
+rewards_xp = 100
+rewards_gold = 100

@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/quests/quest_objective.gd" id="1_cl3o6"]
+[ext_resource type="Script" path="res://resources/quests/quest_data.gd" id="2_kts75"]
+
+[sub_resource type="Resource" id="Resource_cl3o6"]
+script = ExtResource("1_cl3o6")
+id = &"reach_ruins"
+description = "Find the ancient ruins"
+objective_type = &"reach"
+target_id = &"ruins_entrance"
+
+[sub_resource type="Resource" id="Resource_kts75"]
+script = ExtResource("1_cl3o6")
+id = &"find_artifact"
+description = "Recover the ancient artifact"
+objective_type = &"collect"
+target_id = &"ancient_artifact"
+
+[resource]
+script = ExtResource("2_kts75")
+id = &"explore_ruins"
+display_name = "Explore the Ancient Ruins"
+description = "Rumors speak of ancient ruins east of the village, said to contain a powerful artifact. Clear the goblins first, then investigate."
+objectives = Array[Resource]([SubResource("Resource_cl3o6"), SubResource("Resource_kts75")])
+rewards_xp = 150
+rewards_gold = 50
+prerequisite_quests = Array[StringName]([&"clear_goblin_den"])

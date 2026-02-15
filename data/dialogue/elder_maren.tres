@@ -1,0 +1,162 @@
+[gd_resource type="Resource" script_class="DialogueTree" load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_choice.gd" id="1_6atnj"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_node.gd" id="2_na5pq"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_tree.gd" id="3_g0unw"]
+
+[sub_resource type="Resource" id="Resource_6atnj"]
+script = ExtResource("1_6atnj")
+text = "(Quest complete greeting)"
+next_node_id = &"post_quest"
+visible_conditions = Array[Dictionary]([{
+"quest_id": "clear_goblin_den",
+"type": "quest_complete"
+}])
+
+[sub_resource type="Resource" id="Resource_na5pq"]
+script = ExtResource("1_6atnj")
+text = "I'll help clear the goblin den."
+next_node_id = &"accept_quest"
+visible_conditions = Array[Dictionary]([{
+"flag": "quest_complete_clear_goblin_den",
+"type": "not_flag"
+}])
+events = Array[Dictionary]([{
+"quest_id": "clear_goblin_den",
+"type": "start_quest"
+}])
+
+[sub_resource type="Resource" id="Resource_g0unw"]
+script = ExtResource("1_6atnj")
+text = "What's in it for me?"
+next_node_id = &"negotiate"
+visible_conditions = Array[Dictionary]([{
+"flag": "quest_complete_clear_goblin_den",
+"type": "not_flag"
+}])
+
+[sub_resource type="Resource" id="Resource_yp6jc"]
+script = ExtResource("1_6atnj")
+text = "Not my problem."
+next_node_id = &"refuse"
+visible_conditions = Array[Dictionary]([{
+"flag": "quest_complete_clear_goblin_den",
+"type": "not_flag"
+}])
+
+[sub_resource type="Resource" id="Resource_8r38r"]
+script = ExtResource("2_na5pq")
+node_id = &"greeting"
+speaker = "Elder Maren"
+text = "Ah, traveler. Our village has been plagued by goblins from the den to the north. We desperately need someone to deal with them."
+choices = Array[Resource]([SubResource("Resource_6atnj"), SubResource("Resource_na5pq"), SubResource("Resource_g0unw"), SubResource("Resource_yp6jc")])
+
+[sub_resource type="Resource" id="Resource_543bh"]
+script = ExtResource("1_6atnj")
+text = "I think this job is worth more."
+next_node_id = &"persuade_success"
+conditions = Array[Dictionary]([{
+"dc": 12,
+"fail_node_id": "persuade_fail",
+"skill": "persuasion",
+"type": "skill_check"
+}])
+
+[sub_resource type="Resource" id="Resource_funhk"]
+script = ExtResource("1_6atnj")
+text = "100 gold is fair. I'll do it."
+next_node_id = &"accept_quest"
+events = Array[Dictionary]([{
+"quest_id": "clear_goblin_den",
+"type": "start_quest"
+}])
+
+[sub_resource type="Resource" id="Resource_3mxqm"]
+script = ExtResource("2_na5pq")
+node_id = &"negotiate"
+speaker = "Elder Maren"
+text = "We can offer 100 gold pieces for clearing the den. But if you think you deserve more..."
+choices = Array[Resource]([SubResource("Resource_543bh"), SubResource("Resource_funhk")])
+
+[sub_resource type="Resource" id="Resource_jwp5p"]
+script = ExtResource("2_na5pq")
+node_id = &"persuade_success"
+speaker = "Elder Maren"
+text = "You drive a hard bargain, but you're right — this is dangerous work. 150 gold and a healing potion. Deal?"
+next_node_id = &"accept_quest_bonus"
+events = Array[Dictionary]([{
+"flag": "maren_bonus_reward",
+"type": "set_flag",
+"value": true
+}])
+
+[sub_resource type="Resource" id="Resource_irqur"]
+script = ExtResource("1_6atnj")
+text = "Fine, I'll take the job."
+next_node_id = &"accept_quest"
+events = Array[Dictionary]([{
+"quest_id": "clear_goblin_den",
+"type": "start_quest"
+}])
+
+[sub_resource type="Resource" id="Resource_as1j7"]
+script = ExtResource("1_6atnj")
+text = "I need to think about it."
+next_node_id = &"maybe_later"
+
+[sub_resource type="Resource" id="Resource_qmhwa"]
+script = ExtResource("2_na5pq")
+node_id = &"persuade_fail"
+speaker = "Elder Maren"
+text = "I'm sorry, but 100 gold is all we can spare. Will you still help us?"
+choices = Array[Resource]([SubResource("Resource_irqur"), SubResource("Resource_as1j7")])
+
+[sub_resource type="Resource" id="Resource_1qenw"]
+script = ExtResource("2_na5pq")
+node_id = &"accept_quest"
+speaker = "Elder Maren"
+text = "Thank you, brave adventurer. The goblin den is in the caves to the north. Be careful — their chief is cunning."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_p3b1w"]
+script = ExtResource("2_na5pq")
+node_id = &"accept_quest_bonus"
+speaker = "Elder Maren"
+text = "Excellent! Here, take this potion for the road. The goblin den is to the north. Good luck!"
+is_end = true
+events = Array[Dictionary]([{
+"quest_id": "clear_goblin_den",
+"type": "start_quest"
+}, {
+"item_id": "health_potion",
+"quantity": 1,
+"type": "give_item"
+}])
+
+[sub_resource type="Resource" id="Resource_0yih8"]
+script = ExtResource("2_na5pq")
+node_id = &"refuse"
+speaker = "Elder Maren"
+text = "I understand. If you change your mind, you know where to find me."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_a8rmj"]
+script = ExtResource("2_na5pq")
+node_id = &"maybe_later"
+speaker = "Elder Maren"
+text = "Of course. Take your time. We'll be here... if the goblins haven't gotten to us first."
+is_end = true
+
+[sub_resource type="Resource" id="Resource_kw03n"]
+script = ExtResource("2_na5pq")
+node_id = &"post_quest"
+speaker = "Elder Maren"
+text = "You've done it! The village is safe once more. You have our eternal gratitude."
+is_end = true
+
+[resource]
+script = ExtResource("3_g0unw")
+id = &"elder_maren"
+npc_name = "Elder Maren"
+nodes = Array[Resource]([SubResource("Resource_8r38r"), SubResource("Resource_3mxqm"), SubResource("Resource_jwp5p"), SubResource("Resource_qmhwa"), SubResource("Resource_1qenw"), SubResource("Resource_p3b1w"), SubResource("Resource_0yih8"), SubResource("Resource_a8rmj"), SubResource("Resource_kw03n")])
+start_node_id = &"greeting"
