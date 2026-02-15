@@ -187,7 +187,7 @@ func _build_ui() -> void:
 	_panel.offset_bottom = 0
 
 	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
-		Color(0.1, 0.1, 0.15, 0.92), UITheme.COLOR_BORDER, 2, 6, 12))
+		UITheme.COLOR_PANEL_BG, UITheme.COLOR_BORDER, 2, 6, 12))
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 6)
@@ -195,7 +195,7 @@ func _build_ui() -> void:
 
 	# Speaker name.
 	_speaker_label = Label.new()
-	_speaker_label.add_theme_font_size_override("font_size", 18)
+	_speaker_label.add_theme_font_size_override("font_size", UITheme.FONT_MEDIUM)
 	_speaker_label.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	vbox.add_child(_speaker_label)
 
@@ -205,7 +205,7 @@ func _build_ui() -> void:
 	_text_label.fit_content = true
 	_text_label.scroll_active = false
 	_text_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_text_label.add_theme_font_size_override("normal_font_size", 14)
+	_text_label.add_theme_font_size_override("normal_font_size", UITheme.FONT_SMALL)
 	vbox.add_child(_text_label)
 
 	# Choices container.
@@ -218,8 +218,8 @@ func _build_ui() -> void:
 	_advance_hint = Label.new()
 	_advance_hint.text = "[Space / Enter to continue]"
 	_advance_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_advance_hint.add_theme_font_size_override("font_size", 11)
-	_advance_hint.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6, 0.7))
+	_advance_hint.add_theme_font_size_override("font_size", UITheme.FONT_TINY)
+	_advance_hint.add_theme_color_override("font_color", UITheme.COLOR_HINT_TEXT)
 	_advance_hint.visible = false
 	vbox.add_child(_advance_hint)
 

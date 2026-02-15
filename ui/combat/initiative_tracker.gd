@@ -61,7 +61,7 @@ func _on_character_died(character: Resource) -> void:
 		if entry.data.get("name", "") == char_name:
 			entry.dead = true
 			if entry.panel:
-				entry.panel.modulate = Color(0.5, 0.5, 0.5, 0.6)
+				entry.panel.modulate = UITheme.COLOR_DEAD_MODULATE
 
 
 func _clear() -> void:
@@ -74,7 +74,7 @@ func _create_entry_panel(entry: Dictionary, _index: int) -> PanelContainer:
 	panel.custom_minimum_size = Vector2(80, 50)
 
 	panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
-		UITheme.COLOR_BUTTON_BG, Color(0.4, 0.4, 0.5), 1, 4, 4))
+		UITheme.COLOR_BUTTON_BG, UITheme.COLOR_INIT_BORDER_INACTIVE, 1, 4, 4))
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 2)
@@ -83,8 +83,8 @@ func _create_entry_panel(entry: Dictionary, _index: int) -> PanelContainer:
 	# Name label.
 	var name_label := Label.new()
 	name_label.text = entry.get("name", "???")
-	name_label.add_theme_font_size_override("font_size", 11)
-	var name_color: Color = Color(0.5, 0.8, 1.0) if entry.get("is_player", false) else Color(1.0, 0.5, 0.4)
+	name_label.add_theme_font_size_override("font_size", UITheme.FONT_TINY)
+	var name_color: Color = UITheme.COLOR_PLAYER_NAME if entry.get("is_player", false) else UITheme.COLOR_ENEMY_NAME
 	name_label.add_theme_color_override("font_color", name_color)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(name_label)
@@ -92,8 +92,8 @@ func _create_entry_panel(entry: Dictionary, _index: int) -> PanelContainer:
 	# Initiative label.
 	var init_label := Label.new()
 	init_label.text = "Init: %d" % entry.get("initiative", 0)
-	init_label.add_theme_font_size_override("font_size", 9)
-	init_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+	init_label.add_theme_font_size_override("font_size", UITheme.FONT_MICRO)
+	init_label.add_theme_color_override("font_color", UITheme.COLOR_INIT_TEXT)
 	init_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(init_label)
 
@@ -107,11 +107,11 @@ func _highlight_panel(panel: PanelContainer, active: bool) -> void:
 	# Duplicate to avoid shared reference.
 	style = style.duplicate() as StyleBoxFlat
 	if active:
-		style.border_color = Color(1.0, 0.85, 0.2)
+		style.border_color = UITheme.COLOR_INIT_BORDER_ACTIVE
 		style.set_border_width_all(2)
-		style.bg_color = Color(0.2, 0.2, 0.1, 0.95)
+		style.bg_color = UITheme.COLOR_INIT_BG_ACTIVE
 	else:
-		style.border_color = Color(0.4, 0.4, 0.5)
+		style.border_color = UITheme.COLOR_INIT_BORDER_INACTIVE
 		style.set_border_width_all(1)
 		style.bg_color = UITheme.COLOR_BUTTON_BG
 	panel.add_theme_stylebox_override("panel", style)

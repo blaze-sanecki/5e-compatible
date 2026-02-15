@@ -39,7 +39,7 @@ func _build_ui() -> void:
 	# Dim overlay.
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.0, 0.0, 0.0, 0.6)
+	bg.color = UITheme.COLOR_OVERLAY_DARK
 	_root.add_child(bg)
 
 	# Center panel.
@@ -66,7 +66,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "Paused"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 28)
+	title.add_theme_font_size_override("font_size", UITheme.FONT_HEADING)
 	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	vbox.add_child(title)
 
@@ -74,7 +74,7 @@ func _build_ui() -> void:
 	var time_label := Label.new()
 	time_label.text = GameManager.get_time_string()
 	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	time_label.add_theme_font_size_override("font_size", 14)
+	time_label.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
 	time_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_MUTED)
 	vbox.add_child(time_label)
 
@@ -123,7 +123,7 @@ func _build_ui() -> void:
 	var picker_title := Label.new()
 	picker_title.text = "Choose Save Slot"
 	picker_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	picker_title.add_theme_font_size_override("font_size", 18)
+	picker_title.add_theme_font_size_override("font_size", UITheme.FONT_MEDIUM)
 	picker_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_slot_picker.add_child(picker_title)
 
@@ -146,7 +146,7 @@ func _build_ui() -> void:
 	# Status label for save confirmation.
 	_status_label = Label.new()
 	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_status_label.add_theme_font_size_override("font_size", 14)
+	_status_label.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
 	_status_label.add_theme_color_override("font_color", UITheme.COLOR_SUCCESS)
 	vbox.add_child(_status_label)
 

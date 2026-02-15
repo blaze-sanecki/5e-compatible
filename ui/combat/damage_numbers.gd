@@ -7,29 +7,29 @@ extends Node2D
 ## Spawn a floating damage number at a world position.
 func show_damage(amount: int, world_pos: Vector2, is_crit: bool = false) -> void:
 	var text: String = str(amount)
-	var color: Color = Color.RED
-	var size: int = 16
+	var color: Color = UITheme.COLOR_ERROR
+	var size: int = UITheme.FONT_BODY
 	if is_crit:
 		text = str(amount) + "!"
-		color = Color(1.0, 0.8, 0.0)
-		size = 22
+		color = UITheme.COLOR_DAMAGE_CRIT
+		size = UITheme.FONT_SUBHEADING
 
 	_spawn_label(text, world_pos, color, size)
 
 
 ## Spawn a floating heal number.
 func show_heal(amount: int, world_pos: Vector2) -> void:
-	_spawn_label("+" + str(amount), world_pos, Color(0.2, 1.0, 0.3), 16)
+	_spawn_label("+" + str(amount), world_pos, UITheme.COLOR_DAMAGE_HEAL, UITheme.FONT_BODY)
 
 
 ## Spawn a floating "MISS" text.
 func show_miss(world_pos: Vector2) -> void:
-	_spawn_label("MISS", world_pos, Color(0.7, 0.7, 0.7), 14)
+	_spawn_label("MISS", world_pos, UITheme.COLOR_DAMAGE_MISS, UITheme.FONT_SMALL)
 
 
 ## Spawn a floating status text (e.g., condition name).
 func show_status(text: String, world_pos: Vector2) -> void:
-	_spawn_label(text, world_pos, Color(1.0, 0.8, 0.2), 12)
+	_spawn_label(text, world_pos, UITheme.COLOR_DAMAGE_STATUS, UITheme.FONT_DETAIL)
 
 
 func _spawn_label(text: String, world_pos: Vector2, color: Color, font_size: int) -> void:

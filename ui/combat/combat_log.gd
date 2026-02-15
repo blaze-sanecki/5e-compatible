@@ -9,7 +9,7 @@ var _rich_label: RichTextLabel
 func _ready() -> void:
 	# Style the panel.
 	add_theme_stylebox_override("panel", UIStyler.create_panel_style(
-		Color(0.08, 0.08, 0.12, 0.85), Color(0.3, 0.3, 0.4), 1, 4, 6))
+		UITheme.COLOR_LOG_BG, UITheme.COLOR_LOG_BORDER, 1, 4, 6))
 
 	# Create the RichTextLabel.
 	_rich_label = RichTextLabel.new()
@@ -17,7 +17,7 @@ func _ready() -> void:
 	_rich_label.bbcode_enabled = true
 	_rich_label.scroll_following = true
 	_rich_label.fit_content = false
-	_rich_label.add_theme_font_size_override("normal_font_size", 11)
+	_rich_label.add_theme_font_size_override("normal_font_size", UITheme.FONT_TINY)
 	add_child(_rich_label)
 
 	# Connect signals.

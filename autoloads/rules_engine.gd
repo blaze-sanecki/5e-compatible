@@ -3,9 +3,8 @@
 ## Registered as an autoload singleton. Handles AC calculation, attack
 ## resolution, saving throws, skill checks, and all the core 5e math.
 ##
-## Character objects are accessed via duck typing -- they are expected to
-## expose the interface defined by CharacterData resources (ability_scores,
-## skill_proficiencies, equipped_armor, etc.).
+## Character parameters are typed as CharacterData. Combat functions that
+## accept both player and monster sources use CombatantData's uniform interface.
 extends Node
 
 # ===========================================================================
@@ -33,24 +32,24 @@ class SaveResult:
 # ===========================================================================
 
 const SKILL_ABILITIES: Dictionary = {
-	"acrobatics": "dexterity",
-	"animal_handling": "wisdom",
-	"arcana": "intelligence",
-	"athletics": "strength",
-	"deception": "charisma",
-	"history": "intelligence",
-	"insight": "wisdom",
-	"intimidation": "charisma",
-	"investigation": "intelligence",
-	"medicine": "wisdom",
-	"nature": "intelligence",
-	"perception": "wisdom",
-	"performance": "charisma",
-	"persuasion": "charisma",
-	"religion": "intelligence",
-	"sleight_of_hand": "dexterity",
-	"stealth": "dexterity",
-	"survival": "wisdom",
+	&"acrobatics": &"dexterity",
+	&"animal_handling": &"wisdom",
+	&"arcana": &"intelligence",
+	&"athletics": &"strength",
+	&"deception": &"charisma",
+	&"history": &"intelligence",
+	&"insight": &"wisdom",
+	&"intimidation": &"charisma",
+	&"investigation": &"intelligence",
+	&"medicine": &"wisdom",
+	&"nature": &"intelligence",
+	&"perception": &"wisdom",
+	&"performance": &"charisma",
+	&"persuasion": &"charisma",
+	&"religion": &"intelligence",
+	&"sleight_of_hand": &"dexterity",
+	&"stealth": &"dexterity",
+	&"survival": &"wisdom",
 }
 
 
@@ -75,29 +74,25 @@ func get_proficiency_bonus(level: int) -> int:
 ## Calculate a character's Armor Class.
 ##
 ## Falls back to unarmored defense (10 + DEX mod) when no armor is equipped.
-func calculate_ac(character) -> int:
+func calculate_ac(character: CharacterData) -> int:
 	var dex_mod: int = character.get_modifier(&"dexterity")
 	var ac: int = 10 + dex_mod  # Unarmored default
 
-	# Check for equipped armor and use its AC calculation if available.
 	if character.equipped_armor != null:
-		var armor = character.equipped_armor
-		if armor.has_method("calculate_ac"):
+		var armor: ArmorData = character.equipped_armor as ArmorData
+		if armor:
 			ac = armor.calculate_ac(dex_mod)
-		elif armor.get("base_ac"):
-			ac = armor.base_ac
 
-	# Shield bonus (+2 unless overridden).
 	if character.equipped_shield != null:
-		var shield = character.equipped_shield
-		var shield_bonus: int = shield.get("base_ac") if shield.get("base_ac") else 2
+		var shield: ArmorData = character.equipped_shield as ArmorData
+		var shield_bonus: int = shield.base_ac if shield else 2
 		ac += shield_bonus
 
 	return ac
 
 
 ## Spell save DC = 8 + proficiency bonus + spellcasting ability modifier.
-func calculate_spell_dc(character) -> int:
+func calculate_spell_dc(character: CharacterData) -> int:
 	var prof: int = get_proficiency_bonus(character.level)
 	var casting_ability: StringName = _get_casting_ability(character)
 	var ability_mod: int = character.get_modifier(casting_ability)
@@ -105,7 +100,7 @@ func calculate_spell_dc(character) -> int:
 
 
 ## Spell attack modifier = proficiency bonus + spellcasting ability modifier.
-func calculate_spell_attack(character) -> int:
+func calculate_spell_attack(character: CharacterData) -> int:
 	var prof: int = get_proficiency_bonus(character.level)
 	var casting_ability: StringName = _get_casting_ability(character)
 	var ability_mod: int = character.get_modifier(casting_ability)
@@ -181,7 +176,7 @@ func resolve_attack(
 
 ## Resolve a saving throw against a given DC.
 func resolve_saving_throw(
-	character,
+	character: CharacterData,
 	dc: int,
 	ability: StringName,
 	advantage: bool = false,
@@ -210,28 +205,12 @@ func resolve_saving_throw(
 # ===========================================================================
 
 ## Return the total skill modifier for a character in a given skill.
-func get_skill_modifier(character, skill: StringName) -> int:
-	# Delegate to CharacterData's own method if available.
-	if character.has_method("get_skill_modifier"):
-		return character.get_skill_modifier(skill)
-
-	var skill_str := String(skill)
-	var ability_name: StringName = StringName(SKILL_ABILITIES.get(skill_str, "strength"))
-	var ability_mod: int = character.get_modifier(ability_name)
-
-	var prof_bonus: int = get_proficiency_bonus(character.level)
-	var total: int = ability_mod
-
-	if character.has_expertise_in(skill):
-		total += prof_bonus * 2
-	elif character.is_proficient_in_skill(skill):
-		total += prof_bonus
-
-	return total
+func get_skill_modifier(character: CharacterData, skill: StringName) -> int:
+	return character.get_skill_modifier(skill)
 
 
 ## Passive score = 10 + skill modifier (used for passive Perception, etc.).
-func get_passive_score(character, skill: StringName) -> int:
+func get_passive_score(character: CharacterData, skill: StringName) -> int:
 	return 10 + get_skill_modifier(character, skill)
 
 
@@ -240,10 +219,9 @@ func get_passive_score(character, skill: StringName) -> int:
 # ===========================================================================
 
 ## Calculate the initiative modifier for a character (DEX mod + any bonuses).
-func calculate_initiative(character) -> int:
+func calculate_initiative(character: CharacterData) -> int:
 	var dex_mod: int = character.get_modifier(&"dexterity")
-	var bonus: int = character.initiative_bonus if character.get("initiative_bonus") else 0
-	return dex_mod + bonus
+	return dex_mod + character.initiative_bonus
 
 
 # ===========================================================================
@@ -251,19 +229,19 @@ func calculate_initiative(character) -> int:
 # ===========================================================================
 
 ## Maximum carrying capacity in pounds: STR score * 15.
-func get_carry_capacity(character) -> float:
+func get_carry_capacity(character: CharacterData) -> float:
 	var str_score: int = character.ability_scores.get_score(&"strength")
 	return float(str_score) * 15.0
 
 
 ## Whether the character is encumbered (variant rule): weight > STR * 5.
-func is_encumbered(character, total_weight: float) -> bool:
+func is_encumbered(character: CharacterData, total_weight: float) -> bool:
 	var str_score: int = character.ability_scores.get_score(&"strength")
 	return total_weight > float(str_score) * 5.0
 
 
 ## Whether the character is heavily encumbered: weight > STR * 10.
-func is_heavily_encumbered(character, total_weight: float) -> bool:
+func is_heavily_encumbered(character: CharacterData, total_weight: float) -> bool:
 	var str_score: int = character.ability_scores.get_score(&"strength")
 	return total_weight > float(str_score) * 10.0
 
@@ -273,7 +251,7 @@ func is_heavily_encumbered(character, total_weight: float) -> bool:
 # ===========================================================================
 
 ## Determine the spellcasting ability for a character based on their class.
-func _get_casting_ability(character) -> StringName:
+func _get_casting_ability(character: CharacterData) -> StringName:
 	# Use the spellcasting_ability defined on the ClassData resource.
 	if character.character_class != null and character.character_class.spellcasting_ability != &"":
 		return character.character_class.spellcasting_ability

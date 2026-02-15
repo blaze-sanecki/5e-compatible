@@ -59,14 +59,14 @@ func _build_ui() -> void:
 	add_child(_quest_container)
 
 	_quest_title = Label.new()
-	_quest_title.add_theme_font_size_override("font_size", 13)
+	_quest_title.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
 	_quest_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_quest_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_quest_container.add_child(_quest_title)
 
 	_quest_objective = Label.new()
-	_quest_objective.add_theme_font_size_override("font_size", 11)
-	_quest_objective.add_theme_color_override("font_color", Color(0.7, 0.7, 0.8))
+	_quest_objective.add_theme_font_size_override("font_size", UITheme.FONT_TINY)
+	_quest_objective.add_theme_color_override("font_color", UITheme.COLOR_QUEST_OBJECTIVE)
 	_quest_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_quest_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_quest_container.add_child(_quest_objective)
@@ -94,8 +94,8 @@ func _add_hp_bar(character: Resource) -> void:
 	var char_name: String = str(character.get("character_name")) if character.get("character_name") else "Hero"
 	name_label.text = char_name
 	name_label.custom_minimum_size = Vector2(70, 0)
-	name_label.add_theme_font_size_override("font_size", 12)
-	name_label.add_theme_color_override("font_color", Color(0.85, 0.82, 0.7))
+	name_label.add_theme_font_size_override("font_size", UITheme.FONT_DETAIL)
+	name_label.add_theme_color_override("font_color", UITheme.COLOR_CHAR_NAME)
 	name_label.clip_text = true
 	row.add_child(name_label)
 
@@ -114,8 +114,8 @@ func _add_hp_bar(character: Resource) -> void:
 
 	# HP text.
 	var hp_label := Label.new()
-	hp_label.add_theme_font_size_override("font_size", 10)
-	hp_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.9))
+	hp_label.add_theme_font_size_override("font_size", UITheme.FONT_MINI)
+	hp_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_BRIGHT)
 	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hp_label.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bar_bg.add_child(hp_label)

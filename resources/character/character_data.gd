@@ -5,28 +5,6 @@ extends Resource
 ## ability scores, class, subclass, species, background, feats, inventory,
 ## spells, and all other character state.
 
-## Maps each 5e skill to its governing ability score.
-const SKILL_ABILITY_MAP: Dictionary = {
-	&"acrobatics": &"dexterity",
-	&"animal_handling": &"wisdom",
-	&"arcana": &"intelligence",
-	&"athletics": &"strength",
-	&"deception": &"charisma",
-	&"history": &"intelligence",
-	&"insight": &"wisdom",
-	&"intimidation": &"charisma",
-	&"investigation": &"intelligence",
-	&"medicine": &"wisdom",
-	&"nature": &"intelligence",
-	&"perception": &"wisdom",
-	&"performance": &"charisma",
-	&"persuasion": &"charisma",
-	&"religion": &"intelligence",
-	&"sleight_of_hand": &"dexterity",
-	&"stealth": &"dexterity",
-	&"survival": &"wisdom",
-}
-
 # --- Identity ---
 
 ## The character's name.
@@ -164,7 +142,7 @@ func has_expertise_in(skill: StringName) -> bool:
 ## This is the ability modifier plus proficiency bonus (if proficient),
 ## plus an additional proficiency bonus if the character has expertise.
 func get_skill_modifier(skill: StringName) -> int:
-	var ability: StringName = SKILL_ABILITY_MAP.get(skill, &"")
+	var ability: StringName = RulesEngine.SKILL_ABILITIES.get(skill, &"")
 	if ability == &"":
 		push_error("CharacterData: Unknown skill '%s'" % skill)
 		return 0

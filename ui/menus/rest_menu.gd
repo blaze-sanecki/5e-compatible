@@ -32,7 +32,7 @@ func _build_ui() -> void:
 	# Dim overlay.
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.0, 0.0, 0.0, 0.4)
+	bg.color = UITheme.COLOR_OVERLAY_LIGHT
 	_root.add_child(bg)
 
 	# Panel.
@@ -63,7 +63,7 @@ func _show_rest_options() -> void:
 	var title := Label.new()
 	title.text = "Rest"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_font_size_override("font_size", UITheme.FONT_SUBHEADING)
 	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_content.add_child(title)
 
@@ -71,7 +71,7 @@ func _show_rest_options() -> void:
 	var time_label := Label.new()
 	time_label.text = GameManager.get_time_string()
 	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	time_label.add_theme_font_size_override("font_size", 13)
+	time_label.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
 	time_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_MUTED)
 	_content.add_child(time_label)
 
@@ -83,8 +83,8 @@ func _show_rest_options() -> void:
 		var status := Label.new()
 		var char_name: String = character.character_name if character.character_name else "Hero"
 		status.text = "%s — HP: %d/%d — Hit Dice: %d" % [char_name, character.current_hp, character.max_hp, character.hit_dice_remaining]
-		status.add_theme_font_size_override("font_size", 13)
-		status.add_theme_color_override("font_color", Color(0.8, 0.8, 0.85))
+		status.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
+		status.add_theme_color_override("font_color", UITheme.COLOR_TEXT_LIGHT)
 		_content.add_child(status)
 
 	# Button container.
@@ -166,21 +166,21 @@ func _show_results(title_text: String, results: PackedStringArray) -> void:
 	var title := Label.new()
 	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_font_size_override("font_size", UITheme.FONT_LARGE)
 	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_content.add_child(title)
 
 	var time_label := Label.new()
 	time_label.text = GameManager.get_time_string()
 	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	time_label.add_theme_font_size_override("font_size", 13)
+	time_label.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
 	time_label.add_theme_color_override("font_color", UITheme.COLOR_TEXT_MUTED)
 	_content.add_child(time_label)
 
 	for result in results:
 		var line := Label.new()
 		line.text = result
-		line.add_theme_font_size_override("font_size", 14)
+		line.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
 		line.add_theme_color_override("font_color", UITheme.COLOR_QUEST_COMPLETE)
 		_content.add_child(line)
 

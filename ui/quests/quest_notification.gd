@@ -50,7 +50,7 @@ func _show_toast(text: String, color: Color) -> void:
 	var label := Label.new()
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_font_size_override("font_size", UITheme.FONT_BODY)
 	label.add_theme_color_override("font_color", color)
 	label.modulate.a = 0.0
 	_container.add_child(label)

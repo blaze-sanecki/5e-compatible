@@ -16,6 +16,7 @@ var _terrains: Dictionary = {}
 var _monsters: Dictionary = {}
 var _conditions: Dictionary = {}
 var _encounters: Dictionary = {}
+var _subclasses: Dictionary = {}
 var _dialogues: Dictionary = {}
 var _quests: Dictionary = {}
 
@@ -31,6 +32,7 @@ func _ready() -> void:
 	_scan_directory("res://data/monsters", _monsters)
 	_scan_directory("res://data/conditions", _conditions)
 	_scan_directory("res://data/encounters", _encounters)
+	_scan_directory("res://data/subclasses", _subclasses)
 	_scan_directory("res://data/dialogue", _dialogues)
 	_scan_directory("res://data/quests", _quests)
 
@@ -42,11 +44,11 @@ func _ready() -> void:
 		elif res is ArmorData:
 			_armor[key] = res
 
-	print("DataRegistry: loaded %d classes, %d species, %d backgrounds, %d feats, %d weapons, %d armor, %d progressions, %d terrains, %d monsters, %d conditions, %d encounters, %d dialogues, %d quests" % [
+	print("DataRegistry: loaded %d classes, %d species, %d backgrounds, %d feats, %d weapons, %d armor, %d progressions, %d terrains, %d monsters, %d conditions, %d encounters, %d subclasses, %d dialogues, %d quests" % [
 		_classes.size(), _species.size(), _backgrounds.size(), _feats.size(),
 		_weapons.size(), _armor.size(), _level_progressions.size(), _terrains.size(),
 		_monsters.size(), _conditions.size(), _encounters.size(),
-		_dialogues.size(), _quests.size(),
+		_subclasses.size(), _dialogues.size(), _quests.size(),
 	])
 
 
@@ -176,6 +178,20 @@ func get_all_encounters() -> Array:
 
 func get_encounter(id: StringName) -> CombatEncounterData:
 	return _encounters.get(id) as CombatEncounterData
+
+
+# ---------------------------------------------------------------------------
+# Subclasses
+# ---------------------------------------------------------------------------
+
+func get_all_subclasses() -> Array[SubclassData]:
+	var result: Array[SubclassData] = []
+	for v in _subclasses.values():
+		result.append(v as SubclassData)
+	return result
+
+func get_subclass(id: StringName) -> SubclassData:
+	return _subclasses.get(id) as SubclassData
 
 
 # ---------------------------------------------------------------------------

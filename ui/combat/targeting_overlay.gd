@@ -13,9 +13,9 @@ var _target_cells: Array[Vector2i] = []
 var _aoe_cells: Array[Vector2i] = []
 
 ## Colors for each overlay type.
-var movement_color: Color = Color(0.2, 0.5, 1.0, 0.25)
-var target_color: Color = Color(1.0, 0.2, 0.2, 0.35)
-var aoe_color: Color = Color(1.0, 0.6, 0.1, 0.3)
+var movement_color: Color = UITheme.COLOR_MOVEMENT_FILL
+var target_color: Color = UITheme.COLOR_TARGET_FILL
+var aoe_color: Color = UITheme.COLOR_AOE_FILL
 
 ## Cell size in pixels (matched to tilemap).
 var _cell_size: Vector2 = Vector2(32, 32)
@@ -68,16 +68,16 @@ func _draw() -> void:
 		var pos: Vector2 = floor_layer.map_to_local(cell) - half
 		draw_rect(Rect2(pos, _cell_size), movement_color)
 		# Draw border.
-		draw_rect(Rect2(pos, _cell_size), Color(0.3, 0.6, 1.0, 0.5), false, 1.0)
+		draw_rect(Rect2(pos, _cell_size), UITheme.COLOR_MOVEMENT_BORDER, false, 1.0)
 
 	# Draw target cells.
 	for cell in _target_cells:
 		var pos: Vector2 = floor_layer.map_to_local(cell) - half
 		draw_rect(Rect2(pos, _cell_size), target_color)
-		draw_rect(Rect2(pos, _cell_size), Color(1.0, 0.3, 0.3, 0.7), false, 2.0)
+		draw_rect(Rect2(pos, _cell_size), UITheme.COLOR_TARGET_BORDER, false, 2.0)
 
 	# Draw AoE cells.
 	for cell in _aoe_cells:
 		var pos: Vector2 = floor_layer.map_to_local(cell) - half
 		draw_rect(Rect2(pos, _cell_size), aoe_color)
-		draw_rect(Rect2(pos, _cell_size), Color(1.0, 0.7, 0.2, 0.6), false, 1.5)
+		draw_rect(Rect2(pos, _cell_size), UITheme.COLOR_AOE_BORDER, false, 1.5)

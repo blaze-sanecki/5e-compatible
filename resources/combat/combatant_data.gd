@@ -79,31 +79,30 @@ static var _next_id: int = 1
 # Construction
 # ---------------------------------------------------------------------------
 
-static func from_character(character: Resource) -> CombatantData:
+static func from_character(character: CharacterData) -> CombatantData:
 	var c := CombatantData.new()
 	c.source = character
 	c.type = CombatantType.PLAYER
-	c.display_name = character.character_name if character.get("character_name") else "Player"
+	c.display_name = character.character_name
 	c.current_hp = character.current_hp
 	c.max_hp = character.max_hp
-	c.temp_hp = character.temp_hp if character.get("temp_hp") else 0
-	c.movement_remaining = character.speed if character.get("speed") else 30
-	c.death_save_successes = character.death_save_successes if character.get("death_save_successes") else 0
-	c.death_save_failures = character.death_save_failures if character.get("death_save_failures") else 0
+	c.temp_hp = character.temp_hp
+	c.movement_remaining = character.speed
+	c.death_save_successes = character.death_save_successes
+	c.death_save_failures = character.death_save_failures
 	c.instance_id = _next_id
 	_next_id += 1
 
 	# Check for Extra Attack
-	if character.get("character_class") and character.get("level"):
+	if character.character_class != null:
 		c.attacks_remaining = _get_attack_count(character)
 
 	# Copy existing conditions
-	if character.get("conditions"):
-		for cond in character.conditions:
-			c.conditions.append(cond)
+	for cond in character.conditions:
+		c.conditions.append(cond)
 
 	# Track concentration
-	if character.get("concentration_spell") and character.concentration_spell != null:
+	if character.concentration_spell != null:
 		c.is_concentrating = true
 		c.concentration_spell = character.concentration_spell
 
@@ -136,34 +135,33 @@ func is_monster() -> bool:
 
 
 func get_modifier(ability: StringName) -> int:
-	if source.has_method("get_modifier"):
-		return source.get_modifier(ability)
-	return 0
+	if is_player():
+		return (source as CharacterData).get_modifier(ability)
+	return (source as MonsterData).get_modifier(ability)
 
 
 func get_ac() -> int:
 	if is_player():
-		return RulesEngine.calculate_ac(source)
-	return source.armor_class
+		return RulesEngine.calculate_ac(source as CharacterData)
+	return (source as MonsterData).armor_class
 
 
 func get_speed() -> int:
 	if is_player():
-		return source.speed if source.get("speed") else 30
-	return source.speed.get("walk", 30) as int
+		return (source as CharacterData).speed
+	return (source as MonsterData).speed.get("walk", 30) as int
 
 
 func get_level() -> int:
 	if is_player():
-		return source.level if source.get("level") else 1
-	# Monsters use CR-derived proficiency
+		return (source as CharacterData).level
 	return 1
 
 
 func get_proficiency_bonus() -> int:
 	if is_player():
 		return RulesEngine.get_proficiency_bonus(get_level())
-	return source.proficiency_bonus if source.get("proficiency_bonus") else 2
+	return (source as MonsterData).proficiency_bonus
 
 
 ## Reset action economy for a new turn.
@@ -190,7 +188,7 @@ func start_turn() -> void:
 
 	# Extra Attack resets
 	if is_player():
-		attacks_remaining = _get_attack_count(source)
+		attacks_remaining = _get_attack_count(source as CharacterData)
 	else:
 		attacks_remaining = 1
 
@@ -198,10 +196,11 @@ func start_turn() -> void:
 ## Sync HP back to the source resource (for players).
 func sync_to_source() -> void:
 	if is_player():
-		source.current_hp = current_hp
-		source.temp_hp = temp_hp
-		source.death_save_successes = death_save_successes
-		source.death_save_failures = death_save_failures
+		var char_data: CharacterData = source as CharacterData
+		char_data.current_hp = current_hp
+		char_data.temp_hp = temp_hp
+		char_data.death_save_successes = death_save_successes
+		char_data.death_save_failures = death_save_failures
 
 
 func is_alive() -> bool:
@@ -218,21 +217,21 @@ func has_condition(condition_id: StringName) -> bool:
 
 func get_initiative_modifier() -> int:
 	if is_player():
-		return RulesEngine.calculate_initiative(source)
+		return RulesEngine.calculate_initiative(source as CharacterData)
 	return get_modifier(&"dexterity")
 
 
 ## Get the best melee action for monsters, or equipped weapon for players.
 func get_primary_weapon() -> Variant:
 	if is_player():
-		if source.get("equipped_weapons") and not source.equipped_weapons.is_empty():
-			return source.equipped_weapons[0]
+		var char_data: CharacterData = source as CharacterData
+		if not char_data.equipped_weapons.is_empty():
+			return char_data.equipped_weapons[0]
 		return null
-	# Monster: return first melee action
-	if source.get("actions"):
-		for action in source.actions:
-			if action.type == &"melee_attack":
-				return action
+	var monster: MonsterData = source as MonsterData
+	for action in monster.actions:
+		if action.type == &"melee_attack":
+			return action
 	return null
 
 
@@ -240,15 +239,11 @@ func get_primary_weapon() -> Variant:
 # Private helpers
 # ---------------------------------------------------------------------------
 
-static func _get_attack_count(character: Resource) -> int:
-	if character.get("character_class") == null or character.get("level") == null:
-		return 1
-	var class_data: Resource = character.character_class
+static func _get_attack_count(character: CharacterData) -> int:
+	var class_data: ClassData = character.character_class
 	if class_data == null:
 		return 1
-	# Check class features for Extra Attack
-	if class_data.get("class_features"):
-		for feature in class_data.class_features:
-			if feature.name == "Extra Attack" and character.level >= feature.level:
-				return 2
+	for feature in class_data.class_features:
+		if feature.name == "Extra Attack" and character.level >= feature.level:
+			return 2
 	return 1

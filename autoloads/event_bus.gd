@@ -34,10 +34,10 @@ signal condition_removed(character: Resource, condition: StringName)
 # ---------------------------------------------------------------------------
 # Items / Inventory
 # ---------------------------------------------------------------------------
-signal item_acquired(character: Resource, item: Resource)
-signal item_used(character: Resource, item: Resource)
-signal item_equipped(character: Resource, item: Resource)
-signal item_unequipped(character: Resource, item: Resource)
+signal item_acquired(character: CharacterData, item: Resource)
+signal item_used(character: CharacterData, item: Resource)
+signal item_equipped(character: CharacterData, item: Resource)
+signal item_unequipped(character: CharacterData, item: Resource)
 
 # ---------------------------------------------------------------------------
 # Quests
@@ -56,15 +56,15 @@ signal dialogue_choice_made(choice_index: int)
 # ---------------------------------------------------------------------------
 # Character progression
 # ---------------------------------------------------------------------------
-signal level_up(character: Resource, new_level: int)
-signal experience_gained(character: Resource, amount: int)
-signal gold_changed(character: Resource, new_total: int)
+signal level_up(character: CharacterData, new_level: int)
+signal experience_gained(character: CharacterData, amount: int)
+signal gold_changed(character: CharacterData, new_total: int)
 
 # ---------------------------------------------------------------------------
 # Party
 # ---------------------------------------------------------------------------
-signal party_member_added(character: Resource)
-signal party_member_removed(character: Resource)
+signal party_member_added(character: CharacterData)
+signal party_member_removed(character: CharacterData)
 
 # ---------------------------------------------------------------------------
 # World / Navigation
@@ -75,9 +75,9 @@ signal interaction_triggered(interactable: Node)
 # ---------------------------------------------------------------------------
 # Ability checks & saves
 # ---------------------------------------------------------------------------
-signal skill_check_made(character: Resource, skill: StringName, result: Dictionary)
-signal saving_throw_made(character: Resource, ability: StringName, result: Dictionary)
-signal death_save_made(character: Resource, result: Dictionary)
+signal skill_check_made(character: CharacterData, skill: StringName, result: Dictionary)
+signal saving_throw_made(character: CharacterData, ability: StringName, result: Dictionary)
+signal death_save_made(character: CharacterData, result: Dictionary)
 
 # ---------------------------------------------------------------------------
 # Resting

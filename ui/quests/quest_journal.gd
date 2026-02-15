@@ -71,7 +71,7 @@ func _refresh_list() -> void:
 	if not active_quests.is_empty():
 		var header := Label.new()
 		header.text = "Active Quests"
-		header.add_theme_font_size_override("font_size", 14)
+		header.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
 		header.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 		_quest_list.add_child(header)
 
@@ -87,7 +87,7 @@ func _refresh_list() -> void:
 
 		var header := Label.new()
 		header.text = "Completed"
-		header.add_theme_font_size_override("font_size", 14)
+		header.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
 		header.add_theme_color_override("font_color", UITheme.COLOR_QUEST_COMPLETE)
 		_quest_list.add_child(header)
 
@@ -97,7 +97,7 @@ func _refresh_list() -> void:
 	if active_quests.is_empty() and completed_quests.is_empty():
 		var empty := Label.new()
 		empty.text = "No quests yet."
-		empty.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+		empty.add_theme_color_override("font_color", UITheme.COLOR_STEP_FUTURE)
 		_quest_list.add_child(empty)
 
 	_refresh_detail()
@@ -108,7 +108,7 @@ func _add_quest_button(quest: QuestData, completed: bool) -> void:
 	btn.text = quest.display_name
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	if completed:
-		btn.modulate = Color(0.6, 0.6, 0.6)
+		btn.modulate = UITheme.COLOR_COMPLETED_MODULATE
 	btn.pressed.connect(func() -> void:
 		_selected_quest = quest
 		_selected_is_completed = completed
@@ -149,7 +149,7 @@ func _refresh_detail() -> void:
 
 			if obj.is_complete():
 				line.add_theme_color_override("font_color", UITheme.COLOR_QUEST_COMPLETE)
-			line.add_theme_font_size_override("font_size", 13)
+			line.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
 			_objectives_list.add_child(line)
 
 	# Rewards.
@@ -177,7 +177,7 @@ func _build_ui() -> void:
 	# Dim background.
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.0, 0.0, 0.0, 0.5)
+	bg.color = UITheme.COLOR_OVERLAY_MEDIUM
 	_root.add_child(bg)
 
 	# Main panel.
@@ -192,7 +192,7 @@ func _build_ui() -> void:
 	_panel.offset_bottom = 0
 
 	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
-		Color(0.12, 0.12, 0.18, 0.95)))
+		UITheme.COLOR_JOURNAL_BG))
 	_root.add_child(_panel)
 
 	var main_vbox := VBoxContainer.new()
@@ -205,7 +205,7 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "Quest Journal"
-	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_font_size_override("font_size", UITheme.FONT_SUBHEADING)
 	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_bar.add_child(title)
@@ -242,7 +242,7 @@ func _build_ui() -> void:
 
 	_detail_title = Label.new()
 	_detail_title.text = "Select a quest"
-	_detail_title.add_theme_font_size_override("font_size", 18)
+	_detail_title.add_theme_font_size_override("font_size", UITheme.FONT_MEDIUM)
 	_detail_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_detail_panel.add_child(_detail_title)
 
@@ -250,12 +250,12 @@ func _build_ui() -> void:
 	_detail_desc.bbcode_enabled = true
 	_detail_desc.fit_content = true
 	_detail_desc.scroll_active = false
-	_detail_desc.add_theme_font_size_override("normal_font_size", 13)
+	_detail_desc.add_theme_font_size_override("normal_font_size", UITheme.FONT_CAPTION)
 	_detail_panel.add_child(_detail_desc)
 
 	var obj_header := Label.new()
 	obj_header.text = "Objectives"
-	obj_header.add_theme_font_size_override("font_size", 15)
+	obj_header.add_theme_font_size_override("font_size", UITheme.FONT_QUEST_HEADER)
 	obj_header.add_theme_color_override("font_color", UITheme.COLOR_QUEST_OBJECTIVE)
 	_detail_panel.add_child(obj_header)
 
@@ -264,8 +264,8 @@ func _build_ui() -> void:
 	_detail_panel.add_child(_objectives_list)
 
 	_rewards_label = Label.new()
-	_rewards_label.add_theme_font_size_override("font_size", 13)
-	_rewards_label.add_theme_color_override("font_color", Color(0.8, 0.7, 0.4))
+	_rewards_label.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
+	_rewards_label.add_theme_color_override("font_color", UITheme.COLOR_REWARDS)
 	_detail_panel.add_child(_rewards_label)
 
 	add_child(_root)

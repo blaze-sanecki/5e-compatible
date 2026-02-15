@@ -42,7 +42,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "5e Compatible"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 48)
+	title.add_theme_font_size_override("font_size", UITheme.FONT_TITLE)
 	title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	center.add_child(title)
 
@@ -50,7 +50,7 @@ func _build_ui() -> void:
 	var subtitle := Label.new()
 	subtitle.text = "A D&D 5e SRD Adventure"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_font_size_override("font_size", UITheme.FONT_BODY)
 	subtitle.add_theme_color_override("font_color", UITheme.COLOR_SUBTITLE)
 	center.add_child(subtitle)
 
@@ -109,7 +109,7 @@ func _build_ui() -> void:
 	var picker_title := Label.new()
 	picker_title.text = "Choose Save Slot"
 	picker_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	picker_title.add_theme_font_size_override("font_size", 20)
+	picker_title.add_theme_font_size_override("font_size", UITheme.FONT_LARGE)
 	picker_title.add_theme_color_override("font_color", UITheme.COLOR_TITLE)
 	_slot_picker.add_child(picker_title)
 
@@ -132,7 +132,7 @@ func _build_ui() -> void:
 	# Status label.
 	_status_label = Label.new()
 	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_status_label.add_theme_font_size_override("font_size", 14)
+	_status_label.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
 	_status_label.add_theme_color_override("font_color", UITheme.COLOR_ERROR)
 	center.add_child(_status_label)
 

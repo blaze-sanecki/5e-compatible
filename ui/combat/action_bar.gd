@@ -26,13 +26,13 @@ func set_combat_manager(mgr: CombatManager) -> void:
 
 func _create_buttons() -> void:
 	var actions: Array[Array] = [
-		["Attack", &"attack", Color(0.9, 0.3, 0.2), "A"],
-		["Use Item", &"use_item", Color(0.3, 0.8, 0.6), "I"],
-		["Dash", &"dash", Color(0.2, 0.7, 0.9), "D"],
-		["Disengage", &"disengage", Color(0.5, 0.8, 0.3), "G"],
-		["Dodge", &"dodge", Color(0.8, 0.7, 0.2), "O"],
-		["Hide", &"hide", Color(0.6, 0.4, 0.8), "H"],
-		["End Turn", &"end_turn", Color(0.5, 0.5, 0.5), "Enter"],
+		["Attack", &"attack", UITheme.COLOR_ACTION_ATTACK, "A"],
+		["Use Item", &"use_item", UITheme.COLOR_ACTION_ITEM, "I"],
+		["Dash", &"dash", UITheme.COLOR_ACTION_DASH, "D"],
+		["Disengage", &"disengage", UITheme.COLOR_ACTION_DISENGAGE, "G"],
+		["Dodge", &"dodge", UITheme.COLOR_ACTION_DODGE, "O"],
+		["Hide", &"hide", UITheme.COLOR_ACTION_HIDE, "H"],
+		["End Turn", &"end_turn", UITheme.COLOR_ACTION_END_TURN, "Enter"],
 	]
 
 	for action_def in actions:
@@ -151,8 +151,8 @@ func _show_item_picker() -> void:
 	_item_popup.name = "ItemPickerPopup"
 
 	var popup_style := StyleBoxFlat.new()
-	popup_style.bg_color = Color(0.1, 0.12, 0.18, 0.95)
-	popup_style.border_color = Color(0.3, 0.8, 0.6)
+	popup_style.bg_color = UITheme.COLOR_ITEM_POPUP_BG
+	popup_style.border_color = UITheme.COLOR_ITEM_POPUP_BORDER
 	popup_style.set_border_width_all(2)
 	popup_style.set_corner_radius_all(6)
 	popup_style.set_content_margin_all(10)
@@ -165,8 +165,8 @@ func _show_item_picker() -> void:
 	var title := Label.new()
 	title.text = "Use Item (Action)"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 14)
-	title.add_theme_color_override("font_color", Color(0.3, 0.8, 0.6))
+	title.add_theme_font_size_override("font_size", UITheme.FONT_SMALL)
+	title.add_theme_color_override("font_color", UITheme.COLOR_ITEM_POPUP_BORDER)
 	vbox.add_child(title)
 
 	# Count quantities for display.
@@ -178,7 +178,7 @@ func _show_item_picker() -> void:
 		item_btn.custom_minimum_size = Vector2(180, 30)
 
 		var btn_style := StyleBoxFlat.new()
-		btn_style.bg_color = Color(0.15, 0.18, 0.25, 0.9)
+		btn_style.bg_color = UITheme.COLOR_ITEM_BTN_BG
 		btn_style.border_color = Color(0.3, 0.8, 0.6, 0.5)
 		btn_style.set_border_width_all(1)
 		btn_style.set_corner_radius_all(4)
@@ -186,12 +186,12 @@ func _show_item_picker() -> void:
 		item_btn.add_theme_stylebox_override("normal", btn_style)
 
 		var btn_hover := btn_style.duplicate() as StyleBoxFlat
-		btn_hover.bg_color = Color(0.2, 0.25, 0.35, 0.95)
-		btn_hover.border_color = Color(0.3, 0.8, 0.6)
+		btn_hover.bg_color = UITheme.COLOR_ITEM_BTN_HOVER
+		btn_hover.border_color = UITheme.COLOR_ITEM_POPUP_BORDER
 		item_btn.add_theme_stylebox_override("hover", btn_hover)
 
-		item_btn.add_theme_font_size_override("font_size", 13)
-		item_btn.add_theme_color_override("font_color", Color(0.9, 0.9, 0.8))
+		item_btn.add_theme_font_size_override("font_size", UITheme.FONT_CAPTION)
+		item_btn.add_theme_color_override("font_color", UITheme.COLOR_ITEM_TEXT)
 
 		var captured_item: ItemData = item
 		item_btn.pressed.connect(func() -> void: _on_item_selected(captured_item))
@@ -202,12 +202,12 @@ func _show_item_picker() -> void:
 	cancel_btn.text = "Cancel"
 	cancel_btn.custom_minimum_size = Vector2(180, 28)
 	var cancel_style := StyleBoxFlat.new()
-	cancel_style.bg_color = Color(0.2, 0.15, 0.15, 0.9)
+	cancel_style.bg_color = UITheme.COLOR_CANCEL_BG
 	cancel_style.set_corner_radius_all(4)
 	cancel_style.set_content_margin_all(4)
 	cancel_btn.add_theme_stylebox_override("normal", cancel_style)
-	cancel_btn.add_theme_font_size_override("font_size", 12)
-	cancel_btn.add_theme_color_override("font_color", Color(0.8, 0.6, 0.6))
+	cancel_btn.add_theme_font_size_override("font_size", UITheme.FONT_DETAIL)
+	cancel_btn.add_theme_color_override("font_color", UITheme.COLOR_CANCEL_TEXT)
 	cancel_btn.pressed.connect(_close_item_picker)
 	vbox.add_child(cancel_btn)
 

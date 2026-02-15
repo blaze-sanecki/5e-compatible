@@ -53,11 +53,7 @@ static func deserialize(party_data: Array) -> void:
 
 		var subclass_id: String = str(char_dict.get("subclass_id", ""))
 		if not subclass_id.is_empty():
-			if c.character_class and c.character_class.get("subclasses"):
-				for sub in c.character_class.subclasses:
-					if sub.get("id") and str(sub.id) == subclass_id:
-						c.subclass = sub
-						break
+			c.subclass = DataRegistry.get_subclass(StringName(subclass_id))
 
 		var species_id: String = str(char_dict.get("species_id", ""))
 		if not species_id.is_empty():

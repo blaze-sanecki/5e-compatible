@@ -18,12 +18,12 @@ func _ready() -> void:
 		if i > 0:
 			var sep := Label.new()
 			sep.text = ">"
-			sep.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+			sep.add_theme_color_override("font_color", UITheme.COLOR_STEP_FUTURE)
 			add_child(sep)
 
 		var lbl := Label.new()
 		lbl.text = "%d. %s" % [i + 1, STEP_NAMES[i]]
-		lbl.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+		lbl.add_theme_color_override("font_color", UITheme.COLOR_STEP_FUTURE)
 		add_child(lbl)
 		_labels.append(lbl)
 
@@ -34,8 +34,8 @@ func set_current_step(step: int) -> void:
 	_current_step = step
 	for i in _labels.size():
 		if i < step:
-			_labels[i].add_theme_color_override("font_color", Color(0.4, 0.8, 0.4))  # Completed
+			_labels[i].add_theme_color_override("font_color", UITheme.COLOR_STEP_COMPLETE)  # Completed
 		elif i == step:
-			_labels[i].add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))  # Current
+			_labels[i].add_theme_color_override("font_color", UITheme.COLOR_STEP_CURRENT)  # Current
 		else:
-			_labels[i].add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))  # Future
+			_labels[i].add_theme_color_override("font_color", UITheme.COLOR_STEP_FUTURE)  # Future

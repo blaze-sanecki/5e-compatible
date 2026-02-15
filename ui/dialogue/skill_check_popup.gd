@@ -61,11 +61,11 @@ func _build_ui() -> void:
 	_panel.offset_bottom = 0
 
 	_panel.add_theme_stylebox_override("panel", UIStyler.create_panel_style(
-		Color(0.15, 0.1, 0.2, 0.95), Color(0.7, 0.6, 0.3)))
+		UITheme.COLOR_SKILL_CHECK_BG, UITheme.COLOR_SKILL_CHECK_BORDER))
 
 	_label = Label.new()
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_label.add_theme_font_size_override("font_size", 20)
+	_label.add_theme_font_size_override("font_size", UITheme.FONT_LARGE)
 	_panel.add_child(_label)
 
 	_panel.visible = false
