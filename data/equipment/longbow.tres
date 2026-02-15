@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_6emwo"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_a6tli"]
 
-[sub_resource type="Resource" id="Resource_dgjkb"]
+[sub_resource type="Resource" id="Resource_6emwo"]
 script = ExtResource("1_6emwo")
 dice_size = 8
 damage_type = &"piercing"
@@ -11,7 +11,7 @@ damage_type = &"piercing"
 [resource]
 script = ExtResource("2_a6tli")
 weapon_category = &"martial"
-damage = SubResource("Resource_dgjkb")
+damage = SubResource("Resource_6emwo")
 properties = Array[StringName]([&"ammunition", &"heavy", &"two_handed"])
 range_normal = 150
 range_long = 600

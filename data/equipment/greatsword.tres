@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_6hr24"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_rf2he"]
 
-[sub_resource type="Resource" id="Resource_6saco"]
+[sub_resource type="Resource" id="Resource_6hr24"]
 script = ExtResource("1_6hr24")
 dice_count = 2
 damage_type = &"slashing"
@@ -11,7 +11,7 @@ damage_type = &"slashing"
 [resource]
 script = ExtResource("2_rf2he")
 weapon_category = &"martial"
-damage = SubResource("Resource_6saco")
+damage = SubResource("Resource_6hr24")
 properties = Array[StringName]([&"heavy", &"two_handed"])
 id = &"greatsword"
 display_name = "Greatsword"

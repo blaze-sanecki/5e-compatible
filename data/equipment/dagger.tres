@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_q02dv"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_ujv2y"]
 
-[sub_resource type="Resource" id="Resource_j2uce"]
+[sub_resource type="Resource" id="Resource_q02dv"]
 script = ExtResource("1_q02dv")
 dice_size = 4
 damage_type = &"piercing"
 
 [resource]
 script = ExtResource("2_ujv2y")
-damage = SubResource("Resource_j2uce")
+damage = SubResource("Resource_q02dv")
 properties = Array[StringName]([&"finesse", &"light", &"thrown"])
 range_long = 60
 id = &"dagger"

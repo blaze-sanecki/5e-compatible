@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_00twc"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_wc2a6"]
 
-[sub_resource type="Resource" id="Resource_uw1mg"]
+[sub_resource type="Resource" id="Resource_00twc"]
 script = ExtResource("1_00twc")
 
 [resource]
 script = ExtResource("2_wc2a6")
-damage = SubResource("Resource_uw1mg")
+damage = SubResource("Resource_00twc")
 id = &"mace"
 display_name = "Mace"
 weight = 4.0

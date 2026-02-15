@@ -3,13 +3,13 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_uhtnu"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_xrhcw"]
 
-[sub_resource type="Resource" id="Resource_k1apa"]
+[sub_resource type="Resource" id="Resource_uhtnu"]
 script = ExtResource("1_uhtnu")
 damage_type = &"piercing"
 
 [resource]
 script = ExtResource("2_xrhcw")
-damage = SubResource("Resource_k1apa")
+damage = SubResource("Resource_uhtnu")
 properties = Array[StringName]([&"ammunition", &"two_handed"])
 range_normal = 80
 range_long = 320

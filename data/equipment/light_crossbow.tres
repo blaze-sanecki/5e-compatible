@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_7owgv"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_r0tfu"]
 
-[sub_resource type="Resource" id="Resource_j4wg8"]
+[sub_resource type="Resource" id="Resource_7owgv"]
 script = ExtResource("1_7owgv")
 dice_size = 8
 damage_type = &"piercing"
 
 [resource]
 script = ExtResource("2_r0tfu")
-damage = SubResource("Resource_j4wg8")
+damage = SubResource("Resource_7owgv")
 properties = Array[StringName]([&"ammunition", &"loading", &"two_handed"])
 range_normal = 80
 range_long = 320

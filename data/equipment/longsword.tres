@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_vf7c1"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_rt0qk"]
 
-[sub_resource type="Resource" id="Resource_3aou0"]
+[sub_resource type="Resource" id="Resource_vf7c1"]
 script = ExtResource("1_vf7c1")
 dice_size = 8
 damage_type = &"slashing"
 
-[sub_resource type="Resource" id="Resource_42ei6"]
+[sub_resource type="Resource" id="Resource_rt0qk"]
 script = ExtResource("1_vf7c1")
 dice_size = 10
 damage_type = &"slashing"
@@ -16,8 +16,8 @@ damage_type = &"slashing"
 [resource]
 script = ExtResource("2_rt0qk")
 weapon_category = &"martial"
-damage = SubResource("Resource_3aou0")
-versatile_damage = SubResource("Resource_42ei6")
+damage = SubResource("Resource_vf7c1")
+versatile_damage = SubResource("Resource_rt0qk")
 properties = Array[StringName]([&"versatile"])
 id = &"longsword"
 display_name = "Longsword"

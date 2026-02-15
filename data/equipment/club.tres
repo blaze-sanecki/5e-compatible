@@ -3,13 +3,13 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_egwvh"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_4jcet"]
 
-[sub_resource type="Resource" id="Resource_7fgt1"]
+[sub_resource type="Resource" id="Resource_egwvh"]
 script = ExtResource("1_egwvh")
 dice_size = 4
 
 [resource]
 script = ExtResource("2_4jcet")
-damage = SubResource("Resource_7fgt1")
+damage = SubResource("Resource_egwvh")
 properties = Array[StringName]([&"light"])
 id = &"club"
 display_name = "Club"

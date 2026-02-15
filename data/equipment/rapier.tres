@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_0h6p1"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_ovfl6"]
 
-[sub_resource type="Resource" id="Resource_8thw5"]
+[sub_resource type="Resource" id="Resource_0h6p1"]
 script = ExtResource("1_0h6p1")
 dice_size = 8
 damage_type = &"piercing"
@@ -11,7 +11,7 @@ damage_type = &"piercing"
 [resource]
 script = ExtResource("2_ovfl6")
 weapon_category = &"martial"
-damage = SubResource("Resource_8thw5")
+damage = SubResource("Resource_0h6p1")
 properties = Array[StringName]([&"finesse"])
 id = &"rapier"
 display_name = "Rapier"

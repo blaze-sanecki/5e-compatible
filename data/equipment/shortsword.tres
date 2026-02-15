@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://resources/combat/damage_roll.gd" id="1_jyste"]
 [ext_resource type="Script" path="res://resources/items/weapon_data.gd" id="2_12sbi"]
 
-[sub_resource type="Resource" id="Resource_qnb87"]
+[sub_resource type="Resource" id="Resource_jyste"]
 script = ExtResource("1_jyste")
 damage_type = &"piercing"
 
 [resource]
 script = ExtResource("2_12sbi")
 weapon_category = &"martial"
-damage = SubResource("Resource_qnb87")
+damage = SubResource("Resource_jyste")
 properties = Array[StringName]([&"finesse", &"light"])
 id = &"shortsword"
 display_name = "Shortsword"
