@@ -71,8 +71,6 @@ func next_turn() -> CombatantData:
 		combatant.start_turn()
 		return combatant
 
-		attempts += 1
-
 	return null
 
 

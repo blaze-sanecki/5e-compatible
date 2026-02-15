@@ -133,12 +133,6 @@ func execute_attack(attacker: CombatantData, target: CombatantData,
 		else:
 			ability_mod = attacker.get_modifier(&"dexterity")
 		attack_bonus = prof + ability_mod
-
-		# Add ability mod to damage.
-		damage_notation = weapon.damage.to_notation()
-		if ability_mod != 0:
-			# We'll add it separately since DamageRoll doesn't always include it.
-			pass
 	elif weapon_or_action is MonsterAction:
 		var action: MonsterAction = weapon_or_action
 		weapon_name = action.name
