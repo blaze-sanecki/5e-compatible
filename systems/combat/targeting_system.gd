@@ -14,10 +14,14 @@ var _vision_calc: VisionCalculator
 var _floor_layer: TileMapLayer
 var _wall_layer: TileMapLayer
 
+## Edge-based wall data for LoS and cover checks.
+var _edge_walls: EdgeWallMap
 
-func _init(floor_layer: TileMapLayer, wall_layer: TileMapLayer) -> void:
+
+func _init(floor_layer: TileMapLayer, wall_layer: TileMapLayer, edge_walls: EdgeWallMap = null) -> void:
 	_floor_layer = floor_layer
 	_wall_layer = wall_layer
+	_edge_walls = edge_walls
 	_vision_calc = VisionCalculator.new()
 
 
@@ -66,10 +70,12 @@ func is_long_range(attacker: CombatantData, target: CombatantData,
 ## Check if there is a clear line of sight between two cells.
 func has_line_of_sight(from: Vector2i, to: Vector2i) -> bool:
 	var line: Array[Vector2i] = _vision_calc._bresenham_line(from, to)
-	for i in range(1, line.size() - 1):  # Skip start and end cells.
+	var prev: Vector2i = from
+	for i in range(1, line.size()):
 		var cell: Vector2i = line[i]
-		if _wall_layer.get_cell_source_id(cell) != -1:
+		if _edge_walls and _edge_walls.is_blocked(prev, cell):
 			return false
+		prev = cell
 	return true
 
 
@@ -89,14 +95,16 @@ func calculate_cover(attacker_cell: Vector2i, target_cell: Vector2i,
 	var line: Array[Vector2i] = _vision_calc._bresenham_line(attacker_cell, target_cell)
 	var obstructions: int = 0
 
+	var prev: Vector2i = attacker_cell
 	for i in range(1, line.size() - 1):  # Skip start and end.
 		var cell: Vector2i = line[i]
-		# Walls provide total cover (but this is checked via LoS).
-		if _wall_layer.get_cell_source_id(cell) != -1:
-			return 5  # At least three-quarters if we can still target.
+		# Edge wall in the path provides three-quarters cover.
+		if _edge_walls and _edge_walls.is_blocked(prev, cell):
+			return 5
 		# Other creatures provide half cover.
 		if cell in occupied_cells:
 			obstructions += 1
+		prev = cell
 
 	if obstructions >= 2:
 		return 5  # Three-quarters cover.

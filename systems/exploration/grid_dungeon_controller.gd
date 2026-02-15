@@ -26,6 +26,7 @@ var _camera_tween: Tween
 var pathfinder: GridPathfinding
 var fog_system: FogOfWarSystem
 var vision_calc: VisionCalculator
+var edge_walls: EdgeWallMap
 
 ## Vision range in grid cells.
 @export var vision_range: int = 6
@@ -57,13 +58,14 @@ func _ready() -> void:
 
 	token_manager = GridTokenManager.new(floor_layer, self)
 	encounter_init = GridEncounterInitializer.new(self)
+	edge_walls = EdgeWallMap.new()
 
 	# Generate a test dungeon if layers are empty.
 	if generate_test_map and floor_layer.get_used_cells().is_empty():
 		var interactables: Node = get_node_or_null("Interactables")
 		if PartyManager.party.is_empty():
 			var token: CharacterToken = TestMapGenerator.generate_grid_dungeon(
-				floor_layer, wall_layer, fog_layer, interactables, self
+				floor_layer, wall_layer, fog_layer, interactables, self, edge_walls
 			)
 			if token:
 				var start_cell: Vector2i = Vector2i(3, 3)
@@ -76,19 +78,26 @@ func _ready() -> void:
 				token_manager.selected_token_index = 0
 		else:
 			TestMapGenerator.generate_grid_dungeon_map_only(
-				floor_layer, wall_layer, fog_layer, interactables
+				floor_layer, wall_layer, fog_layer, interactables, edge_walls
 			)
 
 		var npcs_node: Node = get_node_or_null("NPCs")
 		if npcs_node:
 			TestMapGenerator.setup_dialogue_npcs(npcs_node, floor_layer)
 
-	pathfinder = GridPathfinding.new(floor_layer, wall_layer)
+	pathfinder = GridPathfinding.new(floor_layer, wall_layer, edge_walls)
 	fog_system = FogOfWarSystem.new()
 	vision_calc = VisionCalculator.new()
 
-	var used_cells: Array[Vector2i] = floor_layer.get_used_cells()
-	fog_system.initialize_grid(fog_layer, used_cells)
+	# Render interior edge walls as thin lines.
+	var wall_renderer := EdgeWallRenderer.new()
+	wall_renderer.name = "EdgeWallRenderer"
+	wall_renderer.z_index = 1
+	add_child(wall_renderer)
+	wall_renderer.setup(edge_walls, floor_layer)
+
+	var fog_cells: Array[Vector2i] = _build_fog_area(floor_layer.get_used_cells())
+	fog_system.initialize_grid(fog_layer, fog_cells)
 
 	if not token_manager.character_tokens.is_empty():
 		_update_fog()
@@ -166,7 +175,7 @@ func _key_to_direction(keycode: Key) -> Vector2i:
 func _try_move(state: GridEntityState, token: CharacterToken, direction: Vector2i) -> void:
 	var target: Vector2i = state.current_cell + direction
 
-	if not pathfinder._is_walkable(target):
+	if not pathfinder._can_move(state.current_cell, target):
 		return
 
 	var interactable: Node = _get_interactable_at(target)
@@ -231,7 +240,7 @@ func _update_fog() -> void:
 
 	for state in token_manager.character_states:
 		var visible_cells: Array[Vector2i] = vision_calc.calculate_grid_vision(
-			state.current_cell, vision_range, floor_layer, wall_layer
+			state.current_cell, vision_range, floor_layer, wall_layer, edge_walls
 		)
 		for cell in visible_cells:
 			if cell not in all_visible:
@@ -262,6 +271,30 @@ func _update_camera() -> void:
 		_camera_tween.kill()
 	_camera_tween = create_tween()
 	_camera_tween.tween_property(camera, "position", active_token.position, 0.2).set_ease(Tween.EASE_OUT)
+
+
+## Expand floor cells to a bounding box with margin so fog covers void areas.
+func _build_fog_area(floor_cells: Array[Vector2i]) -> Array[Vector2i]:
+	if floor_cells.is_empty():
+		return floor_cells
+	var min_x: int = floor_cells[0].x
+	var max_x: int = floor_cells[0].x
+	var min_y: int = floor_cells[0].y
+	var max_y: int = floor_cells[0].y
+	for cell in floor_cells:
+		min_x = mini(min_x, cell.x)
+		max_x = maxi(max_x, cell.x)
+		min_y = mini(min_y, cell.y)
+		max_y = maxi(max_y, cell.y)
+	min_x -= 2
+	max_x += 2
+	min_y -= 2
+	max_y += 2
+	var result: Array[Vector2i] = []
+	for x in range(min_x, max_x + 1):
+		for y in range(min_y, max_y + 1):
+			result.append(Vector2i(x, y))
+	return result
 
 
 # ---------------------------------------------------------------------------
@@ -329,6 +362,7 @@ func get_combat_references() -> Dictionary:
 	return {
 		"floor_layer": floor_layer,
 		"wall_layer": wall_layer,
+		"edge_walls": edge_walls,
 		"pathfinder": pathfinder,
 		"character_tokens": token_manager.character_tokens,
 		"controller": self,
@@ -374,6 +408,9 @@ func get_save_state() -> Dictionary:
 			if child is CombatEncounterTrigger:
 				trigger_states[child.name] = child.triggered
 	data["encounter_triggers"] = trigger_states
+
+	if edge_walls:
+		data["edge_walls"] = edge_walls.serialize()
 
 	return data
 
@@ -423,5 +460,9 @@ func restore_save_state(data: Dictionary) -> void:
 		for child in triggers_node.get_children():
 			if child is CombatEncounterTrigger and trigger_states.has(child.name):
 				child.triggered = trigger_states[child.name]
+
+	var edge_wall_data: Dictionary = data.get("edge_walls", {})
+	if not edge_wall_data.is_empty() and edge_walls:
+		edge_walls.deserialize(edge_wall_data)
 
 	_update_fog()

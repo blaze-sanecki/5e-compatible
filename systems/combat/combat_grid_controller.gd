@@ -13,6 +13,7 @@ signal action_requested(action_name: StringName)
 var combat_manager: CombatManager
 var floor_layer: TileMapLayer
 var wall_layer: TileMapLayer
+var edge_walls: EdgeWallMap
 var pathfinder: GridPathfinding
 var targeting_overlay: Node2D
 

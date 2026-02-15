@@ -92,6 +92,7 @@ func start_encounter(encounter: CombatEncounterData) -> void:
 	combat_mgr.name = "CombatManager"
 	combat_mgr.floor_layer = _controller.floor_layer
 	combat_mgr.wall_layer = _controller.wall_layer
+	combat_mgr.edge_walls = _controller.edge_walls
 	_controller.add_child(combat_mgr)
 
 	# Create Monster AI.
@@ -116,6 +117,7 @@ func start_encounter(encounter: CombatEncounterData) -> void:
 	cgc.combat_manager = combat_mgr
 	cgc.floor_layer = _controller.floor_layer
 	cgc.wall_layer = _controller.wall_layer
+	cgc.edge_walls = _controller.edge_walls
 	cgc.pathfinder = _controller.pathfinder
 	cgc.targeting_overlay = overlay
 

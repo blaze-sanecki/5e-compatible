@@ -246,6 +246,7 @@ static func generate_grid_dungeon(
 	fog_layer: TileMapLayer,
 	interactables_node: Node,
 	controller: Node2D,
+	edge_walls: EdgeWallMap = null,
 ) -> CharacterToken:
 	var tile_px: int = 32
 
@@ -293,13 +294,12 @@ static func generate_grid_dungeon(
 	fog_layer.tile_set = fog_tileset
 
 	# -- Room layout --
-	# Room 1: (1,1)-(6,6), Corridor: (7,3)-(9,4), Room 2: (10,1)-(14,7)
+	# Room 1: (1,1)-(6,6), Room 2: (7,1)-(13,7), separated by edge wall with door
 	_fill_rect(floor_layer, Vector2i(1, 1), Vector2i(6, 6))
-	_fill_rect(floor_layer, Vector2i(7, 3), Vector2i(9, 4))
-	_fill_rect(floor_layer, Vector2i(10, 1), Vector2i(14, 7))
+	_fill_rect(floor_layer, Vector2i(7, 1), Vector2i(13, 7))
 
-	# Walls around floor perimeter.
-	for x in range(0, 16):
+	# Walls around floor perimeter (visual only).
+	for x in range(0, 15):
 		for y in range(0, 9):
 			var cell: Vector2i = Vector2i(x, y)
 			if floor_layer.get_cell_source_id(cell) == -1:
@@ -308,6 +308,14 @@ static func generate_grid_dungeon(
 						wall_layer.set_cell(cell, 0, Vector2i(0, 0))
 						break
 
+	# -- Edge walls --
+	if edge_walls:
+		_generate_edge_walls(floor_layer, edge_walls)
+		# Interior wall between rooms along x=6/x=7 boundary, with gap at y=3 for door.
+		for y in range(1, 7):
+			if y != 3:
+				edge_walls.set_wall(Vector2i(6, y), EdgeWallMap.EAST)
+
 	# -- Interactables --
 	if interactables_node:
 		_setup_dungeon_interactables(interactables_node, floor_layer, tile_px)
@@ -315,7 +323,7 @@ static func generate_grid_dungeon(
 	# -- Test character token --
 	var token: CharacterToken = _create_test_token(controller, floor_layer)
 
-	print("TestMapGenerator: Grid dungeon generated (2 rooms + corridor).")
+	print("TestMapGenerator: Grid dungeon generated (2 rooms with edge-wall door).")
 	return token
 
 
@@ -326,6 +334,7 @@ static func generate_grid_dungeon_map_only(
 	wall_layer: TileMapLayer,
 	fog_layer: TileMapLayer,
 	interactables_node: Node,
+	edge_walls: EdgeWallMap = null,
 ) -> void:
 	var tile_px: int = 32
 
@@ -372,10 +381,9 @@ static func generate_grid_dungeon_map_only(
 
 	# Room layout (same as full generate).
 	_fill_rect(floor_layer, Vector2i(1, 1), Vector2i(6, 6))
-	_fill_rect(floor_layer, Vector2i(7, 3), Vector2i(9, 4))
-	_fill_rect(floor_layer, Vector2i(10, 1), Vector2i(14, 7))
+	_fill_rect(floor_layer, Vector2i(7, 1), Vector2i(13, 7))
 
-	for x in range(0, 16):
+	for x in range(0, 15):
 		for y in range(0, 9):
 			var cell: Vector2i = Vector2i(x, y)
 			if floor_layer.get_cell_source_id(cell) == -1:
@@ -384,10 +392,32 @@ static func generate_grid_dungeon_map_only(
 						wall_layer.set_cell(cell, 0, Vector2i(0, 0))
 						break
 
+	if edge_walls:
+		_generate_edge_walls(floor_layer, edge_walls)
+		for y in range(1, 7):
+			if y != 3:
+				edge_walls.set_wall(Vector2i(6, y), EdgeWallMap.EAST)
+
 	if interactables_node:
 		_setup_dungeon_interactables(interactables_node, floor_layer, tile_px)
 
-	print("TestMapGenerator: Grid dungeon map generated (2 rooms + corridor, no test token).")
+	print("TestMapGenerator: Grid dungeon map generated (2 rooms with edge-wall door, no test token).")
+
+
+## Populate edge walls based on floor layout. For each floor cell, if a cardinal
+## neighbor has no floor tile, set a wall edge on that side.
+static func _generate_edge_walls(floor_layer: TileMapLayer, edge_walls: EdgeWallMap) -> void:
+	var dir_map: Dictionary = {
+		Vector2i(0, -1): EdgeWallMap.NORTH,
+		Vector2i(1, 0): EdgeWallMap.EAST,
+		Vector2i(0, 1): EdgeWallMap.SOUTH,
+		Vector2i(-1, 0): EdgeWallMap.WEST,
+	}
+	for cell in floor_layer.get_used_cells():
+		for offset: Vector2i in dir_map:
+			var neighbor: Vector2i = cell + offset
+			if floor_layer.get_cell_source_id(neighbor) == -1:
+				edge_walls.set_wall(cell, dir_map[offset])
 
 
 static func _fill_rect(layer: TileMapLayer, from: Vector2i, to: Vector2i) -> void:
@@ -399,10 +429,10 @@ static func _fill_rect(layer: TileMapLayer, from: Vector2i, to: Vector2i) -> voi
 static func _setup_dungeon_interactables(parent: Node, floor_layer: TileMapLayer, tile_px: int) -> void:
 	var sq_size: int = tile_px - 4
 
-	# Door at corridor/room2 junction (10, 3).
+	# Door at room boundary (7, 3) — edge wall gap between rooms.
 	var door: Node = parent.get_node_or_null("Door1")
 	if door:
-		door.position = floor_layer.map_to_local(Vector2i(10, 3))
+		door.position = floor_layer.map_to_local(Vector2i(7, 3))
 		set_sprite(door, create_labeled_square_texture(sq_size, Color(0.6, 0.35, 0.1)))
 		add_label(door, "D")
 		setup_rect_collision(door, Vector2(sq_size, sq_size))
@@ -414,10 +444,10 @@ static func _setup_dungeon_interactables(parent: Node, floor_layer: TileMapLayer
 		dd.lock_dc = 12
 		door.interactable_data = dd
 
-	# Chest in room 2 (12, 2).
+	# Chest in room 2 (10, 2).
 	var chest: Node = parent.get_node_or_null("Chest1")
 	if chest:
-		chest.position = floor_layer.map_to_local(Vector2i(12, 2))
+		chest.position = floor_layer.map_to_local(Vector2i(10, 2))
 		set_sprite(chest, create_labeled_square_texture(sq_size, Color(0.8, 0.65, 0.1)))
 		add_label(chest, "C")
 		setup_rect_collision(chest, Vector2(sq_size, sq_size))
@@ -449,10 +479,10 @@ static func _setup_dungeon_interactables(parent: Node, floor_layer: TileMapLayer
 		ld.type = InteractableData.InteractableType.LEVER
 		lever.interactable_data = ld
 
-	# Exit portal in room 2 (13, 6).
+	# Exit portal in room 2 (12, 6).
 	var exit_portal: Node = parent.get_node_or_null("ExitPortal")
 	if exit_portal:
-		exit_portal.position = floor_layer.map_to_local(Vector2i(13, 6))
+		exit_portal.position = floor_layer.map_to_local(Vector2i(12, 6))
 		set_sprite(exit_portal, create_labeled_square_texture(sq_size, Color(0.1, 0.9, 0.9)))
 		add_label(exit_portal, "E")
 		setup_rect_collision(exit_portal, Vector2(sq_size, sq_size))
@@ -470,7 +500,7 @@ static func setup_dialogue_npcs(npcs_node: Node, floor_layer: TileMapLayer) -> v
 	var npc_positions: Dictionary = {
 		"ElderMaren": Vector2i(2, 4),
 		"MerchantTomas": Vector2i(5, 2),
-		"GoblinChief": Vector2i(12, 4),
+		"GoblinChief": Vector2i(10, 4),
 	}
 
 	for child in npcs_node.get_children():

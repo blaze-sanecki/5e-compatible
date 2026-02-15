@@ -74,7 +74,7 @@ func _move_toward_target(combatant: CombatantData, target: CombatantData,
 	if combat_mgr.floor_layer == null or combat_mgr.wall_layer == null:
 		return
 
-	var pathfinder := GridPathfinding.new(combat_mgr.floor_layer, combat_mgr.wall_layer)
+	var pathfinder := GridPathfinding.new(combat_mgr.floor_layer, combat_mgr.wall_layer, combat_mgr.edge_walls)
 	var approach_cell: Vector2i = AIUtility.find_approach_cell(combatant, target, pathfinder, combat_mgr.targeting_system)
 
 	if approach_cell == combatant.cell:

@@ -13,22 +13,23 @@ extends RefCounted
 ## Calculate visible cells from a center on a square grid.
 ##
 ## Returns all cells within [code]radius[/code] that have unblocked LoS.
-## Walls on the wall_layer block vision beyond them.
+## Edge walls block vision between cells.
 func calculate_grid_vision(
 	center: Vector2i,
 	radius: int,
 	floor_layer: TileMapLayer,
-	wall_layer: TileMapLayer
+	wall_layer: TileMapLayer,
+	edge_walls: EdgeWallMap = null
 ) -> Array[Vector2i]:
 	var visible: Array[Vector2i] = [center]
 
 	# Cast rays to the perimeter of the visibility square.
 	for x in range(center.x - radius, center.x + radius + 1):
-		_cast_grid_ray(center, Vector2i(x, center.y - radius), floor_layer, wall_layer, visible)
-		_cast_grid_ray(center, Vector2i(x, center.y + radius), floor_layer, wall_layer, visible)
+		_cast_grid_ray(center, Vector2i(x, center.y - radius), floor_layer, wall_layer, visible, edge_walls)
+		_cast_grid_ray(center, Vector2i(x, center.y + radius), floor_layer, wall_layer, visible, edge_walls)
 	for y in range(center.y - radius + 1, center.y + radius):
-		_cast_grid_ray(center, Vector2i(center.x - radius, y), floor_layer, wall_layer, visible)
-		_cast_grid_ray(center, Vector2i(center.x + radius, y), floor_layer, wall_layer, visible)
+		_cast_grid_ray(center, Vector2i(center.x - radius, y), floor_layer, wall_layer, visible, edge_walls)
+		_cast_grid_ray(center, Vector2i(center.x + radius, y), floor_layer, wall_layer, visible, edge_walls)
 
 	return visible
 
@@ -38,20 +39,24 @@ func _cast_grid_ray(
 	to: Vector2i,
 	floor_layer: TileMapLayer,
 	wall_layer: TileMapLayer,
-	visible: Array[Vector2i]
+	visible: Array[Vector2i],
+	edge_walls: EdgeWallMap = null
 ) -> void:
 	var line: Array[Vector2i] = _bresenham_line(from, to)
+	var prev: Vector2i = from
 	for cell in line:
 		# Out of map = stop.
 		if floor_layer.get_cell_source_id(cell) == -1:
 			break
 
+		# Edge wall between prev and current cell blocks vision.
+		if edge_walls and cell != prev and edge_walls.is_blocked(prev, cell):
+			break
+
 		if cell not in visible:
 			visible.append(cell)
 
-		# Wall blocks further vision (but the wall itself is visible).
-		if wall_layer.get_cell_source_id(cell) != -1:
-			break
+		prev = cell
 
 
 # ---------------------------------------------------------------------------

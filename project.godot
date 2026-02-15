@@ -28,3 +28,7 @@ DialogueManager="*res://autoloads/dialogue_manager.gd"
 QuestManager="*res://autoloads/quest_manager.gd"
 PersistentUI="*res://ui/persistent_ui.gd"
 SaveManager="*res://autoloads/save_manager.gd"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

@@ -1,16 +1,19 @@
 class_name GridPathfinding
 extends RefCounted
 
-## A* pathfinding on a square grid with wall collision.
+## A* pathfinding on a square grid with edge-wall collision.
 ##
 ## Movement budget is in cells (character.speed / 5). Supports 4-directional
-## and 8-directional movement. Walls are detected via a separate TileMapLayer.
+## and 8-directional movement. Walls are stored as edge bitmasks in EdgeWallMap.
 
 ## The floor layer for valid cell checks.
 var _floor_layer: TileMapLayer
 
-## The wall layer for collision checks.
+## The wall layer (kept for legacy compatibility, no longer queried for passability).
 var _wall_layer: TileMapLayer
+
+## Edge-based wall data for movement blocking.
+var _edge_walls: EdgeWallMap
 
 ## Allow diagonal movement (8 directions) or only 4.
 var allow_diagonal: bool = false
@@ -36,9 +39,10 @@ const DIRS_8: Array[Vector2i] = [
 ]
 
 
-func _init(floor_layer: TileMapLayer, wall_layer: TileMapLayer) -> void:
+func _init(floor_layer: TileMapLayer, wall_layer: TileMapLayer, edge_walls: EdgeWallMap = null) -> void:
 	_floor_layer = floor_layer
 	_wall_layer = wall_layer
+	_edge_walls = edge_walls
 
 
 # ---------------------------------------------------------------------------
@@ -74,14 +78,8 @@ func find_path(start: Vector2i, goal: Vector2i, max_cells: int = 0) -> Array[Vec
 		for dir in dirs:
 			var neighbor: Vector2i = current + dir
 
-			if not _is_walkable(neighbor):
+			if not _can_move(current, neighbor):
 				continue
-
-			# Diagonal movement check: prevent cutting corners.
-			if dir.x != 0 and dir.y != 0:
-				if not _is_walkable(Vector2i(current.x + dir.x, current.y)) or \
-				   not _is_walkable(Vector2i(current.x, current.y + dir.y)):
-					continue
 
 			var step_cost: int = 2 if (dir.x != 0 and dir.y != 0) else 1
 			var new_cost: int = (cost_so_far[current] as int) + step_cost
@@ -117,13 +115,8 @@ func get_reachable_cells(start: Vector2i, max_cells: int) -> Array[Vector2i]:
 		for dir in dirs:
 			var neighbor: Vector2i = current + dir
 
-			if not _is_walkable(neighbor):
+			if not _can_move(current, neighbor):
 				continue
-
-			if dir.x != 0 and dir.y != 0:
-				if not _is_walkable(Vector2i(current.x + dir.x, current.y)) or \
-				   not _is_walkable(Vector2i(current.x, current.y + dir.y)):
-					continue
 
 			var step_cost: int = 2 if (dir.x != 0 and dir.y != 0) else 1
 			var new_cost: int = (cost_so_far[current] as int) + step_cost
@@ -146,10 +139,15 @@ func get_reachable_cells(start: Vector2i, max_cells: int) -> Array[Vector2i]:
 
 func _is_walkable(cell: Vector2i) -> bool:
 	# Must have a floor tile.
-	if _floor_layer.get_cell_source_id(cell) == -1:
+	return _floor_layer.get_cell_source_id(cell) != -1
+
+
+## Check if movement from one cell to an adjacent cell is allowed.
+## Verifies the destination is walkable and no edge wall blocks the path.
+func _can_move(from: Vector2i, to: Vector2i) -> bool:
+	if not _is_walkable(to):
 		return false
-	# Must not have a wall tile.
-	if _wall_layer.get_cell_source_id(cell) != -1:
+	if _edge_walls and _edge_walls.is_blocked(from, to):
 		return false
 	return true
 

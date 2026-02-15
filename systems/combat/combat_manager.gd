@@ -34,6 +34,7 @@ var encounter_data: CombatEncounterData = null
 ## Grid references (set by the caller).
 var floor_layer: TileMapLayer
 var wall_layer: TileMapLayer
+var edge_walls: EdgeWallMap
 
 ## Monster AI reference (set externally).
 var monster_ai: RefCounted = null
@@ -62,7 +63,7 @@ func start_combat(player_combatants: Array[CombatantData],
 	# Create subsystems.
 	damage_system = DamageSystem.new()
 	condition_system = ConditionSystem.new()
-	targeting_system = TargetingSystem.new(floor_layer, wall_layer)
+	targeting_system = TargetingSystem.new(floor_layer, wall_layer, edge_walls)
 	action_system = ActionSystem.new(damage_system, condition_system, targeting_system)
 	turn_manager = TurnManager.new()
 
@@ -236,7 +237,7 @@ func _check_opportunity_attacks(mover: CombatantData, from_cell: Vector2i, to_ce
 func get_reachable_cells(combatant: CombatantData) -> Array[Vector2i]:
 	if floor_layer == null or wall_layer == null:
 		return []
-	var pathfinder := GridPathfinding.new(floor_layer, wall_layer)
+	var pathfinder := GridPathfinding.new(floor_layer, wall_layer, edge_walls)
 	var max_cells: int = combatant.movement_remaining / 5
 	return pathfinder.get_reachable_cells(combatant.cell, max_cells)
 
