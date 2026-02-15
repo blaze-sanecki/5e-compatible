@@ -163,6 +163,7 @@ func player_death_save() -> Dictionary:
 
 
 ## Move the current combatant along a path. Returns cells actually moved.
+## Triggers attacks of opportunity when leaving a threatened cell.
 func move_combatant(combatant: CombatantData, path: Array[Vector2i]) -> Array[Vector2i]:
 	var moved: Array[Vector2i] = []
 	for i in range(1, path.size()):
@@ -175,12 +176,53 @@ func move_combatant(combatant: CombatantData, path: Array[Vector2i]) -> Array[Ve
 		if combatant.movement_remaining < cost:
 			break
 
+		# Attack of opportunity check (unless combatant used Disengage).
+		if not combatant.is_disengaging:
+			_check_opportunity_attacks(combatant, from, to)
+
+		# Stop movement if the combatant was killed by an AoO.
+		if combatant.is_dead or combatant.current_hp <= 0:
+			break
+
 		combatant.movement_remaining -= cost
 		combatant.cell = to
 		combatant.has_moved = true
 		moved.append(to)
 
 	return moved
+
+
+## Check if moving from `from_cell` to `to_cell` provokes attacks of opportunity.
+## An enemy gets an AoO if the mover leaves their melee reach (adjacent cells).
+func _check_opportunity_attacks(mover: CombatantData, from_cell: Vector2i, to_cell: Vector2i) -> void:
+	var enemies: Array[CombatantData] = get_enemies_of(mover)
+	for enemy in enemies:
+		if enemy.is_dead or not enemy.is_alive():
+			continue
+		if not enemy.has_reaction:
+			continue
+		if condition_system.is_incapacitated(enemy):
+			continue
+
+		# Was the enemy adjacent to the mover's old position?
+		var old_dist: int = absi(from_cell.x - enemy.cell.x) + absi(from_cell.y - enemy.cell.y)
+		var chebyshev_old: int = maxi(absi(from_cell.x - enemy.cell.x), absi(from_cell.y - enemy.cell.y))
+		if chebyshev_old > 1:
+			continue  # Enemy wasn't in melee range.
+
+		# Is the enemy still adjacent after the move? If so, no AoO.
+		var chebyshev_new: int = maxi(absi(to_cell.x - enemy.cell.x), absi(to_cell.y - enemy.cell.y))
+		if chebyshev_new <= 1:
+			continue  # Still in melee range — no AoO.
+
+		# Provokes AoO! Enemy uses reaction to attack.
+		enemy.has_reaction = false
+		var weapon: Variant = enemy.get_primary_weapon()
+		if weapon == null:
+			continue
+
+		var result: Dictionary = action_system.execute_opportunity_attack(enemy, mover, weapon, combatants)
+		print("AoO: %s" % result.get("description", ""))
 
 
 ## Get reachable cells for the current combatant.

@@ -100,6 +100,54 @@ static func unequip_shield(character: CharacterData) -> void:
 	EventBus.item_unequipped.emit(character, old_shield)
 
 
+## Use a consumable item. Applies effects, removes one from inventory.
+## Returns a result dictionary with details of what happened.
+static func use_item(character: CharacterData, item: ItemData) -> Dictionary:
+	if item.item_type != &"consumable":
+		return {"success": false, "message": "Not a consumable item."}
+
+	if item.effects.is_empty():
+		return {"success": false, "message": "Item has no effects."}
+
+	# Check the character actually has the item.
+	var found: bool = false
+	for entry in character.inventory:
+		if entry is InventoryEntry and entry.item == item:
+			found = true
+			break
+		elif entry == item:
+			found = true
+			break
+	if not found:
+		return {"success": false, "message": "Item not in inventory."}
+
+	var results: Array[Dictionary] = []
+
+	for effect in item.effects:
+		var effect_type: String = str(effect.get("type", ""))
+		match effect_type:
+			"heal":
+				var dice_str: String = str(effect.get("dice", "1d4"))
+				var roll_result = DiceRoller.roll(dice_str)
+				var heal_amount: int = maxi(roll_result.total, 1)
+				character.current_hp = mini(character.current_hp + heal_amount, character.max_hp)
+				EventBus.character_healed.emit(character, heal_amount)
+				results.append({"type": "heal", "amount": heal_amount, "dice": dice_str})
+			"remove_condition":
+				var condition_name: StringName = StringName(str(effect.get("condition", "")))
+				if condition_name in character.conditions:
+					character.conditions.erase(condition_name)
+					EventBus.condition_removed.emit(character, condition_name)
+					results.append({"type": "remove_condition", "condition": condition_name})
+
+	# Consume one from inventory.
+	remove_item(character, item, 1)
+
+	EventBus.item_used.emit(character, item)
+
+	return {"success": true, "item_name": item.display_name, "effects": results}
+
+
 ## Calculate total weight of all inventory items.
 static func get_total_weight(character: CharacterData) -> float:
 	var total: float = 0.0

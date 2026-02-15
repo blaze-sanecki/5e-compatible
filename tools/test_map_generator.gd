@@ -319,6 +319,77 @@ static func generate_grid_dungeon(
 	return token
 
 
+## Generate only the map layout (tiles, walls, fog, interactables) without a test token.
+## Used when the party already exists from character creation.
+static func generate_grid_dungeon_map_only(
+	floor_layer: TileMapLayer,
+	wall_layer: TileMapLayer,
+	fog_layer: TileMapLayer,
+	interactables_node: Node,
+) -> void:
+	var tile_px: int = 32
+
+	# Reuse the same tileset setup as generate_grid_dungeon.
+	var floor_tileset: TileSet = TileSet.new()
+	floor_tileset.tile_size = Vector2i(tile_px, tile_px)
+	var floor_img: Image = Image.create(tile_px, tile_px, false, Image.FORMAT_RGBA8)
+	floor_img.fill(Color(0.35, 0.3, 0.28))
+	for i in tile_px:
+		floor_img.set_pixel(i, 0, Color(0.25, 0.22, 0.2))
+		floor_img.set_pixel(0, i, Color(0.25, 0.22, 0.2))
+	var floor_atlas: TileSetAtlasSource = TileSetAtlasSource.new()
+	floor_atlas.texture = ImageTexture.create_from_image(floor_img)
+	floor_atlas.texture_region_size = Vector2i(tile_px, tile_px)
+	floor_atlas.create_tile(Vector2i(0, 0))
+	floor_tileset.add_source(floor_atlas, 0)
+	floor_layer.tile_set = floor_tileset
+
+	var wall_tileset: TileSet = TileSet.new()
+	wall_tileset.tile_size = Vector2i(tile_px, tile_px)
+	var wall_atlas: TileSetAtlasSource = TileSetAtlasSource.new()
+	wall_atlas.texture = create_solid_texture(Vector2i(tile_px, tile_px), Color(0.15, 0.12, 0.1))
+	wall_atlas.texture_region_size = Vector2i(tile_px, tile_px)
+	wall_atlas.create_tile(Vector2i(0, 0))
+	wall_tileset.add_source(wall_atlas, 0)
+	wall_layer.tile_set = wall_tileset
+
+	var fog_tileset: TileSet = TileSet.new()
+	fog_tileset.tile_size = Vector2i(tile_px, tile_px)
+	var fog_img: Image = Image.create(tile_px * 2, tile_px, false, Image.FORMAT_RGBA8)
+	for y in tile_px:
+		for x in tile_px:
+			fog_img.set_pixel(x, y, Color(0, 0, 0, 1))
+	for y in tile_px:
+		for x in range(tile_px, tile_px * 2):
+			fog_img.set_pixel(x, y, Color(0, 0, 0, 0.5))
+	var fog_atlas: TileSetAtlasSource = TileSetAtlasSource.new()
+	fog_atlas.texture = ImageTexture.create_from_image(fog_img)
+	fog_atlas.texture_region_size = Vector2i(tile_px, tile_px)
+	fog_atlas.create_tile(Vector2i(0, 0))
+	fog_atlas.create_tile(Vector2i(1, 0))
+	fog_tileset.add_source(fog_atlas, 0)
+	fog_layer.tile_set = fog_tileset
+
+	# Room layout (same as full generate).
+	_fill_rect(floor_layer, Vector2i(1, 1), Vector2i(6, 6))
+	_fill_rect(floor_layer, Vector2i(7, 3), Vector2i(9, 4))
+	_fill_rect(floor_layer, Vector2i(10, 1), Vector2i(14, 7))
+
+	for x in range(0, 16):
+		for y in range(0, 9):
+			var cell: Vector2i = Vector2i(x, y)
+			if floor_layer.get_cell_source_id(cell) == -1:
+				for dir in GridPathfinding.DIRS_8:
+					if floor_layer.get_cell_source_id(cell + dir) != -1:
+						wall_layer.set_cell(cell, 0, Vector2i(0, 0))
+						break
+
+	if interactables_node:
+		_setup_dungeon_interactables(interactables_node, floor_layer, tile_px)
+
+	print("TestMapGenerator: Grid dungeon map generated (2 rooms + corridor, no test token).")
+
+
 static func _fill_rect(layer: TileMapLayer, from: Vector2i, to: Vector2i) -> void:
 	for x in range(from.x, to.x + 1):
 		for y in range(from.y, to.y + 1):

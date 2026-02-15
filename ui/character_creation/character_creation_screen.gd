@@ -88,7 +88,8 @@ func _finish_creation() -> void:
 		return
 
 	PartyManager.add_member(character)
-	GameManager.change_state(GameManager.GameState.EXPLORING)
+	# State transition handled by the parent (main menu listens for tree_exiting
+	# and triggers TransitionManager, which sets EXPLORING via GameManager.load_map).
 	queue_free()
 
 

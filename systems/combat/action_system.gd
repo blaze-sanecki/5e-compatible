@@ -217,6 +217,35 @@ func execute_attack(attacker: CombatantData, target: CombatantData,
 
 
 # ---------------------------------------------------------------------------
+# Execute: Attack of Opportunity (reaction)
+# ---------------------------------------------------------------------------
+
+## Execute an attack of opportunity. Uses the attacker's reaction, not action.
+func execute_opportunity_attack(attacker: CombatantData, target: CombatantData,
+		weapon_or_action: Variant, all_combatants: Array[CombatantData]) -> Dictionary:
+	# Save and restore action state — AoO doesn't consume the action.
+	var saved_has_action: bool = attacker.has_action
+	var saved_attacks: int = attacker.attacks_remaining
+	attacker.has_action = true
+	attacker.attacks_remaining = 1
+
+	var result: Dictionary = execute_attack(attacker, target, weapon_or_action, all_combatants)
+
+	# Restore action economy (AoO only costs reaction, already consumed by caller).
+	attacker.has_action = saved_has_action
+	attacker.attacks_remaining = saved_attacks
+
+	# Tag the result as an opportunity attack.
+	result["is_opportunity_attack"] = true
+	if result.hit:
+		result.description = "Attack of Opportunity! " + result.description
+	else:
+		result.description = "Attack of Opportunity! " + result.description
+
+	return result
+
+
+# ---------------------------------------------------------------------------
 # Execute: Dash
 # ---------------------------------------------------------------------------
 

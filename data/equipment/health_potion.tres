@@ -12,3 +12,7 @@ cost_gp = 50.0
 stackable = true
 max_stack = 10
 item_type = &"consumable"
+effects = Array[Dictionary]([{
+"dice": "2d4+2",
+"type": "heal"
+}])

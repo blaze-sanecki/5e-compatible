@@ -37,6 +37,7 @@ func _generate_items() -> void:
 	potion.stackable = true
 	potion.max_stack = 10
 	potion.item_type = &"consumable"
+	potion.effects = [{"type": "heal", "dice": "2d4+2"}]
 	_save(potion, "res://data/equipment/health_potion.tres")
 
 	var trade_goods := ItemData.new()

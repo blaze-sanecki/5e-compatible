@@ -27,3 +27,7 @@ extends Resource
 
 ## The category of item: "weapon", "armor", "gear", "tool", "consumable", "treasure".
 @export var item_type: StringName = &"gear"
+
+## Effect dictionaries for consumable items.
+## Each entry: {"type": "heal", "dice": "2d4+2"} or {"type": "remove_condition", "condition": "poisoned"}.
+@export var effects: Array[Dictionary] = []

@@ -59,13 +59,20 @@ func _ready() -> void:
 	# Generate a test dungeon if layers are empty.
 	if generate_test_map and floor_layer.get_used_cells().is_empty():
 		var interactables: Node = get_node_or_null("Interactables")
-		var token: CharacterToken = TestMapGenerator.generate_grid_dungeon(
-			floor_layer, wall_layer, fog_layer, interactables, self
-		)
-		if token:
-			character_tokens.append(token)
-			token.select()
-			selected_token_index = 0
+		if PartyManager.party.is_empty():
+			# No party yet (standalone testing) — create test token + placeholder character.
+			var token: CharacterToken = TestMapGenerator.generate_grid_dungeon(
+				floor_layer, wall_layer, fog_layer, interactables, self
+			)
+			if token:
+				character_tokens.append(token)
+				token.select()
+				selected_token_index = 0
+		else:
+			# Party exists (coming from character creation) — generate map only, no test token.
+			TestMapGenerator.generate_grid_dungeon_map_only(
+				floor_layer, wall_layer, fog_layer, interactables
+			)
 
 		# Set up NPC positions if the NPCs node exists.
 		var npcs_node: Node = get_node_or_null("NPCs")
@@ -206,7 +213,7 @@ func _on_token_moved(cell: Vector2i) -> void:
 
 ## Spawn character tokens from the party roster at the given spawn point.
 func spawn_party(spawn_id: StringName) -> void:
-	var spawn_cell: Vector2i = Vector2i.ZERO
+	var spawn_cell: Vector2i = Vector2i(3, 3)  # Default to room 1 center.
 	if map_data and map_data.spawn_points.has(spawn_id):
 		spawn_cell = map_data.spawn_points[spawn_id]
 
@@ -215,6 +222,15 @@ func spawn_party(spawn_id: StringName) -> void:
 		var token: CharacterToken = CharacterToken.new()
 		token.name = "CharToken_%d" % i
 		add_child(token)
+
+		# Give the token a visible sprite.
+		var color: Color = [
+			Color(0.2, 0.6, 1.0), Color(0.2, 0.9, 0.3),
+			Color(0.9, 0.4, 0.2), Color(0.8, 0.2, 0.8),
+		][i % 4]
+		var sprite := Sprite2D.new()
+		sprite.texture = TestMapGenerator.create_circle_texture(20, color)
+		token.add_child(sprite)
 
 		# Offset each character by one cell so they don't stack.
 		var cell: Vector2i = spawn_cell + Vector2i(i, 0)

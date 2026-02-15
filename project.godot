@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="5eCompatible"
-run/main_scene="res://tools/data_generator.tscn"
+run/main_scene="res://ui/menus/main_menu.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -26,3 +26,4 @@ DataRegistry="*res://autoloads/data_registry.gd"
 TransitionManager="*res://systems/exploration/transition_manager.gd"
 DialogueManager="*res://autoloads/dialogue_manager.gd"
 QuestManager="*res://autoloads/quest_manager.gd"
+PersistentUI="*res://ui/persistent_ui.gd"

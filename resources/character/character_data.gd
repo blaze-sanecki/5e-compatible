@@ -175,3 +175,48 @@ func get_skill_modifier(skill: StringName) -> int:
 	if has_expertise_in(skill):
 		mod += get_proficiency_bonus()
 	return mod
+
+
+## Short rest: spend one hit die to heal (hit die + CON modifier, min 1).
+## Returns the amount healed (0 if no hit dice remaining).
+func on_short_rest() -> int:
+	if hit_dice_remaining <= 0:
+		return 0
+	if current_hp >= max_hp:
+		return 0
+
+	hit_dice_remaining -= 1
+
+	var hit_die: int = 8  # Default d8.
+	if character_class != null and character_class.get("hit_die") != null:
+		hit_die = character_class.hit_die
+
+	var con_mod: int = get_modifier(&"constitution")
+	var roll_result = DiceRoller.roll("1d%d" % hit_die)
+	var heal_amount: int = maxi(roll_result.total + con_mod, 1)
+	var old_hp: int = current_hp
+	current_hp = mini(current_hp + heal_amount, max_hp)
+	var actual_heal: int = current_hp - old_hp
+	if actual_heal > 0:
+		EventBus.character_healed.emit(self, actual_heal)
+	return actual_heal
+
+
+## Long rest: restore HP to max, recover half total hit dice (min 1),
+## and restore all spell slots.
+func on_long_rest() -> void:
+	current_hp = max_hp
+
+	# Recover half of total hit dice (minimum 1).
+	var total_hit_dice: int = level
+	@warning_ignore("integer_division")
+	var recovered: int = maxi(total_hit_dice / 2, 1)
+	hit_dice_remaining = mini(hit_dice_remaining + recovered, total_hit_dice)
+
+	# Restore spell slots.
+	for i in spell_slots.size():
+		spell_slots[i] = max_spell_slots[i]
+
+	# Clear death saves.
+	death_save_successes = 0
+	death_save_failures = 0

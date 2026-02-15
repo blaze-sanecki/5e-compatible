@@ -170,6 +170,7 @@ func get_proficiency_bonus() -> int:
 func start_turn() -> void:
 	has_action = true
 	has_bonus_action = true
+	has_reaction = true
 	has_moved = false
 	is_dodging = false
 	is_disengaging = false
