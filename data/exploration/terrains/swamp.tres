@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TerrainData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/exploration/terrain_data.gd" id="1_terrain"]
+
+[resource]
+script = ExtResource("1_terrain")
+id = &"swamp"
+display_name = "Swamp"
+description = "Waterlogged marshland with treacherous footing. Movement is significantly hampered."
+movement_cost_multiplier = 2.0
+base_encounter_chance = 0.15
+travel_effects = Array[Dictionary]([{
+"stealth_modifier": -2
+}, {
+"disease_risk": true
+}])
+tile_source_id = 0
+tile_atlas_coords = Vector2i(4, 0)

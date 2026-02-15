@@ -12,6 +12,7 @@ var _weapons: Dictionary = {}
 var _armor: Dictionary = {}
 var _level_progressions: Dictionary = {}
 var _items: Dictionary = {}
+var _terrains: Dictionary = {}
 
 
 func _ready() -> void:
@@ -21,6 +22,7 @@ func _ready() -> void:
 	_scan_directory("res://data/feats", _feats)
 	_scan_directory("res://data/equipment", _items)
 	_scan_directory("res://data/tables", _level_progressions)
+	_scan_directory("res://data/exploration/terrains", _terrains)
 
 	# Split equipment into weapons and armor for convenience.
 	for key in _items.keys():
@@ -30,9 +32,9 @@ func _ready() -> void:
 		elif res is ArmorData:
 			_armor[key] = res
 
-	print("DataRegistry: loaded %d classes, %d species, %d backgrounds, %d feats, %d weapons, %d armor, %d progressions" % [
+	print("DataRegistry: loaded %d classes, %d species, %d backgrounds, %d feats, %d weapons, %d armor, %d progressions, %d terrains" % [
 		_classes.size(), _species.size(), _backgrounds.size(), _feats.size(),
-		_weapons.size(), _armor.size(), _level_progressions.size(),
+		_weapons.size(), _armor.size(), _level_progressions.size(), _terrains.size(),
 	])
 
 
@@ -112,6 +114,16 @@ func get_all_level_progressions() -> Array:
 
 func get_level_progression(class_id: StringName) -> LevelProgression:
 	return _level_progressions.get(class_id) as LevelProgression
+
+# ---------------------------------------------------------------------------
+# Terrains
+# ---------------------------------------------------------------------------
+
+func get_all_terrains() -> Array:
+	return _terrains.values()
+
+func get_terrain(id: StringName) -> TerrainData:
+	return _terrains.get(id) as TerrainData
 
 # ---------------------------------------------------------------------------
 # Generic items (all equipment)

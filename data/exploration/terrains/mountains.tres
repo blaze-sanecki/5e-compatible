@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TerrainData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/exploration/terrain_data.gd" id="1_terrain"]
+
+[resource]
+script = ExtResource("1_terrain")
+id = &"mountains"
+display_name = "Mountains"
+description = "Towering peaks and treacherous passes. Extremely difficult terrain that greatly impedes travel."
+movement_cost_multiplier = 3.0
+base_encounter_chance = 0.12
+travel_effects = Array[Dictionary]([{
+"perception_modifier": 4
+}, {
+"exhaustion_risk": true
+}])
+tile_source_id = 0
+tile_atlas_coords = Vector2i(3, 0)

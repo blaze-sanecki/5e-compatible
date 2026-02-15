@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://systems/exploration/hex_overworld_controller.gd" id="1_ctrl"]
+[ext_resource type="PackedScene" path="res://ui/exploration/pace_selector.tscn" id="2_pace"]
+[ext_resource type="Script" path="res://entities/characters/party_token.gd" id="3_token"]
+
+[node name="HexOverworldMap" type="Node2D"]
+script = ExtResource("1_ctrl")
+terrain_layer_path = NodePath("TerrainLayer")
+fog_layer_path = NodePath("FogLayer")
+highlight_layer_path = NodePath("HighlightLayer")
+party_token_path = NodePath("PartyToken")
+camera_path = NodePath("Camera2D")
+
+[node name="TerrainLayer" type="TileMapLayer" parent="."]
+
+[node name="HighlightLayer" type="TileMapLayer" parent="."]
+modulate = Color(1, 1, 1, 0.4)
+
+[node name="FogLayer" type="TileMapLayer" parent="."]
+z_index = 10
+
+[node name="PartyToken" type="Node2D" parent="."]
+z_index = 5
+script = ExtResource("3_token")
+
+[node name="Sprite2D" type="Sprite2D" parent="PartyToken"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="PaceSelector" parent="CanvasLayer" instance=ExtResource("2_pace")]
